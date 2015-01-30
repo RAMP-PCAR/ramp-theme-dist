@@ -21975,9 +21975,9 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
 
-})();/*! Nestoria Slider - v1.0.8 - 2014-10-27
+})();/*! Nestoria Slider - v1.0.9 - 2015-01-23
 * http://lokku.github.io/jquery-nstslider/
-* Copyright (c) 2014 Lokku Ltd.; Licensed MIT */
+* Copyright (c) 2015 Lokku Ltd.; Licensed MIT */
 (function($) {
     /* 
      * These are used for user interaction. This plugin assumes the user can
@@ -22027,6 +22027,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
           */
          'validateAndMoveGripsToPx' : function (nextLeftGripPositionPx, nextRightGripPositionPx) {
              var $this = this;
+
              var draggableAreaLengthPx = _methods.getSliderWidthPx.call($this) - $this.data('left_grip_width');
 
              //
@@ -22490,7 +22491,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
             // point where the click happened, meaning the slider grip will be
             // spanning to the right.
             //
-            curX = e.pageX - ($this.data('left_grip_width') / 2);
+            curX = Math.round(e.pageX) - ($this.data('left_grip_width') / 2);
 
             // calculate deltas from left and right grip
             ldist = Math.abs(lleft - curX);
@@ -22609,6 +22610,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
             if (_is_mousedown) {
                 // our slider element.
                 var $this = _$current_slider,
+                    settings = $this.data('settings'),
                     sliderWidthPx = _methods.getSliderWidthPx.call($this) - $this.data('left_grip_width'),
                     leftGripPositionPx = _methods.getLeftGripPositionPx.call($this);
 
@@ -22620,7 +22622,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 // position of the mouse cursors via e.pageX, which returns the
                 // absolute position of the mouse on the screen.
                 //
-                var absoluteMousePosition = e.pageX;
+                var absoluteMousePosition = Math.round(e.pageX);
 
                 //
                 // Compute the delta (in px) for the slider movement. It is the
@@ -22641,8 +22643,20 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
                 // 1) calculate the area within which the movement is
                 //    considered to be valid.
-                var drag_area_start = $this.offset().left + $this.data('left_grip_width'),
+                var half_a_grip_width = $this.data('left_grip_width') / 2,
+                    drag_area_start = $this.offset().left + $this.data('left_grip_width') - half_a_grip_width,
                     drag_area_end = drag_area_start + sliderWidthPx;
+
+                if (settings.crossable_handles === false && $this.data('has_right_grip')) {
+                    // if handles are not crossable, we should define the left
+                    // and the right boundary of the movement.
+                    if (_is_left_grip) {
+                        drag_area_end = drag_area_start + rightGripPositionPx;
+                    }
+                    else {
+                        drag_area_start = drag_area_start + leftGripPositionPx;
+                    }
+                }
  
                 // 2) by default we accept to move the slider according to both
                 // the deltas (i.e., left or right)
@@ -22663,7 +22677,9 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 //
                 // Here we decide whether to invert the grip being moved.
                 //
-                if ($this.data('has_right_grip')) {
+                if (settings.crossable_handles === true && 
+                    $this.data('has_right_grip')) {
+
                     if (_is_left_grip) {
 
                         // ... if we are using the left grip
@@ -23046,6 +23062,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
                 // if the bar is not wanted
                 'value_bar_selector': undefined,
+
+                // Allow handles to cross each other while one of them is being
+                // dragged. This option is ignored if just one handle is used.
+                'crossable_handles': true,
 
                 'value_changed_callback': function(/*cause, vmin, vmax*/) { return; },
                 'user_mouseup_callback' : function(/*vmin, vmax, left_grip_moved*/) { return; },
