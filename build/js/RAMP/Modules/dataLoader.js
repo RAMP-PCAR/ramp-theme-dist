@@ -8,10 +8,10 @@
 */
 
 define([
-        "dojo/Deferred", "esri/request", "esri/SpatialReference", "esri/layers/FeatureLayer", "utils/util", "dojo/_base/array"
+        "dojo/Deferred", "dojo/query", "esri/request", "esri/SpatialReference", "esri/layers/FeatureLayer", "ramp/layerLoader", "utils/util", "dojo/_base/array"
     ],
     function (
-            Deferred, EsriRequest, SpatialReference, FeatureLayer, Util, dojoArray
+            Deferred, query, EsriRequest, SpatialReference, FeatureLayer, LayerLoader, Util, dojoArray
         ) {
         "use strict";
 
@@ -99,6 +99,107 @@ define([
             }
 
             promise.then(function (data) { def.resolve(data); }, function (error) { def.reject(error); });
+            return def.promise;
+        }
+
+        /**
+        * Fetch relevant data from a single feature layer endpoint.  Returns a promise which
+        * resolves with a partial list of properites extracted from the endpoint.
+        *
+        * @param {string} featureLayerEndpoint a URL pointing to an ESRI Feature Layer
+        * @returns {Promise} a promise resolving with an object containing basic properties for the layer
+        */
+        function getFeatureLayer(featureLayerEndpoint) {
+            var def = new Deferred(), promise;
+
+            try {
+                promise = (new EsriRequest({ url: featureLayerEndpoint + '?f=json'})).promise;
+            } catch (e) {
+                def.reject(e);
+            }
+
+            promise.then(
+                function (data) {
+                    var res = {
+                        layerId: data.id,
+                        layerName: data.name,
+                        layerUrl: featureLayerEndpoint,
+                        geometryType: data.geometryType,
+                        fields: dojoArray.map(data.fields, function (x) { return x.name; })
+                    };
+
+                    def.resolve(res);
+                },
+                function (error) {
+                    console.log(error);
+                    def.reject(error);
+                }
+            );
+
+            return def.promise;
+        }
+
+        /**
+        * Fetch layer data from a WMS endpoint.  This method will execute a WMS GetCapabilities
+        * request against the specified URL, it requests WMS 1.3 and it is capable of parsing
+        * 1.3 or 1.1.1 responses.  It returns a promise which will resolve with basic layer
+        * metadata and querying information.
+        * 
+        * metadata response format:
+        *   { queryTypes: [mimeType], layers: [{name, desc, queryable(bool)}] }
+        *
+        * @param {string} wmsEndpoint a URL pointing to a WMS server (it must not include a query string)
+        * @returns {Promise} a promise resolving with a metadata object (as specified above)
+        */
+        function getWmsLayerList(wmsEndpoint) {
+            var def = new Deferred(), promise;
+
+            try {
+                promise = (new EsriRequest({ url: wmsEndpoint + '?service=WMS&version=1.3&request=GetCapabilities', handleAs: 'xml' })).promise;
+            } catch (e) {
+                def.reject(e);
+            }
+
+            // there might already be a way to do this in the parsing API
+            // I don't know XML parsing well enough (and I don't want to)
+            function getImmediateChild(node, childName) {
+                var i;
+                for (i = 0; i < node.childNodes.length; ++i) {
+                    if (node.childNodes[i].nodeName === childName) {
+                        return node.childNodes[i];
+                    }
+                }
+                return undefined;
+            }
+
+            promise.then(
+                function (data) {
+                    var layers, res = {};
+
+                    try {
+                        layers = dojoArray.map(query('Layer > Name',data), function (nameNode) { return nameNode.parentNode; });
+                        res.layers = dojoArray.map(layers, function (x) {
+                            var name = getImmediateChild(x, 'Name').textContent,
+                                titleNode = getImmediateChild(x, 'Title');
+                            return {
+                                name: name,
+                                desc: titleNode ? titleNode.textContent : name,
+                                queryable: x.getAttribute('queryable') === '1'
+                            };
+                        });
+                        res.queryTypes = dojoArray.map(query('GetFeatureInfo > Format', data), function (node) { return node.textContent; });
+                    } catch (e) {
+                        def.reject(e);
+                    }
+
+                    def.resolve(res);
+                },
+                function (error) {
+                    console.log(error);
+                    def.reject(error);
+                }
+            );
+
             return def.promise;
         }
 
@@ -269,6 +370,8 @@ define([
 
         return {
             loadDataSet: loadDataSet,
+            getFeatureLayer: getFeatureLayer,
+            getWmsLayerList: getWmsLayerList,
             makeGeoJsonLayer: makeGeoJsonLayer,
             buildCsv: buildCsv,
             buildShapefile: buildShapefile,
