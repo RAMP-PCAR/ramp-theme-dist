@@ -2199,9 +2199,64 @@
 .input-group {
   width: 100%;
 }
+.input-group .input-group-btn > span.btn,
 .input-group .input-group-btn > button.btn,
 .input-group .input-group-btn > a.btn {
   white-space: nowrap;
+  border-radius: 0;
+}
+.input-group .input-group-btn.browse-files > .input-container {
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.input-group .input-group-btn.browse-files > .input-container > input[type='file'] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  font: 200px monospace !important;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.input-group .input-group-btn.browse-files > .input-container > input[type='file'][disabled='disabled'] {
+  cursor: auto;
+}
+.input-group .input-group-btn.browse-files > .browse-button.btn-hover {
+  color: #335075;
+  background-color: #cfd1d5;
+  border-color: #bbbfc5;
+}
+.input-group .input-group-btn.browse-files > .browse-button.btn-active {
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.input-group .input-group-btn.browse-files > .browse-button.btn-focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.color-picker-container {
+  display: table;
+}
+.color-picker-container > .input-group {
+  display: table-cell !important;
+  width: 80% !important;
+  padding-right: 10px;
+}
+.color-picker-container .color-picker-swatch {
+  display: table-cell;
+  margin-left: 10px;
+  width: 20%;
+  border: 1px solid black;
 }
 .width-100 {
   width: 100% !important;
@@ -2516,7 +2571,7 @@ ul.loadingAnimation li:nth-child(1) {
   margin: 0;
   text-align: left;
   top: 32px;
-  width: 500px;
+  width: 550px;
 }
 #basemapselector-section-container .basemapselector-section {
   min-height: 150px;
@@ -2561,7 +2616,7 @@ ul.loadingAnimation li:nth-child(1) {
   padding: 0;
 }
 #basemapselector-section-container .basemapselector-section .projection-list-pane {
-  width: 150px;
+  width: 200px;
 }
 #basemapselector-section-container .basemapselector-section .projection-list-pane .projection-button {
   border-radius: 0 0 0 0;
@@ -2596,7 +2651,7 @@ ul.loadingAnimation li:nth-child(1) {
   position: absolute;
   width: 5px;
   background: #545454;
-  left: 146px;
+  left: 196px;
   top: 0;
   bottom: 0;
 }
@@ -2758,6 +2813,134 @@ ul.loadingAnimation li:nth-child(1) {
   position: relative;
   top: -50%;
 }
+/*
+#reveal {
+    display: block;
+}
+
+#reveal-marker, .reveal-marker {
+    display: none;
+    position: absolute;
+}
+
+#reveal-marker.reveal-card-hover, .reveal-marker.reveal-card-hover, #reveal.rap, #reveal-marker.rap, .reveal-marker.rap {
+    display: block;
+}
+
+.reveal-marker-circle {
+    top: -5px;
+    left: -5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: #494949;
+    z-index: 2;
+    position: absolute;
+}
+
+.reveal-marker-circle.reveal-ripple-playing {
+    display: none;
+}
+
+.reveal-marker-glow {
+    top: -8px;
+    left: -8px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #aba8a3;
+    -webkit-animation: reveal-glowing 1.6s linear 0s infinite normal;
+    -moz-animation: reveal-glowing 1.6s linear 0s infinite normal;
+    -ms-animation: reveal-glowing 1.6s linear 0s infinite normal;
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    -ms-transform: scale(0.6);
+    opacity: 1;
+    z-index: 1;
+    position: absolute;
+}
+
+.reveal-embedded-pulse {
+    display: none;
+}
+
+.reveal-pulse-active .reveal-embedded-pulse {
+    display: block;
+}
+
+.reveal-pulse-active .reveal-ripple {
+    display: none;
+}
+
+@-webkit-keyframes reveal-glowing {
+    0% {
+        -webkit-transform: scale(0.6);
+        opacity: 1;
+    }
+
+    100% {
+        -webkit-transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes reveal-glowing {
+    0% {
+        -moz-transform: scale(0.6);
+        opacity: 1;
+    }
+
+    100% {
+        -moz-transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes reveal-glowing {
+    0% {
+        -ms-transform: scale(0.6);
+        opacity: 1;
+    }
+
+    100% {
+        -ms-transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.reveal-ripple {
+    z-index: -1;
+    opacity: 1;
+    display: block;
+    position: absolute;
+    background-color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    -webkit-transform: scale(0.125);
+    -moz-transform: scale(0.125);
+    -ms-transform: scale(0.125);
+    transform: scale(0.125);
+    -webkit-transition: opacity 240ms 80ms ease-out,-webkit-transform 320ms 0s ease-out;
+    -moz-transition: opacity 240ms 80ms ease-out,-moz-transform 320ms 0s ease-out;
+    -ms-transition: opacity 240ms 80ms ease-out,-ms-transform 320ms 0s ease-out;
+    transition: opacity 240ms 80ms ease-out,transform 320ms 0s ease-out;
+}
+
+.reveal-ripple.reveal-ripple-playing {
+    z-index: 1;
+    opacity: 0;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+
+.app-imagery-mode .reveal-marker-ripple-ring {
+    background-color: rgba(255,255,255,0.6);
+}
+    */
 #map-toolbar {
   height: 32px;
   width: 100%;
@@ -4105,6 +4288,7 @@ footer {
   display: inline-block;
   text-align: center;
   white-space: nowrap;
+  position: relative;
   float: none;
 }
 .full-data-mode #panel-div #gridpane #jqgrid.dataTable.table-simplify td .point-image-box:before {
@@ -4160,7 +4344,7 @@ footer {
   padding-top: 12px;
 }
 #categories #filterGlobalToggles .global-controls {
-  margin-left: 40px;
+  margin-left: 36px;
 }
 #categories #filterGlobalToggles .global-controls ul {
   margin: 0 0 0 -3px !important;
@@ -4505,6 +4689,7 @@ footer {
   display: inline-block;
   text-align: center;
   white-space: nowrap;
+  position: relative;
   float: none;
   width: 24px;
   height: 24px;
@@ -4580,6 +4765,7 @@ footer {
   display: inline-block;
   text-align: center;
   white-space: nowrap;
+  position: relative;
 }
 #categories .layer-details .layer-image-box:before {
   content: "";
@@ -5467,6 +5653,7 @@ footer {
   display: inline-block;
   text-align: center;
   white-space: nowrap;
+  position: relative;
 }
 #gridpane #jqgrid.dataTable.table-simplify .record-row .record-details .point-image-box:before {
   content: "";
@@ -5533,6 +5720,390 @@ footer {
   width: 1px;
   height: 13px;
   margin: 6px 0 1px 0;
+}
+#addDatasetToggle span {
+  display: inline-block;
+}
+#add-dataset-section-container {
+  visibility: hidden;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow-y: auto;
+  position: absolute;
+  margin: 0 !important;
+  padding: 0;
+  background: white;
+  z-index: 10;
+}
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option {
+  border-color: #808080;
+  background-color: #eeeeee;
+  min-width: 95px;
+  border-radius: 0;
+  color: #000;
+}
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option.focused,
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option:focus,
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option:hover {
+  background-color: #D4D4D4 !important;
+  color: inherit !important;
+}
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option.button-pressed {
+  border-color: #333333 !important;
+  background-color: #545454 !important;
+  color: #FFF !important;
+  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+}
+#add-dataset-section-container #add-dataset-section .btn-group .btn-option.button-pressed .separator {
+  border-color: #FFF;
+}
+#add-dataset-section-container #add-dataset-section section {
+  position: relative;
+}
+#add-dataset-section-container #add-dataset-section section h2 {
+  padding: 12px 12px 12px 29px;
+}
+#add-dataset-section-container #add-dataset-section section .button-close {
+  margin: 12px 12px 0 0;
+}
+#add-dataset-section-container #add-dataset-section section .step {
+  overflow: hidden;
+  width: 100%;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content {
+  padding: 12px 12px 12px 29px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content h3 {
+  margin: 21px 0 10px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content h3:first-child {
+  margin: 2px 0 10px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content h3.smaller {
+  margin: 10px 0 5px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content h4.smaller {
+  margin: 10px 0 5px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .btn-group,
+#add-dataset-section-container #add-dataset-section section .step .step-content .input-group {
+  margin-bottom: 10px;
+  display: table;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .input-group {
+  width: 85%;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .btn-load,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .btn-load,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .btn-cancel {
+  width: 70px;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .glyphicon,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .glyphicon {
+  top: 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .glyphicon-remove,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .glyphicon-remove {
+  top: -1px;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .glyphicon-ok,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .glyphicon-ok,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .glyphicon-remove,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .glyphicon-remove {
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.loaded .btn-load,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.loaded .btn-load {
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.loaded .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.loaded .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.loaded .glyphicon-ok,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.loaded .glyphicon-ok {
+  display: block;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.error .btn-load,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.error .btn-load {
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.error .glyphicon-remove,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.error .glyphicon-remove,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step.error .btn-cancel,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step.error .btn-cancel {
+  display: block;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .browse-button .fa-file-o,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .browse-button .fa-file-o {
+  display: inline-block;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .browse-button .fa-file,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .browse-button .fa-file {
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .browse-button.selected .fa-file-o,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .browse-button.selected .fa-file-o {
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-url-step .browse-button.selected .fa-file,
+#add-dataset-section-container #add-dataset-section section .step .step-content.load-file-step .browse-button.selected .fa-file {
+  display: inline-block;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .btn-add-dataset-container {
+  width: 85%;
+  text-align: right;
+  margin: 30px 0 5px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .btn-add-dataset-container .btn-add-dataset {
+  border-radius: 0;
+  width: 50%;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .double-list-container {
+  width: 85%;
+  display: table;
+  margin: 19px 0 10px 0;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .double-list-container .list-group {
+  display: table-cell;
+  width: 50%;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .double-list-container .list-group:first-child {
+  padding-right: 10px;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .double-list-container .list-group:last-child {
+  padding-left: 8px;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-content .color-picker-container {
+  width: 85%;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container {
+  position: relative;
+  display: none;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container .options-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container .options-bg:before {
+  position: absolute;
+  content: "";
+  border-left: 7px solid #d8eeca;
+  height: 100%;
+  -webkit-transition: border-color 300ms ease;
+  transition: border-color 300ms ease;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container .options-bg:after {
+  position: absolute;
+  right: -18px;
+  top: -26px;
+  font-size: 75pt;
+  font-weight: bold;
+  background-color: #fff;
+  bottom: 0;
+  color: #dddddd;
+  -webkit-transition: color 300ms ease;
+  transition: color 300ms ease;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container .options-bg .bg-border {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #dbdbdb;
+  height: 1px;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container.error > .options-bg:before {
+  border-left-color: #d73d38 !important;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options-container.error > .options-bg:after {
+  color: #d73d38 !important;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options {
+  position: relative;
+  white-space: nowrap;
+}
+#add-dataset-section-container #add-dataset-section section .step .step-options > .step {
+  display: inline-block;
+  vertical-align: top;
+}
+#add-dataset-section-container #add-dataset-section section .current-step.step-1 > .step-content:before {
+  border-left-color: #269abc;
+}
+#add-dataset-section-container #add-dataset-section section .current-step.step-1 > .step-content:after {
+  color: #269abc;
+}
+#add-dataset-section-container #add-dataset-section section .current-step.step-options-container > .options-bg:before {
+  border-left-color: #269abc;
+}
+#add-dataset-section-container #add-dataset-section section .current-step.step-options-container > .options-bg:after {
+  color: #269abc !important;
+}
+#add-dataset-section-container #add-dataset-section section .loading > .options-bg {
+  z-index: 9999;
+  width: 100%;
+  -webkit-animation: progress 3s linear infinite;
+  animation: progress 3s linear infinite;
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  /*background-image: linear-gradient(-45deg, 
+        rgba(255, 255, 255, 0.15) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255, 255, 255, 0.15) 50%, 
+        rgba(255, 255, 255, 0.15) 75%, 
+        transparent 75%, transparent);*/
+  background-image: -webkit-linear-gradient(135deg, rgba(38, 154, 188, 0.15) 25%, transparent 25%, transparent 50%, rgba(38, 154, 188, 0.15) 50%, rgba(38, 154, 188, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(-45deg, rgba(38, 154, 188, 0.15) 25%, transparent 25%, transparent 50%, rgba(38, 154, 188, 0.15) 50%, rgba(38, 154, 188, 0.15) 75%, transparent 75%, transparent);
+  /*background: @color;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, @start), color-stop(1, @stop));
+    background: -ms-linear-gradient(bottom, @start, @stop);
+    background: -moz-linear-gradient(center bottom, @start 0%, @stop 100%);
+    background: -o-linear-gradient(@stop, @start);
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@stop,@start));*/
+}
+#add-dataset-section-container #add-dataset-section section .loading > .options-bg:after {
+  background-color: transparent !important;
+}
+@font-face {
+  font-family: 'pirulen';
+  src: url('../assets/pirulen rg.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'millennia';
+  src: url('../assets/MILLENNIA.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'spire';
+  src: url('../assets/SPIRE0.ttf') format('truetype');
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-content {
+  z-index: 1000;
+  border-top: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-content:after {
+  position: absolute;
+  right: -18px;
+  top: -26px;
+  font-size: 75pt;
+  font-weight: bold;
+  background-color: #fff;
+  bottom: 0;
+  color: #dddddd;
+  content: "1";
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-content:before {
+  position: absolute;
+  content: "";
+  border-left: 7px solid #d8eeca;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 10;
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-options-container > .options-bg:before {
+  z-index: 901;
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-options-container > .options-bg:after {
+  z-index: 901;
+  content: "2";
+}
+#add-dataset-section-container #add-dataset-section section .step-1 > .step-options-container > .options-bg .bg-border {
+  z-index: 902;
+}
+#add-dataset-section-container #add-dataset-section section .step-2 > .step-content {
+  z-index: 900;
+}
+#add-dataset-section-container #add-dataset-section section .step-2 > .step-options-container > .options-bg:before {
+  z-index: 801;
+}
+#add-dataset-section-container #add-dataset-section section .step-2 > .step-options-container > .options-bg:after {
+  z-index: 801;
+  content: "3";
+}
+#add-dataset-section-container #add-dataset-section section .step-2 > .step-options-container > .options-bg .bg-border {
+  z-index: 802;
+}
+#add-dataset-section-container #add-dataset-section section .step-3 > .step-content {
+  z-index: 800;
+}
+#add-dataset-section-container #add-dataset-section section .step-3 > .step-options-container > .options-bg:before {
+  z-index: 701;
+}
+#add-dataset-section-container #add-dataset-section section .step-3 > .step-options-container > .options-bg:after {
+  z-index: 701;
+  content: "4";
+}
+#add-dataset-section-container #add-dataset-section section .step-3 > .step-options-container > .options-bg .bg-border {
+  z-index: 702;
+}
+#add-dataset-section-container #add-dataset-section section .step-4 > .step-content {
+  z-index: 700;
+}
+#add-dataset-section-container #add-dataset-section section .step-4 > .step-options-container > .options-bg:before {
+  z-index: 601;
+}
+#add-dataset-section-container #add-dataset-section section .step-4 > .step-options-container > .options-bg:after {
+  z-index: 601;
+  content: "5";
+}
+#add-dataset-section-container #add-dataset-section section .step-4 > .step-options-container > .options-bg .bg-border {
+  z-index: 602;
+}
+#add-dataset-section-container #add-dataset-section section .step-5 > .step-content {
+  z-index: 600;
+}
+#add-dataset-section-container #add-dataset-section section .step-5 > .step-options-container > .options-bg:before {
+  z-index: 501;
+}
+#add-dataset-section-container #add-dataset-section section .step-5 > .step-options-container > .options-bg:after {
+  z-index: 501;
+  content: "6";
+}
+#add-dataset-section-container #add-dataset-section section .step-5 > .step-options-container > .options-bg .bg-border {
+  z-index: 502;
+}
+@-webkit-keyframes progress {
+  to {
+    background-position: 120px 0;
+  }
+}
+@keyframes progress {
+  to {
+    background-position: 120px 0;
+  }
+}
+.barFill {
+  width: 100%;
+  -webkit-animation: progress 3s linear infinite;
+  animation: progress 3s linear infinite;
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  /*background-image: linear-gradient(-45deg, 
+        rgba(255, 255, 255, 0.15) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255, 255, 255, 0.15) 50%, 
+        rgba(255, 255, 255, 0.15) 75%, 
+        transparent 75%, transparent);*/
+  background-image: -webkit-linear-gradient(135deg, rgba(38, 154, 188, 0.15) 25%, transparent 25%, transparent 50%, rgba(38, 154, 188, 0.15) 50%, rgba(38, 154, 188, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(-45deg, rgba(38, 154, 188, 0.15) 25%, transparent 25%, transparent 50%, rgba(38, 154, 188, 0.15) 50%, rgba(38, 154, 188, 0.15) 75%, transparent 75%, transparent);
+  /*background: @color;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, @start), color-stop(1, @stop));
+    background: -ms-linear-gradient(bottom, @start, @stop);
+    background: -moz-linear-gradient(center bottom, @start 0%, @stop 100%);
+    background: -o-linear-gradient(@stop, @start);
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@stop,@start));*/
 }
 #panel-toggle {
   border-bottom: 16px solid rgba(0, 0, 0, 0) !important;
