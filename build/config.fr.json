@@ -78,10 +78,10 @@
             "thumbnail": "assets/images/basemap/baseToponrcan.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Canada Atlas",
-            "altText": "[fr] Topographic Map",
+            "name": "L'Atlas du Canada",
+            "altText": "Carte topographique",
             "tileSchema": "NRCAN_Lambert_3978",
-            "description": "[fr] NrCan CBCT3978",
+            "description": "CBMT_CBCT_GEOM de RNCan",
             "spatialReference": {
                 "wkid": 3978
             }
@@ -103,10 +103,10 @@
             "thumbnail": "assets/images/basemap/baseSimple.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Water Bodies",
-            "altText": "[fr] Topographic Map",
+            "name": "Plans d'eau",
+            "altText": "Carte topographique",
             "tileSchema": "NRCAN_Lambert_3978",
-            "description": "[fr] NrCan Simple",
+            "description": "RNCan simple",
             "spatialReference": {
                 "wkid": 3978
             }
@@ -121,10 +121,10 @@
             "thumbnail": "assets/images/basemap/baseCBMT_CBCT_GEOM_3978.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Shaded Relief",
-            "altText": "[fr] Topographic Map",
+            "name": "Relief par ombres portées",
+            "altText": "Carte topographique",
             "tileSchema": "NRCAN_Lambert_3978",
-            "description": "[fr] NrCan CBMT_CBCT_HS",
+            "description": "CBMT_CBCT_HS de RNCan",
             "spatialReference": {
                 "wkid": 3978
             }
@@ -139,8 +139,8 @@
             "thumbnail": "assets/images/basemap/baseCBME_CBCE_HS_RO_3978.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "Road Networks",
-            "altText": "Topographic Map",
+            "name": "Réseaux routiers",
+            "altText": "Carte topographique",
             "tileSchema": "NRCAN_Lambert_3978",
             "description": "NrCan CBMT_CBCT_GEOM",
             "spatialReference": {
@@ -157,10 +157,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-light",
             "type": "Imagery",
-            "name": "[fr] World Imagery",
-            "altText": "[fr] Satellite Map",
+            "name": "World Imagery",
+            "altText": "Carte satellite",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Imagery",
+            "description": "World_Imagery d'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -175,10 +175,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Imagery",
-            "name": "[fr] Physical Earth",
-            "altText": "[fr] Satellite Map",
+            "name": "Les aspects physiques de la Terre",
+            "altText": "Carte satellite",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Physical_Map",
+            "description": "World_Physical_Map de l'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -193,10 +193,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Imagery",
-            "name": "[fr] Shaded Relief",
-            "altText": "[fr] Satellite Map",
+            "name": "Relief par ombres portées",
+            "altText": "Carte satellite",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Shaded_Relief",
+            "description": "World_Shaded_Relief de l'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -211,10 +211,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Streets",
-            "altText": "[fr] Topographic Map",
+            "name": "Rues",
+            "altText": "Carte topographique",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Street_Map",
+            "description": "World_Street_Map de l'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -229,10 +229,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Terrain",
-            "altText": "[fr] Topographic Map",
+            "name": "Terrain",
+            "altText": "Carte topographique",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Terrain_Base",
+            "description": "CBCT3978 d'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -247,10 +247,10 @@
             "thumbnail": "assets/images/basemap/imagery.jpg",
             "scaleCssClass": "map-scale-dark",
             "type": "Topographic",
-            "name": "[fr] Topographic",
-            "altText": "[fr] Topographic Map",
+            "name": "Topographique",
+            "altText": "Carte topographique",
             "tileSchema": "ESRI_World_AuxMerc_3857",
-            "description": "[fr] ESRI World_Topo_Map",
+            "description": "World_Topo_Map de l'ESRI",
             "spatialReference": {
                 "wkid": 102100
             }
@@ -260,7 +260,7 @@
         "feature": [            
             {
                 "id": "layer_sea_parks",
-                "displayName": "[fr] Sea Parks",
+                "displayName": "Parcs marins",
                 "nameField": "NAME_EN",
                 "url": "http://devmap.on.ec.gc.ca/ArcGIS/rest/services/ClassBreaks/MapServer/0",
                 "catalogueUrl": "http://www.google.ca",
@@ -391,8 +391,8 @@
                 }
             },
             {
-                "id": "layer_g5h6i",
-                "displayName": "[fr] EC Projects",
+                "id": "ecogeo",
+                "displayName": "Projets d'EC",
                 "nameField": "prj_nam_en",
                 "url": "http://maps-cartes.ec.gc.ca/ArcGIS/rest/services/ECNY/MapServer/0",
                 "metadataUrl": "http://intranet.ecdmp-stage.cmc.ec.gc.ca/geonetwork/srv/eng/csw?service=CSW&version=2.0.2&request=GetRecordById&outputSchema=csw:IsoRecord&id=1c0eb1b2-93ae-49ae-a3ce-e495d8fd767b&_=1417717957845",
@@ -484,9 +484,63 @@
                     }
                 }
             },
+             {
+                "id": "citycode",
+                "displayName": "CITY CODE",
+                "nameField": "name",
+                "url": "http://sncr01wbingsdv1.ncr.int.ec.gc.ca/arcgis/rest/services/Common/CommonGIS/MapServer/2",
+                "metadataUrl": "http://intranet.ecdmp-stage.cmc.ec.gc.ca/geonetwork/srv/eng/csw?service=CSW&version=2.0.2&request=GetRecordById&outputSchema=csw:IsoRecord&id=1c0eb1b2-93ae-49ae-a3ce-e495d8fd767b&_=1417717957845",
+                "catalogueUrl": "http://www.google.ca",
+                "minScale": 0,
+                "datagrid": {
+                    "rowsPerPage": 50,
+                    "gridColumns": [
+                        {
+                            "id": "iconCol",
+                            "fieldName": "",
+                            "width": "50px",
+                            "orderable": false,
+                            "type": "string",
+                            "alignment": 0,
+                            "title": "Icon",
+                            "columnTemplate": "graphic_icon"
+                        },
+                        {
+                            "id": "detailsCol",
+                            "fieldName": "prj_nam_en",
+                            "width": "60px",
+                            "orderable": false,
+                            "type": "string",
+                            "alignment": 0,
+                            "title": "Details",
+                            "columnTemplate": "details_button"
+                        },
+                        {
+                            "id": "nameCol",
+                            "fieldName": "name",
+                            "width": "250px",
+                            "orderable": false,
+                            "type": "string",
+                            "alignment": 1,
+                            "title": "Name",
+                            "columnTemplate": "title_span"
+                        }
+                    ]
+                },
+                "symbology": {                   
+                    "imageUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAAAAXNSR0IB2cksfwAAAAlQTFRF/v//AAAAACehEj6cBQAAAAN0Uk5TAP//RFDWIQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAACVJREFUKJFjYBgFOAAjIyMuGSYmJuxyIBkccuRJ4bELnwtHCAAATxgAO4yg4nkAAAAASUVORK5CYII=",
+                    "type": "simple"
+                },
+                "settings": {
+                    "opacity": {
+                        "enabled": true,
+                        "default": 0.9
+                    }
+                }                
+            },
             {
-                "id": "layer_dd1m3",
-                "displayName": "[fr] Monitoring Sites",
+                "id": "josm",
+                "displayName": "Sites de surveillance",
                 "nameField": "siteShortName_en",
                 "url": "http://maps-cartes.ec.gc.ca/ArcGIS/rest/services/OilSands/MapServer/0",
                 "metadataUrl": "http://intranet.ecdmp-stage.cmc.ec.gc.ca/geonetwork/srv/eng/csw?service=CSW&version=2.0.2&request=GetRecordById&outputSchema=csw:IsoRecord&id=1c0eb1b2-93ae-49ae-a3ce-e495d8fd767b&_=1417717957845",
@@ -629,7 +683,7 @@
             },
             {
                 "id": "cesi_ozone",
-                "displayName": "[fr] CESI Air Ozone",
+                "displayName": "Ozone de l’air des ICDE",
                 "nameField": "stationno",
                 "url": "http://maps-cartes.ec.gc.ca/ArcGIS/rest/services/CESI_Air_Ozone/MapServer/3",
                 "datagrid": {
@@ -748,7 +802,7 @@
             },
             {
                 "id": "dogGuts",
-                "displayName": "[fr] Bird Habitats",
+                "displayName": "Les habitats d'oiseaux",
                 "url": "http://maps-cartes.ec.gc.ca/ArcGIS/rest/services/dog_guts/MapServer/0",
                 "symbology": {
                     "type": "simple",
@@ -774,7 +828,7 @@
             },
             {
                 "id": "oilAreaOverlay",
-                "displayName": "[fr] CESI Oil Area Overlay",
+                "displayName": "Surimpression de la zone de pétrole des ICDE",
                 "url": "http://maps-cartes.ec.gc.ca/ArcGIS/rest/services/RAMP_NRSTC/MapServer/0",
                 "symbology": {
                     "type": "simple",
@@ -802,7 +856,7 @@
         "wms": [
             {
                 "id": "nasa_modis",
-                "displayName": "[fr] Arctic Airports",
+                "displayName": "Les aéroports de l'arctique",
                 "format": "image/jpeg",
                 "layerName": "36",
                 "imageUrl": "assets/images/wms.png",
@@ -810,8 +864,8 @@
                 "legendMimeType": "image/jpeg"
             },
             {
-                "id": "wms6",
-                "displayName": "[fr] Railway Network",
+                "id": "railroad",
+                "displayName": "Réseau de chemins de fers",
                 "format": "png",
                 "layerName": "railway.track",
                 "imageUrl": "assets/images/wms.png",

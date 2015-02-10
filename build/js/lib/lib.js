@@ -21975,7 +21975,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
 
-})();/*! Nestoria Slider - v1.0.9 - 2015-01-23
+})();/*! Nestoria Slider - v1.0.10 - 2015-02-08
 * http://lokku.github.io/jquery-nstslider/
 * Copyright (c) 2015 Lokku Ltd.; Licensed MIT */
 (function($) {
@@ -22179,6 +22179,23 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 $rightGrip = $this.find(settings.right_grip_selector);
 
             return Math.round($rightGrip.width());
+         },
+         'binarySearchValueToPxCompareFunc' : function (s, a, i) {
+            // Must return:
+            //
+            // s: element to search for
+            // a: array we are looking in 
+            // i: position of the element we are looking for
+            //
+            // -1 (s < a[i])
+            // 0  found (= a[i])
+            // 1  (s > a[i])
+            if (s === a[i])          { return 0; }  // element found exactly
+            if (s < a[i] && i === 0) { return 0; }  // left extreme case e.g., a = [ 3, ... ], s = 1
+            if (a[i-1] <= s && s < a[i]) { return 0; } // s is between two elements, always return the rightmost
+            if (s > a[i])           { return 1;  }
+            if (s <= a[i-1])        { return -1; }
+            $.error('cannot compare s: ' + s + ' with a[' + i + ']. a is: ' + a.join(','));
          },
          /*
           * Perform binary search to find searchElement into a generic array.
@@ -23002,6 +23019,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
     };
     var methods = {
+        
         'teardown' : function () {
             var $this = this;
 
@@ -23660,30 +23678,28 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
             };
 
             var value_to_pixel_mapping = function (value) {
-                // binary search into the array of pixels...
-                var pixel = _methods.binarySearch.call($this, pixel_to_value_lookup, value, 
+                //
+                // Binary search into the array of pixels, returns always the
+                // rightmost pixel if there is no exact match.
+                //
+                var suggestedPixel = _methods.binarySearch.call($this, pixel_to_value_lookup, value, 
                     function(a, i) { return a[i]; },  // access a value in the array
-
-                    // Must return:
-                    //
-                    // s: element to search for
-                    // a: array we are looking in 
-                    // i: position of the element we are looking for
-                    //
-                    // -1 (s < a[i])
-                    // 0  found (= a[i])
-                    // 1  (s > a[i])
-                    function (s, a, i) {
-                        if (s === a[i])          { return 0; }
-                        if (s < a[i] && i === 0) { return 0; }
-                        if (a[i-1] <= s && s < a[i]) { return 0; }
-                        if (s > a[i])           { return 1;  }
-                        if (s <= a[i-1])        { return -1; }
-                        $.error('cannot compare s: ' + s + ' with a[' + i + ']. a is: ' + a.join(','));
-                    }
+                    _methods.binarySearchValueToPxCompareFunc
                 );
 
-                return pixel;
+                // exact match
+                if (pixel_to_value_lookup[suggestedPixel] === value) {
+                    return suggestedPixel;
+                }
+
+                // approx match: we need to check if it's closer to the value
+                // at suggestedPixel or the value at suggestedPixel-1
+                if ( Math.abs(pixel_to_value_lookup[suggestedPixel-1] - value) <
+                     Math.abs(pixel_to_value_lookup[suggestedPixel] - value) ) {
+
+                     return suggestedPixel-1;
+                }
+                return suggestedPixel;
             };
 
             //
@@ -23886,7 +23902,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
             // ... use linear mapping otherwise
             var w = _methods.getSliderWidthPx.call($this) - $this.data('left_grip_width');
             return _methods.rangemap_0_to_n.call($this, value, w);
-        },
+        }
     };
 
     var __name__ = 'nstSlider';
@@ -37814,6 +37830,11 @@ return Snap;
     tmpl.templates = {};
     tmpl.cache = {};
     tmpl.load = function (id) {
+		if (typeof id === 'undefined' || id === null) {
+			console.warn("Template failure");
+			throw new Error("Template name cannot be empty");
+		}
+	
         if (tmpl.templates) {
             return tmpl.templates[id];
         } else {
@@ -55719,7 +55740,69 @@ module.exports = function(proj4){
 
   return exports;
 }));
-$.fn.dataTableExt.oPagination.executeOnLoad = function (target, func, callback) {
+// Free to use & distribute under the MIT license
+// Wes Johnson (@SterlingWes)
+//
+// inspired by http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
+
+(function (root, factory) {
+    if (typeof exports === 'object') {
+        module.exports = factory;
+    } else if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else {
+        root.RColor = factory();
+    }
+}(this, function () {
+
+	var RColor = function() {
+		this.hue			= Math.random(),
+		this.goldenRatio 	= 0.618033988749895;
+		this.hexwidth		= 2;
+	};
+
+	RColor.prototype.hsvToRgb = function (h,s,v) {
+		var	h_i	= Math.floor(h*6),
+			f 	= h*6 - h_i,
+			p	= v * (1-s),
+			q	= v * (1-f*s),
+			t	= v * (1-(1-f)*s),
+			r	= 255,
+			g	= 255,
+			b	= 255;
+		switch(h_i) {
+			case 0:	r = v, g = t, b = p;	break;
+			case 1:	r = q, g = v, b = p;	break;
+			case 2:	r = p, g = v, b = t;	break;
+			case 3:	r = p, g = q, b = v;	break;
+			case 4: r = t, g = p, b = v;	break;
+			case 5: r = v, g = p, b = q;	break;
+		}
+		return [Math.floor(r*256),Math.floor(g*256),Math.floor(b*256)];
+	};
+	
+	RColor.prototype.padHex = function(str) {
+		if(str.length > this.hexwidth) return str;
+		return new Array(this.hexwidth - str.length + 1).join('0') + str;
+	};
+	
+	RColor.prototype.get = function(hex,saturation,value) {
+		this.hue += this.goldenRatio;
+		this.hue %= 1;
+		if(typeof saturation !== "number")	saturation = 0.5;
+		if(typeof value !== "number")		value = 0.95;
+		var rgb = this.hsvToRgb(this.hue,saturation,value);
+		if(hex)
+			return "#" +  this.padHex(rgb[0].toString(16))
+						+ this.padHex(rgb[1].toString(16))
+						+ this.padHex(rgb[2].toString(16));
+		else 
+			return rgb;
+	};
+
+	return RColor;
+
+}));$.fn.dataTableExt.oPagination.executeOnLoad = function (target, func, callback) {
     'use strict';
     var handle;
 
