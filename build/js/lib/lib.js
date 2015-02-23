@@ -14611,7 +14611,8 @@
 
 }(window, document));
 
-/*!
+/* */ 
+ /* *//*!
  * VERSION: 1.14.2
  * DATE: 2014-10-28
  * UPDATES AND DOCS AT: http://www.greensock.com
@@ -16399,7 +16400,8 @@
 
 		_tickerActive = false; //ensures that the first official animation forces a ticker.tick() to update the time when it is instantiated
 
-})((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenLite");/*!
+})((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenLite");/* */ 
+ /* *//*!
  * VERSION: 1.14.2
  * DATE: 2014-10-18
  * UPDATES AND DOCS AT: http://www.greensock.com
@@ -17102,7 +17104,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		module.exports = getGlobal();
 	}
 }("TimelineLite"));
-/*!
+/* */ 
+ /* *//*!
  * VERSION: 1.14.2
  * DATE: 2014-10-28
  * UPDATES AND DOCS AT: http://www.greensock.com
@@ -19511,7 +19514,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		module.exports = getGlobal();
 	}
 }("CSSPlugin"));
-/*!
+/* */ 
+ /* *//*!
  * VERSION: beta 1.9.4
  * DATE: 2014-07-17
  * UPDATES AND DOCS AT: http://www.greensock.com
@@ -19854,7 +19858,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		
 	}, true);
 
-}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }// i18next, v1.7.7
+}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }/* */ 
+ /* */// i18next, v1.7.7
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -21975,7 +21980,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
 
-})();/*! Nestoria Slider - v1.0.10 - 2015-02-08
+})();/* */ 
+ /* *//*! Nestoria Slider - v1.0.10 - 2015-02-08
 * http://lokku.github.io/jquery-nstslider/
 * Copyright (c) 2015 Lokku Ltd.; Licensed MIT */
 (function($) {
@@ -23932,7 +23938,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
         }
     };
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Core 1.10.4
  * http://jqueryui.com
  *
@@ -24252,7 +24259,8 @@ $.extend( $.ui, {
 });
 
 })( jQuery );
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Widget 1.10.4
  * http://jqueryui.com
  *
@@ -24773,7 +24781,8 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 });
 
 })( jQuery );
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Mouse 1.10.4
  * http://jqueryui.com
  *
@@ -24942,7 +24951,8 @@ $.widget("ui.mouse", {
 });
 
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Position 1.10.4
  * http://jqueryui.com
  *
@@ -25443,7 +25453,8 @@ $.ui.position = {
 })();
 
 }( jQuery ) );
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Draggable 1.10.4
  * http://jqueryui.com
  *
@@ -26401,7 +26412,8 @@ $.ui.plugin.add("draggable", "zIndex", {
 });
 
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Droppable 1.10.4
  * http://jqueryui.com
  *
@@ -26790,7 +26802,8 @@ $.ui.ddmanager = {
 };
 
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Sortable 1.10.4
  * http://jqueryui.com
  *
@@ -28079,7 +28092,8 @@ $.widget("ui.sortable", $.ui.mouse, {
 });
 
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery UI Slider 1.10.4
  * http://jqueryui.com
  *
@@ -28755,7 +28769,8 @@ $.widget( "ui.slider", $.ui.mouse, {
 });
 
 }(jQuery));
-/*!
+/* */ 
+ /* *//*!
  * hoverIntent v1.8.1 // 2014.08.11 // jQuery v1.9.1+
  * http://cherne.net/brian/resources/jquery.hoverIntent.html
  *
@@ -28870,7 +28885,8 @@ $.widget( "ui.slider", $.ui.mouse, {
         return this.on({'mouseenter.hoverIntent':handleHover,'mouseleave.hoverIntent':handleHover}, cfg.selector);
     };
 })(jQuery);
-/*!
+/* */ 
+ /* *//*!
  * jQuery.scrollTo
  * Copyright (c) 2007-2014 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
  * Licensed under MIT
@@ -29057,6 +29073,17 @@ $.widget( "ui.slider", $.ui.mouse, {
 		factory(jQuery);
 	}
 }));
+/* */ 
+ /* *//*
+ * jQuery Shorten plugin 1.1.0
+ *
+ * Copyright (c) 2014 Viral Patel
+ * http://viralpatel.net
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ */
+
 /*
 ** updated by Jeff Richardson
 ** Updated to use strict,
@@ -29193,7 +29220,8 @@ $.widget( "ui.slider", $.ui.mouse, {
     };
 
 })(jQuery);
-// Snap.svg 0.0.1
+/* */ 
+ /* */// Snap.svg 0.0.1
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -36542,7 +36570,19 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     };
 });
 return Snap;
-}));;(function ($, window, document) {
+}));/* */ 
+ /* *//*
+
+Tooltipster 3.0.1 | 2014-01-10
+A rockin' custom tooltip jQuery plugin
+
+Developed by Caleb Jacob under the MIT license http://opensource.org/licenses/MIT
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+
+;(function ($, window, document) {
 
 	var pluginName = "tooltipster",
 		defaults = {
@@ -37718,7 +37758,8 @@ return Snap;
 			$(this)[pluginName]('reposition');
 		})
 	});
-})( jQuery, window, document );/*!
+})( jQuery, window, document );/* */ 
+ /* *//*!
 * jQuery URL Shortener 1.0
 * https://github.com/hayageek/jQuery-URL-shortener
 *
@@ -37809,7 +37850,22 @@ return Snap;
         version: 'v1',
     };
 
-}(jQuery));/*jslint evil: true, regexp: true, unparam: true */
+}(jQuery));/* */ 
+ /* *//*
+ * JavaScript Templates 2.4.1
+ * https://github.com/blueimp/JavaScript-Templates
+ *
+ * Copyright 2011, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ *
+ * Inspired by John Resig's JavaScript Micro-Templating:
+ * http://ejohn.org/blog/javascript-micro-templating/
+ */
+
+/*jslint evil: true, regexp: true, unparam: true */
 /*global document, define */
 
 (function ($) {
@@ -37892,7 +37948,8 @@ return Snap;
         $.tmpl = tmpl;
     }
 }(this));
-(function (root, factory) {
+/* */ 
+ /* */(function (root, factory) {
 
   // Node.
   if(typeof module === 'object' && typeof module.exports === 'object') {
@@ -39276,6 +39333,8 @@ return Snap;
 
   return exports;
 }));
+/* */ 
+ /* *//* globals Terraformer */
 (function (root, factory) {
 
   // Node.
@@ -39654,7 +39713,8 @@ return Snap;
 
   return exports;
 }));
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.shp=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* */ 
+ /* */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.shp=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 var Promise = require('lie');
 module.exports = binaryAjax;
@@ -50010,7 +50070,8 @@ process.chdir = function (dir) {
 };
 
 },{}]},{},[2])(2)
-});(function(e){if("function"==typeof bootstrap)bootstrap("csv2geojson",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeCsv2geojson=e}else"undefined"!=typeof window?window.csv2geojson=e():global.csv2geojson=e()})(function(){var define,ses,bootstrap,module,exports;
+});/* */ 
+ /* */(function(e){if("function"==typeof bootstrap)bootstrap("csv2geojson",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeCsv2geojson=e}else"undefined"!=typeof window?window.csv2geojson=e():global.csv2geojson=e()})(function(){var define,ses,bootstrap,module,exports;
 return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var dsv = require('dsv'),
     sexagesimal = require('sexagesimal');
@@ -50226,7 +50287,8 @@ module.exports = function(x, dims) {
 },{}]},{},[1])
 (1)
 });
-;!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.proj4=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+;/* */ 
+ /* */!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.proj4=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 var mgrs = _dereq_('mgrs');
 
 function Point(x, y, z) {
@@ -55683,7 +55745,8 @@ module.exports = function(proj4){
 }
 },{"./lib/projections/aea":39,"./lib/projections/aeqd":40,"./lib/projections/cass":41,"./lib/projections/cea":42,"./lib/projections/eqc":43,"./lib/projections/eqdc":44,"./lib/projections/gnom":46,"./lib/projections/krovak":47,"./lib/projections/laea":48,"./lib/projections/lcc":49,"./lib/projections/mill":52,"./lib/projections/moll":53,"./lib/projections/nzmg":54,"./lib/projections/omerc":55,"./lib/projections/poly":56,"./lib/projections/sinu":57,"./lib/projections/somerc":58,"./lib/projections/stere":59,"./lib/projections/sterea":60,"./lib/projections/tmerc":61,"./lib/projections/utm":62,"./lib/projections/vandg":63}]},{},[35])
 (35)
-});(function (root, factory) {
+});/* */ 
+ /* */(function (root, factory) {
   // Node.
   if(typeof module === 'object' && typeof module.exports === 'object') {
     exports = module.exports = factory(require('terraformer'), require('proj4'));
@@ -55740,7 +55803,8 @@ module.exports = function(proj4){
 
   return exports;
 }));
-// Free to use & distribute under the MIT license
+/* */ 
+ /* */// Free to use & distribute under the MIT license
 // Wes Johnson (@SterlingWes)
 //
 // inspired by http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
@@ -55802,7 +55866,144 @@ module.exports = function(proj4){
 
 	return RColor;
 
-}));$.fn.dataTableExt.oPagination.executeOnLoad = function (target, func, callback) {
+}));/* */ 
+ /* *//*!
+* btoa-umd
+*
+* @link https://github.com/T1st3/btoa-umd
+* @author T1st3
+* @version 0.7.5
+* @license https://github.com/T1st3/btoa-umd/blob/master/LICENSE
+*
+*/
+
+/* global define */
+
+'use strict';
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    // Node
+    module.exports = factory();
+  } else {
+    // Browser globals
+    root.Btoa = factory();
+  }
+}(this, function () {
+  /**
+  * btoa(), UMD style
+  * @module Btoa
+  * @namespace Btoa
+  */
+
+  /**
+  * @constructor
+  * @param {string} b
+  * @since 0.1.0
+  */
+  var Btoa = function (b) {
+    this.a = '';
+    this.b = '';
+    if (typeof define === 'function' && define.amd) {
+      this.browser = true;
+    } else if (typeof exports === 'object') {
+      this.browser = false;
+    } else {
+      this.browser = true;
+    }
+    // set method if supplied
+    if (b) {
+      this.handle(b);
+      return this;
+    }
+    // keep chainability
+    return this;
+  };
+
+  /**
+  * handle B to A
+  * @method handle
+  * @memberof Btoa
+  * @param {string} b
+  * @since 0.1.0
+  */
+  Btoa.prototype.handle = function (b) {
+    // Check a
+    if (!b || arguments.length === 0) {
+      // keep chainability
+      return this;
+    }
+    this.b = b;
+
+    var buffer;
+
+    if (this.browser === true) {
+      /* global window */
+      if (typeof window.btoa === 'function') {
+        this.a = window.btoa(b);
+      } else {
+        this.a = Btoa.encode(b);
+      }
+    } else {
+      if (b instanceof Buffer) {
+        buffer = b;
+      } else {
+        buffer = new Buffer(b.toString(), 'binary');
+      }
+      this.a = buffer.toString('base64');
+    }
+    // keep chainability
+    return this;
+  };
+
+  /**
+  * encode fix for browser which don't support btoa
+  * @method encode
+  * @memberof Btoa
+  * @param {string} b
+  * @since 0.2.0
+  */
+  Btoa.encode = function (b) {
+    if (!b || arguments.length === 0) {
+      return '';
+    }
+    var _byte = [],
+    _char = [],
+    _result = [],
+    j = 0, i = 0,
+    CHAR_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    /*jshint bitwise: false*/
+    for (i = 0; i < b.length; i += 3) {
+      _byte[0] = b.charCodeAt(i);
+      _byte[1] = b.charCodeAt(i + 1);
+      _byte[2] = b.charCodeAt(i + 2);
+      _char[0] = _byte[0] >> 2;
+      _char[1] = ((_byte[0] & 3) << 4) | (_byte[1] >> 4);
+      _char[2] = ((_byte[1] & 15) << 2) | (_byte[2] >> 6);
+      _char[3] = _byte[2] & 63;
+      if (isNaN(_byte[1])) {
+        _char[2] = _char[3] = 64;
+      } else if (isNaN(_byte[2])) {
+        _char[3] = 64;
+      }
+      _result[j++] = CHAR_MAP.charAt(_char[0]) +
+        CHAR_MAP.charAt(_char[1]) +
+        CHAR_MAP.charAt(_char[2]) +
+        CHAR_MAP.charAt(_char[3]);
+    }
+    return _result.join('');
+  };
+
+  return Btoa;
+}));
+
+//# sourceMappingURL=btoa-umd.js.map/* */ 
+ /* *//* global $, window */
+
+$.fn.dataTableExt.oPagination.executeOnLoad = function (target, func, callback) {
     'use strict';
     var handle;
 
@@ -56119,7 +56320,8 @@ $.fn.dataTableExt.oPagination.ramp = {
             );
         }
     }
-};;
+};/* */ 
+ /* */;
 
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -56533,7 +56735,20 @@ if (!String.prototype.format) {
                 $("." + this._getClassName("map", "slider")).hide();
         }
     });
-})(jQuery);var jscolor = {
+})(jQuery);/* */ 
+ /* *//**
+ * jscolor, JavaScript Color Picker
+ *
+ * @version 1.4.4
+ * @license GNU Lesser General Public License, http://www.gnu.org/copyleft/lesser.html
+ * @author  Jan Odvarko, http://odvarko.cz
+ * @created 2008-06-15
+ * @updated 2014-12-09
+ * @link    http://jscolor.com
+ */
+
+
+var jscolor = {
 
 
 	dir : '', // location of jscolor directory (leave empty to autodetect)
