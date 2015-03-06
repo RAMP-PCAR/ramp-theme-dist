@@ -15,8 +15,8 @@
 * @uses Util
 */
 
-define(["utils/util", "utils/popupManager"],
-    function (UtilMisc, PopupManager) {
+define(["dojo/_base/lang", "utils/util", "utils/popupManager"],
+    function (lang, UtilMisc, PopupManager) {
         "use strict";
 
         var body = $("body"),
@@ -182,7 +182,7 @@ define(["utils/util", "utils/popupManager"],
              * @return {Object}         This
              * @chainable
              */
-            tooltipster: function (target, type, action) {
+            tooltipster: function (target, type, action, options) {
                 var attr;
                 target = target || $("body");
 
@@ -236,10 +236,16 @@ define(["utils/util", "utils/popupManager"],
                                     node.attr("title", node.data("tooltip"));
                                 }
                                 
-                                node.tooltipster({
-                                    theme: node.data("tooltip-theme") || attr.theme,
-                                    delay: attr.delay
-                            });
+                                node.tooltipster(
+                                    lang.mixin({
+                                        theme: node.data("tooltip-theme") || attr.theme,
+                                        //autoClose: false,
+                                        maxWidth: node.data("tooltip-maxwidth") || null,
+                                        delay: attr.delay
+                                    },
+                                        options
+                                    )
+                                );
                             })
                             .removeAttr("title");
                         break;
