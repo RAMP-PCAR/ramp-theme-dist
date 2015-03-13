@@ -65072,7 +65072,7 @@ module.exports = function(proj4){
 *
 * @link https://github.com/T1st3/btoa-umd
 * @author T1st3
-* @version 0.7.5
+* @version 0.7.7
 * @license https://github.com/T1st3/btoa-umd/blob/master/LICENSE
 *
 */
@@ -67628,7 +67628,8 @@ RAMP = {
     state: {
         ui: {
             sidePanelOpened: true,
-            fullscreen: false
+            fullscreen: false,
+            wmsQuery: true
         }
     },
 
@@ -67646,7 +67647,7 @@ RAMP = {
      * @property scripts
      * @type array
      */
-    scripts: ['http://js.arcgis.com/3.10/', jsPrefix + 'lib/wet-boew/js/wet-boew.js', jsPrefix + 'RAMP/bootstrapper.js']
+    scripts: ['http://js.arcgis.com/3.13/', jsPrefix + 'lib/wet-boew/js/wet-boew.js', jsPrefix + 'RAMP/bootstrapper.js']
 };
 
 var importScript = (function (oHead) {

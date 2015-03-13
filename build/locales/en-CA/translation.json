@@ -20,6 +20,29 @@
 		"dataSource": "Data Source",
 		"dataSourceFile": "File",
 		"dataSourceService": "Service",
+		"error": {
+			"headerCSV": "CSV error",
+			"headerFeature": "Feature layer error",
+			"headerFile": "File error",
+			"headerGeojson": "GeoJSON error",
+			"headerShapefile": "Shapefile error",
+			"headerWMS": "Web Map Service error",
+			"ie9FileAPI": "Your browser does not support local file access",
+			"messageCSVBroken": "Unable to create layer from provided CSV.",
+			"messageCSVInvalid": "Malformed CSV; field names cannot be retrieved.",
+			"messageCSVShort": "Data source requires at least 2 rows for display.",
+			"messageCSVThin": "Data source requires at least latitude and longitude columns to display.",
+			"messageFeatureConnect": "Cannot retrieve service.",
+			"messageFeatureInvalid": "Service is misconfigured or does not exist.",
+			"messageFeatureLegend": "Unable to retrieve legend information.",
+			"messageFileConnect": "Cannot retrieve file.",
+			"messageGeojsonBroken": "Unable to create layer from provided GeoJSON.",
+			"messageGeojsonInvalid": "Malformed JSON object; field names cannot be retrieved.",
+			"messageShapefileBroken": "Unable to create layer from provided Shapefile.",
+			"messageShapefileInvalid": "Malformed Shapefile; field names cannot be retrieved.",
+			"messageWMSConnect": "Cannot retrieve service.",
+			"messageWMSInvalid": "Service is misconfigured or does not exist."
+		},
 		"fileOrURL": "File or URL",
 		"fileOrURLPlaceholder": "Local file or URL",
 		"fileType": "File Type",
@@ -277,6 +300,8 @@
 		"layerHandleLabel": "Layer handle for __layerName__",
 		"layerListLabel": "Sortable layer list",
 		"legend": "Legend",
+		"showLegend": "Show Legend",
+		"hideLegend": "Hide Legend",
 		"linkToCap": "Link To Capabilities",
 		"metadata": "Metadata",
 		"metadataNotFound": "No metadata was found for this layer.",
@@ -284,7 +309,8 @@
 		"notices": {
 			"error": "Error",
 			"offScale": "No data visible at this zoom level",
-			"update": "Updating"
+			"update": "Updating",
+			"user": "User-added Dataset"
 		},
 		"settings": "Settings",
 		"settingsLayerSettings": "Layer Settings",
@@ -300,7 +326,11 @@
 			"close": "Close",
 			"fullScreen": "Full Screen",
 			"mapExport": "Map Export",
-			"open": "Open"
+			"open": "Open",
+			"wmsQueryDisable": "Disable Queries",
+			"wmsQueryDisableTooltip": "Disable queries on all WMS layers",
+			"wmsQueryEnable": "Enable Queries",
+			"wmsQueryEnableTooltip": "Enable queries on all WMS layers"
 		}
 	},
 	"help": {
@@ -381,7 +411,7 @@
 			"h1": "Usage",
 			"header": "Full Screen",
 			"p1": "Full Screen is used to collapse the departmental headers and footers to provide larger screen space for mapping.",
-			"p2": "Click the Full Screen button in the toolbar to hide departmental header and footer information. Select the Show Headers link to restore to default view."
+			"p2": "Click the Full Screen button in the toolbar to hide departmental header and footer information. Select the Full Screen button again to restore to default view."
 		},
 		"s6": {
 			"h1": "Usage",
