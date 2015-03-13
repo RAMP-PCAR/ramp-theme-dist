@@ -4462,6 +4462,7 @@ footer {
 .full-data-mode #map-div #map-toolbar #addLayer-section-container {
   top: 20%;
 }
+.full-data-mode #map-div #map-toolbar #uglyGetFiToggle,
 .full-data-mode #map-div #map-toolbar #advanced-toggle,
 .full-data-mode #map-div #map-toolbar #advanced-toolbar {
   display: none !important;
@@ -5451,6 +5452,9 @@ footer {
 #categories .layer-details .layer-complex-image-box button .fa-square {
   color: #fff;
 }
+#categories .layer-details .layer-complex-image-box button .fa-circle {
+  color: #fff;
+}
 #categories .layer-details .layer-complex-image-box button.button-pressed .fa-plus-square-o {
   display: none;
 }
@@ -5554,10 +5558,10 @@ footer {
 #categories .layer-details .layer-controls .layer-controls-group button.button-none:after {
   content: "";
   position: absolute;
-  border-right: 1px solid #000;
+  border-right: 1px solid #808080;
   right: -4px;
-  top: 2px;
-  bottom: 2px;
+  top: 5px;
+  bottom: 4px;
 }
 #categories .layer-details .layer-controls .layer-controls-group button.button-none:last-child {
   margin-right: 0;
@@ -5586,15 +5590,21 @@ footer {
 }
 #categories .layer-details .layer-notices {
   position: absolute;
-  left: 9px;
-  top: -11px;
+  left: 12px;
+  top: -10px;
 }
 #categories .layer-details .layer-notices .fa {
-  line-height: 24px;
+  line-height: 20px;
 }
 #categories .layer-details .layer-notices .layer-notice {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 20px;
+  left: -8px;
+}
+#categories .layer-details .layer-notices .layer-notice:first-child {
+  width: 18px;
+  height: 20px;
+  left: 0;
 }
 #categories .layer-details .layer-notices .scale .fa-circle {
   color: #FFF;
@@ -5610,6 +5620,12 @@ footer {
 }
 #categories .layer-details .layer-notices .update .fa-circle {
   color: #FFF;
+}
+#categories .layer-details .layer-notices .user .fa-circle {
+  color: #FFF;
+}
+#categories .layer-details .layer-notices .user .fa-user {
+  font-size: 13px;
 }
 #categories .layer-checkboxes {
   margin: -10px 10px 0 0;
