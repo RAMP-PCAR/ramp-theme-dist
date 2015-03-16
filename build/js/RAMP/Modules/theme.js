@@ -15,8 +15,8 @@
 * @uses Util
 */
 
-define(["dojo/_base/lang", "utils/util"],
-    function (lang, UtilMisc) {
+define(["utils/util"],
+    function (UtilMisc) {
         "use strict";
         
         var body = $("body"),
@@ -46,8 +46,8 @@ define(["dojo/_base/lang", "utils/util"],
             heightGain = layout.headerHeight - layout.headerHeightCollapsed + layout.footerHeight - layout.footerHeightCollapsed,
 
             isFullScreen = false,
-            
-            fullScreenTimeLine = new TimelineLite({ paused: true }),
+			
+			fullScreenTimeLine = new TimelineLite({ paused: true }),
             subpanelTimeline = new TimelineLite();
 
         if (body.hasClass("sub-title")) {
@@ -154,7 +154,7 @@ define(["dojo/_base/lang", "utils/util"],
              * @return {Object}         This
              * @chainable
              */
-            tooltipster: function (target, type, action, options) {
+            tooltipster: function (target, type, action) {
                 var attr;
                 target = target || $("body");
 
@@ -208,16 +208,10 @@ define(["dojo/_base/lang", "utils/util"],
                                     node.attr("title", node.data("tooltip"));
                                 }
                                 
-                                node.tooltipster(
-                                    lang.mixin({
-                                        theme: node.data("tooltip-theme") || attr.theme,
-                                        //autoClose: false,
-                                        maxWidth: node.data("tooltip-maxwidth") || null,
-                                        delay: attr.delay
-                                    },
-                                        options
-                                    )
-                                );
+                                node.tooltipster({
+                                    theme: node.data("tooltip-theme") || attr.theme,
+                                    delay: attr.delay
+                            });
                             })
                             .removeAttr("title");
                         break;

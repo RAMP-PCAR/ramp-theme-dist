@@ -89,7 +89,6 @@ define([
         // Using constants so we can have intellisense and not make silly typos
         var EVENT_EXTENT_CHANGE = "extentChange",
             EVENT_FULLSCREEN = "fullscreen",
-            EVENT_WMS_QUERY = "wmsQuery",
             EVENT_PANEL_CHANGE = "panelChange",
             EVENT_TAB_CHANGE = "selectedTab",
             EVENT_BASEMAP_CHANGED = "basemapChange",
@@ -106,7 +105,6 @@ define([
             URL_KEYS = {
                 PANEL_VISIBLE: "pv",
                 FULL_SCREEN: "fs",
-                WMS_QUERY: "wq",
                 XMIN: "xmin",
                 YMIN: "ymin",
                 XMAX: "xmax",
@@ -493,15 +491,6 @@ define([
                 RAMP.state.ui.fullscreen = event.fs;
             }
 
-            // Toggle wms query mode
-            if (queryObject[URL_KEYS.WMS_QUERY]) {
-                event = {
-                    wq: UtilMisc.parseBool(queryObject[URL_KEYS.WMS_QUERY])
-                };
-                addParameter(EVENT_WMS_QUERY, event);
-                RAMP.state.ui.wmsQuery = event.wq;
-            }
-
             // Check for map extent queries
 
             if (queryObject[URL_KEYS.XMIN]) {
@@ -734,13 +723,6 @@ define([
                 topic.subscribe(EventManager.GUI.FULLSCREEN_CHANGE, function (event) {
                     addParameter(EVENT_FULLSCREEN, {
                         fs: event.visible
-                    });
-                    updateURL();
-                });
-
-                topic.subscribe(EventManager.FilterManager.WMS_QUERY_CHANGE, function (event) {
-                    addParameter(EVENT_WMS_QUERY, {
-                        wq: event.allowed
                     });
                     updateURL();
                 });

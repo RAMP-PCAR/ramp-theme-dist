@@ -565,7 +565,6 @@ define([
 
         /**
         * Add a static, non-interactive Layer to the map
-        * NOTE: this function is currently not being used.
         *
         * @private
         * @method AddStaticLayer
@@ -574,7 +573,6 @@ define([
         * @param {Number} layer_op A value between 0.0 and 1.0 which determines the transparency of the layer
         */
         function addStaticLayer(layer_type, layer_url, layer_op) {
-            //TODO: consider removing this?
             layer_op = layer_op / 100; // change percentage to decimal
             var tempLayer;
             switch (layer_type) {
@@ -944,14 +942,12 @@ define([
            * @return {Esri/layers/FeatureLayer} feature layer object (unloaded)
            */
             makeFeatureLayer: function (layerConfig, userLayer) {
-                // TODO: source of possible errors; add error handling
                 var fl = new FeatureLayer(layerConfig.url, {
                     id: layerConfig.id,
                     mode: FeatureLayer.MODE_SNAPSHOT,
                     outFields: [layerConfig.layerAttributes],
                     visible: layerConfig.settings.visible,
-                    opacity: resolveLayerOpacity(layerConfig.settings.opacity),
-                    maxAllowableOffset: layerConfig.maxAllowableOffset
+                    opacity: resolveLayerOpacity(layerConfig.settings.opacity)
                 });
 
                 prepLayer(fl, layerConfig, userLayer);
@@ -1011,8 +1007,7 @@ define([
                             opacity: resolveLayerOpacity(layerConfig.settings.opacity),
                             mode: FeatureLayer.MODE_SNAPSHOT,
                             visible: layerConfig.settings.visible,
-                            id: layerConfig.id,
-                            maxAllowableOffset: layerConfig.maxAllowableOffset
+                            id: layerConfig.id
                         });
 
                         prepLayer(tempLayer, layerConfig, userLayer);
