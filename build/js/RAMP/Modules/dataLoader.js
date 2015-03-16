@@ -131,26 +131,16 @@ define([
 
             promise.then(
                 function (data) {
-                    try {
-                        var alias = {};
-                        dojoArray.forEach(data.fields, function (field) {
-                            alias[field.name] = field.alias;
-                        });
+                    var res = {
+                        layerId: data.id,  //TODO verifiy this.  i think this is the index.  we would want to use autoID?
+                        layerName: data.name,
+                        layerUrl: featureLayerEndpoint,
+                        geometryType: data.geometryType,
+                        fields: dojoArray.map(data.fields, function (x) { return x.name; }),
+                        renderer: data.drawingInfo.renderer
+                    };
 
-                        var res = {
-                            layerId: data.id,  //TODO verifiy this.  i think this is the index.  we would want to use autoID?
-                            layerName: data.name,
-                            layerUrl: featureLayerEndpoint,
-                            geometryType: data.geometryType,
-                            fields: dojoArray.map(data.fields, function (x) { return x.name; }),
-                            renderer: data.drawingInfo.renderer,
-                            aliasMap: alias
-                        };
-
-                        def.resolve(res);
-                    } catch (e) {
-                        def.reject(e);
-                    }
+                    def.resolve(res);
                 },
                 function (error) {
                     console.log(error);
@@ -253,17 +243,15 @@ define([
                     try {
                         layers = dojoArray.map(query('Layer > Name', data), function (nameNode) { return nameNode.parentNode; });
                         res.layers = dojoArray.map(layers, function (x) {
-                            var nameNode = getImmediateChild(x, 'Name'),
-                                name = nameNode.textContent || nameNode.text,
-                                // .text is for IE9's benefit, even though it claims to support .textContent
+                            var name = getImmediateChild(x, 'Name').textContent,
                                 titleNode = getImmediateChild(x, 'Title');
                             return {
                                 name: name,
-                                desc: titleNode ? (titleNode.textContent || titleNode.text) : name,
+                                desc: titleNode ? titleNode.textContent : name,
                                 queryable: x.getAttribute('queryable') === '1'
                             };
                         });
-                        res.queryTypes = dojoArray.map(query('GetFeatureInfo > Format', data), function (node) { return node.textContent || node.text; });
+                        res.queryTypes = dojoArray.map(query('GetFeatureInfo > Format', data), function (node) { return node.textContent; });
                     } catch (e) {
                         def.reject(e);
                     }
@@ -311,10 +299,9 @@ define([
         * Will generate a generic datagrid config node for a set of layer attributes.
         *
         * @param {Array} fields an array of attribute fields for a layer
-        * @param {Object} aliases optional param. a mapping of field names to field aliases
         * @returns {Object} an JSON config object for feature datagrid
         */
-        function createDatagridConfig(fields, aliases) {
+        function createDatagridConfig(fields) {
             function makeField(id, fn, wd, ttl, tp) {
                 return {
                     id: id,
@@ -337,13 +324,7 @@ define([
             dg.gridColumns.push(makeField('detailsCol', '', '60px', 'Details', 'details_button'));
 
             dojoArray.forEach(fields, function (field, idx) {
-                var fieldTitle = field;
-                if (aliases) {
-                    if (aliases[field]) {
-                        fieldTitle = aliases[field];
-                    }
-                }
-                dg.gridColumns.push(makeField("col" + idx.toString(), field, '100px', fieldTitle, 'title_span'));
+                dg.gridColumns.push(makeField("col" + idx.toString(), field, '100px', field, 'title_span'));
             });
 
             return dg;
@@ -579,12 +560,6 @@ define([
                     }
                     console.log('csv parsed');
                     console.log(data);
-                    // csv2geojson will not include the lat and long in the feature
-                    dojoArray.forEach(data.features, function (feature) {
-                        // add new property Long and Lat before layer is generated
-                        feature.properties[csvOpts.lonfield] = feature.geometry.coordinates[0];
-                        feature.properties[csvOpts.latfield] = feature.geometry.coordinates[1];
-                    });
                     jsonLayer = makeGeoJsonLayer(data, opts);
                     def.resolve(jsonLayer);
                 });
