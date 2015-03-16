@@ -1,10 +1,11 @@
-﻿/* global define, RAMP, tmpl */
+﻿/* global define, RAMP */
 /* jshint bitwise:false  */
 
 /**
 * Utility module containing useful static classes.
 *
 * @module Utils
+* @submodule TmplUtil
 */
 
 /**
@@ -29,7 +30,7 @@ define([
         "utils/tmplUtil"
 
 ],
-    function (lang, GlobalStorage, Ramp, TmplUtil) {
+    function (dojoLang, GlobalStorage, Ramp, TmplUtil) {
         "use strict";
 
         return {
@@ -121,26 +122,6 @@ define([
 
                     .replace(/"\s*?</g, '"<')
                     .replace(/>\s*?"/g, '>"');
-            },
-
-            /**
-            * Populates a template specified by the key with the supplied data.
-            *
-            * @param {String} key template name
-            * @param {Object} data data to be inserted into the template
-            * @param {Object} templates a set of templates to run the engine against
-            * @method template
-            * @private
-            * @return {String} a string template filled with supplied data
-            */
-            template: function (key, data, templates) {
-                var d = lang.clone(data) || {};
-                tmpl.cache = {};
-                tmpl.templates = templates;
-
-                d.fn = TmplUtil;
-
-                return tmpl(key, d);
             }
         };
     });
