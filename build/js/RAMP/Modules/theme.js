@@ -15,11 +15,12 @@
 * @uses Util
 */
 
-define(["utils/util"],
-    function (UtilMisc) {
+define(["dojo/_base/lang", "utils/util"],
+    function (lang, UtilMisc) {
         "use strict";
 
         var body = $("body"),
+            bodyHeaderImage = body.find(".pseudo-header"),
             wbCore = $("main"),
             wbFoot = $("footer"),
 
@@ -47,17 +48,21 @@ define(["utils/util"],
             heightGain = layout.headerHeight - layout.headerHeightCollapsed + layout.footerHeight - layout.footerHeightCollapsed,
 
             isFullScreen = false,
-			
-			fullScreenTimeLine = new TimelineLite({ paused: true }),
+            
+            fullScreenTimeLine = new TimelineLite({ paused: true }),
             subpanelTimeline = new TimelineLite();
-		// tweening wet template parts
+
+        // tweening wet template parts
         fullScreenTimeLine
                 .to(header, transitionDuration, { top: navigation.outerHeight() * -1, position: "relative", ease: "easeOutCirc" }, 0)
                 .set([navigation, megaMenuDiv], { display: "none !important" })
 
                 .to(title, transitionDuration, { top: "-22px" }, 0)
 
-                .fromTo(body, transitionDuration, { "background-position-y": "43px" }, { "background-position-y": "-26px", ease: "easeOutCirc" }, 0)
+                // Firefox doesn't support background-position-y - http://stackoverflow.com/questions/9653685/is-background-position-x-background-position-y-a-standard-w3c-css-property/9653939#9653939
+                .fromTo(body, transitionDuration, { backgroundPosition: "center 43px" }, { backgroundPosition: "center -26px", ease: "easeOutCirc" }, 0)
+                // apparently there is a bug in Chrome or GSAP when animating several background images; this is a workaround for now; http://greensock.com/forums/topic/11463-animating-backgroundposition-for-several-background-images/#entry46589
+                .fromTo(bodyHeaderImage, transitionDuration, { backgroundPosition: "center 43px" }, { backgroundPosition: "center -26px", ease: "easeOutCirc" }, 0)
                 .to(wbCore, transitionDuration, { top: layout.headerHeightCollapsed, bottom: layout.footerHeightCollapsed, ease: "easeOutCirc" }, 0)
                 .to(wbFoot, transitionDuration, { height: layout.footerHeightCollapsed, ease: "easeOutCirc" }, 0)
 
@@ -152,7 +157,7 @@ define(["utils/util"],
              * @return {Object}         This
              * @chainable
              */
-            tooltipster: function (target, type, action) {
+            tooltipster: function (target, type, action, options) {
                 var attr;
                 target = target || $("body");
 
@@ -206,10 +211,16 @@ define(["utils/util"],
                                     node.attr("title", node.data("tooltip"));
                                 }
                                 
-                                node.tooltipster({
-                                    theme: node.data("tooltip-theme") || attr.theme,
-                                    delay: attr.delay
-                            });
+                                node.tooltipster(
+                                    lang.mixin({
+                                        theme: node.data("tooltip-theme") || attr.theme,
+                                        //autoClose: false,
+                                        maxWidth: node.data("tooltip-maxwidth") || null,
+                                        delay: attr.delay
+                                    },
+                                        options
+                                    )
+                                );
                             })
                             .removeAttr("title");
                         break;

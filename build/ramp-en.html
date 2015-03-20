@@ -46,6 +46,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
 
     </head>
     <body vocab="http://schema.org/" typeof="WebPage">
+        <span class="pseudo-header" role="presentation"></span>
         <ul id="wb-tphp">
             <li class="wb-slc">
                 <a class="wb-sl" href="#wb-cont">Skip to main content</a>
@@ -152,6 +153,11 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                 </button>
                 <div id="basemapGallery">
                 </div>
+            </li>
+            <li class="map-toolbar-item">
+                <button class="btn btn-xs map-toolbar-item-button button-none _tooltip" title="Disable queries on all WMS layers" id="uglyGetFiToggle">
+                    <i class="fa fa-map-marker"></i><span class="on-right">Disable Queries</span>
+                </button>
             </li>
             <li class="map-toolbar-item">
                 <button class="btn btn-xs map-toolbar-item-button button-none" id="getlink-toggle">
@@ -343,29 +349,6 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
 </details>
 <div class="clearfix"></div>
 <!-- basemaps ENDS -->
-<!-- Add Layer BEGINS -->
-<!--<details class="mrgn-tp-0">
-<summary class="h5 mrgn-tp-0 mrgn-bttm-md">Add Layer from Web</summary>
-<div>
-    <div class="helpSectionBody">
-        <p>Adding a layer from web will allow you to reference data from publicly accessible mapping services as a view-only copy and compare it to other layers available inside the mapping application.</p>
-        <h3 class="h5">Usage</h3>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/en/help_addlayer.png" title="Add layer widget">
-                <img src="./assets/images/help/en/help_addlayer.png" alt="Add layer widget" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Add layer widget</p>
-            </figcaption>
-        </figure>
-        <p>From the dropdown, select the type of service you wish to add, then enter a valid URL for the service endpoint, then select to opacity level for the layer you will add.</p>
-    </div>
-</div>
-</details>
-<div class="clearfix">
-</div>-->
-<!-- Add Layer ENDS -->
 <!-- getLink BEGINS -->
 <details class="mrgn-tp-0">
 <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Get Link</summary>
@@ -401,7 +384,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
         Full Screen is used to collapse the departmental headers and footers to provide larger screen space for mapping.
         </p>
         <h3 class="h5">Usage</h3>
-        <p>Click the Full Screen button in the toolbar to hide departmental header and footer information. Select the Show Headers link to restore to default view.</p>
+        <p>Click the Full Screen button in the toolbar to hide departmental header and footer information. Select the Full Screen button again to restore to default view.</p>
     </div>
 </div>
 </details>
@@ -410,58 +393,127 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
 <!-- fullScreen ENDS -->
 <!-- datasets BEGINS -->
 <details class="mrgn-tp-0">
-<summary class="h5 mrgn-tp-0 mrgn-bttm-md">Data Sets</summary>
-<div>
-    <div class="helpSectionBody">
-        <p>The Datasets tab lists the layers available to display in the map.  Feature layers also display in the data grid. The Datasets tab also serves as a map legend.</p>
-        <h3 class="h5">Usage</h3>
-        <h4>Layer Types</h4>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/en/help_datasets.png" title="Data Sets">
-                <img src="./assets/images/help/en/help_datasets.png" alt="Data Sets" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Data Sets</p>
-            </figcaption>
-        </figure>
-        <p>
-        There are three types of layers that can reside in the Dataset tab.
-        <ul>
-            <li>Feature layers represent data that can be interacted with on the map, and viewed in the data grid.</li>
-            <li>Static layers provide additional geographical context against the basemap.  They are not interactive and do not show in the data grid.</li>
-            <li>WMS layers provide an overlay of data from a Web Map Service.  They can support a click interaction on the map, and do not show in the data grid.</li>
-        </ul>
-        </p>
-        <h4>Layer Visibility</h4>
-        <p>Select the "eye" icon next to a dataset name to toggle the layer on or off.</p>
-        <h4>Layer Bounding Box</h4>
-        <p>Use the "cross hatch" icon to the right of the eye icon to display the bounding box of the dataset.</p>
-        <div class="clearfix"></div>
-        <h4>Layer Reordering</h4>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/en/help_datasets_reordering.png" title="Layer Reordering">
-                <img src="./assets/images/help/en/help_datasets_reordering.png" alt="Layer Reordering" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Layer Reordering</p>
-            </figcaption>
-        </figure>
-        <p>Click and drag the 6 dots to the left of the dataset up or down to re-order the layers on the map interface.</p>
-        <p>While all layers can be re-ordered, WMS layers and Feature / Static layers may not be mixed together.  WMS layers will always be displayed beneath the other layers, but may be re-ordered amongst other WMS layers.</p>
-        <div class="clearfix"></div>
-        
-        <h4>Layer Metadata</h4>
-        <p>Select the "Metadata" link to display relevant metadata for that source in a collapsible Info Panel.</p>
-        <h4>Layer Settings</h4>
-        <p>Select the "Settings" link to change layer's opacity using the slider control.</p>
+    <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Datasets</summary>
+    <div>
+        <div class="helpSectionBody">
+            <p>The Datasets tab lists the layers available to display in the map.  Feature layers also display in the data grid. The Datasets tab also serves as a map legend.</p>
+            <h3 class="h5">Usage</h3>
+            <h4>Layer Types</h4>
+
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/help_datasets.png" title="Datasets">
+                    <img src="./assets/images/help/en/help_datasets.png" alt="Datasets" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Datasets</p>
+                </figcaption>
+            </figure>
+            <p>
+                There are three types of layers that can reside in the Dataset tab.
+                <ul>
+                    <li>Feature layers represent data that can be interacted with on the map, and viewed in the data grid.</li>
+                    <li>Static layers provide additional geographical context against the basemap.  They are not interactive and do not show in the data grid.</li>
+                    <li>WMS layers provide an overlay of data from a Web Map Service.  They can support a click interaction on the map, and do not show in the data grid.</li>
+                </ul>
+            </p>
+            <h4>Layer Visibility</h4>
+            <p>Select the "eye" icon next to a dataset name to toggle the layer on or off.</p>
+            <h4>Layer Bounding Box</h4>
+            <p>Use the "cross hatch" icon to the right of the eye icon to display the bounding box of the dataset.</p>
+            <h4>Layer Legends</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/layer_legends.png" title="Legends">
+                    <img src="./assets/images/help/en/layer_legends.png" alt="Legends" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Legends</p>
+                </figcaption>
+            </figure>
+            <p>Each layer has some symbology associated with it.  For simple feature layers a single icon will be present next to the layer name.  For complex feature layers (i.e. those with multiple symbols used per layer) the icon will show as a stack and maybe toggled on and off.  When toggled on a section will expand beneath the layer name and show the full symbology for the layer.  WMS layers may optionally have a graphical legend defined, if one is present it will be displayed in the same drop down manner.</p>
+            <div class="clearfix"></div>
+            <h4>Handling Layer Errors</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/layer_errors.png" title="Layer Errors">
+                    <img src="./assets/images/help/en/layer_errors.png" alt="Layer Errors" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Layer Errors</p>
+                </figcaption>
+            </figure>
+            <p>If a layer fails to load correctly it will be identified by an error notice.  Instead of the standard layer actions you can select to either reload the layer (this is particularly helpful if there is a temporary network connectivity issue) or remove the layer.  If a layer is removed it will be taken out of the layer selector completely and if it is added back via "Add Dataset" it will lose any previous customizations.</p>
+
+            <div class="clearfix"></div>
+            <h4>Layer Reordering</h4>
+
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/help_datasets_reordering.png" title="Layer Reordering">
+                    <img src="./assets/images/help/en/help_datasets_reordering.png" alt="Layer Reordering" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Layer Reordering</p>
+                </figcaption>
+            </figure>
+            <p>Click and drag the 6 dots to the left of the dataset up or down to re-order the layers on the map interface.</p>
+            <div class="clearfix"></div>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/layer_grouping.png" title="Layer Group Boundaries">
+                    <img src="./assets/images/help/en/layer_grouping.png" alt="Layer Group Boundaries" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Layer Group Boundaries</p>
+                </figcaption>
+            </figure>
+            <p>While all layers can be re-ordered, WMS layers and Feature / Static layers may not be mixed together.  When reordering layers, layers which cannot be mixed will be greyed out.  Although layers can be reordered within their groups the grouping is static with feature and static layers always displaying over the WMS layer group.</p>
+            <div class="clearfix"></div>
+
+            <h4>Layer Metadata</h4>
+            <p>Select the "Metadata" link to display relevant metadata for that source in a collapsible Info Panel.</p>
+            <h4>Layer Settings</h4>
+            <p>Select the "Settings" link to change layer's opacity using the slider control.</p>
+            <h4>Zoom Scale Dependent Layers</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/en/layer_zoom_scale.png" title="Zoom Scale Dependent Layers">
+                    <img src="./assets/images/help/en/layer_zoom_scale.png" alt="Zoom Scale Dependent Layers" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Zoom Scale Dependent Layers</p>
+                </figcaption>
+            </figure>
+            <p>Some layers may only be visible at certain zoom levels.  If a layer is not visible at a given zoom level the layer selector will display a notice and have an action available to zoom to the closest zoom level at which the layer will be visible (this may involve either zooming in or zooming out).</p>
+        </div>
     </div>
-</div>
 </details>
 <div class="clearfix">
 </div>
 <!-- datasets ENDS -->
+<!-- user added datasets BEGINS -->
+<details class="mrgn-tp-0">
+    <summary class="h5 mrgn-tp-0 mrgn-bttm-md">User Added Datasets</summary>
+    <div>
+        <div class="helpSectionBody">
+            <p>Additional datasets can be added to the map viewer.  Supported formats are: ESRI Feature Layer, WMS, GeoJSON, Shapefile, and CSV File.  The '+' button at the top-left of the Layer Selector will launch the Add Dataset wizard.</p>
+            <h3 class="h5">Usage</h3>
+            <h4>Layer Types</h4>            
+            <p>Select the type of data source you would like to add: 'Service' to add a web-based map service; 'File' to upload a GeoJSON, CSV, or Shapefile.</p>
+            <h4>Specifying the Dataset Location</h4>
+            <p>Enter the location of the service URL or dataset file in the location box.  If the dataset is a file on your file system, you must click the 'File' button and browse to the location.</p>
+            <p>A web based URL can be typed or pasted into the box.</p>
+            <p>RAMP will predict the dataset type, if it is incorrect, click the button that specifies the correct type.</p>
+            <p>Click the 'Connect' or 'Load' button to initiate the loading of the dataset.</p>
+            <h4>Specifying the Specifics of the Dataset</h4>
+            <p>Depending on the type of dataset being loaded, various parameters can be set in this phase.</p>
+            <p>A Feature Service allows the choice of a Primary Attribute, which determines the attribute used to identify a feature in the data grid and map tips.  All other information is derived from the service's metadata.</p>
+            <p>A WMS Service allows the choice of the Layer Name, which determines the layer in the WMS to be used as the source for the dataset.  All other information is derived from the service's metadata.</p>
+            <p>File based datasets allow the choice of the following: a Dataset Name, which will be displayed in the Layer Selector; a Primary Attribute, which acts the same as in the Feature Service; a Symbol Colour, which determines the colour of the points / lines / polygons on the map.  CSV files also allow the specification of the columns that contain the Latitude and Longitude values, used to derive the point location on the map.</p>
+            <p>Clicking the 'Add Dataset' button will insert the layer into the map.</p>
+
+            <div class="clearfix"></div>           
+        </div>
+    </div>
+</details>
+<div class="clearfix">
+</div>
+<!-- user added datasets ENDS -->
 <!-- summary grid BEGINS -->
 <details class="mrgn-tp-0">
 <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Summary Grid</summary>
@@ -679,7 +731,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
 <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Advanced Toolbar</summary>
 <div>
     <div class="helpSectionBody">
-        <p>The advanced toolbar provides utilities that can break accessibility, usually due to their dependance on a mouse-driven input.</p>
+        <p>The advanced toolbar provides utilities that can break accessibility, usually due to their dependence on a mouse-driven input.</p>
         <h3 class="h5">Usage</h3>
         <h4>Opening the Toolbar</h4>
         
@@ -691,7 +743,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
             <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">The Toolbar Button</p>
             </figcaption>
         </figure>
-        <p>Select the Advanced button on the main toolbar to open the advanced toolbar. Selecting the button a second time will close the advanced toolbar and de-activate any active tools.</p>
+        <p>Select the Tools button on the main toolbar to open the advanced toolbar. Selecting the button a second time will close the advanced toolbar and de-activate any active tools.</p>
         <div class="clearfix"></div>
         <h4>Tool Activation</h4>
         
@@ -729,17 +781,29 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
         </figure>
         <p>Select the Buffer button to activate the buffer tool. Enter a desired buffer size in kilometers in the tool input. Draw a polygon on the map and release the mouse.  A buffer of the desired size will be applied to the polygon and displayed.</p>
         <div class="clearfix"></div>
-        <h4>Measure Tool</h4>
+        <h4>Area Tool</h4>
         
         <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/en/advanced_toolbar/measure_tool.jpg" title="Measurement Polygon and Result">
-                <img src="./assets/images/help/en/advanced_toolbar/measure_tool.jpg" alt="Measurement Polygon and Result" class="" />
+            <a class="wb-lbx" href="./assets/images/help/en/advanced_toolbar/measure_tool.jpg" title="Area Polygon and Result">
+                <img src="./assets/images/help/en/advanced_toolbar/measure_tool.jpg" alt="Area Polygon and Result" class="" />
             </a>
             <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Measurement Polygon and Result</p>
+            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Area Polygon and Result</p>
             </figcaption>
         </figure>
-        <p>Select the Measure button to activate the tool. Draw a polygon on the map and release the mouse.  The area and the circumference of the polygon will be displayed in the results window.</p>
+        <p>Select the Area button to activate the tool. Draw a polygon on the map and release the mouse.  The area and the circumference of the polygon will be displayed in the results window.</p>
+        <div class="clearfix"></div>
+        <h4>Distance Tool</h4>
+
+        <figure class="thumbnail col-md-4 pull-right">
+            <a class="wb-lbx" href="./assets/images/help/en/advanced_toolbar/distance_tool.jpg" title="Distance Line and Result">
+                <img src="./assets/images/help/en/advanced_toolbar/distance_tool.jpg" alt="Distance Line and Result" class="" />
+            </a>
+            <figcaption class="caption text-right">
+                <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Distance Line and Result</p>
+            </figcaption>
+        </figure>
+        <p>Select the Distance button to activate the tool. Draw a line on the map and release the mouse.  The distance of the line will be displayed in the results window.</p>
         <div class="clearfix"></div>
     </div>
 </div>
@@ -795,7 +859,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                 <details id="tabs1_1" data-panel-name="filterManager">
                     <summary class="">Datasets</summary>
                     <!-- SEARCH MAP BEGIN -->
-                    <div id="searchMapSection">
+                    <!--<div id="searchMapSection">-->
                         <!--<h2 id="searchMapHeader">
                         </h2>-->
                         <div id="searchMapSectionBody">
@@ -810,7 +874,7 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                             </ul>
                             <!--LAYER SECTION END-->
                         </div>
-                    </div>
+                    <!--</div>-->
                     <!-- SEARCH MAP END -->
                 </details>
                 <details id="tabs1_2" data-panel-name="datagrid">
