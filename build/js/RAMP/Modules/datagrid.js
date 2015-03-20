@@ -375,7 +375,7 @@ define([
                 }
 
                 /**
-                * Creates a Data table based on the grid configuration specified in the application config object. See http://www.datatables.net/usage/columns  for addition information on config parameters.
+                * Creates a Data table based on the grid configuration specified in the application config object. See http://datatables.net/reference/option/ for addition information on config parameters.
                 *
                 * @method createDatatable
                 * @private
@@ -387,6 +387,7 @@ define([
                             columnDefs: [],
                             autoWidth: false,
                             deferRender: true,
+                            order: [], //required to remove the "default sort" icon from the first column
                             paging: true,
                             pagingType: "ramp", //"full_numbers",
                             scrollX: true,
@@ -423,7 +424,8 @@ define([
                                         width: column.width ? column.width : "100px",
                                         type: column.sortType,
                                         className: column.alignment ? "" : "center",
-                                        render: rowRenderer
+                                        render: rowRenderer,
+                                        orderable: column.orderable
                                     };
                                 }),
                                 dom: '<"jqgrid_table_wrapper full-table"t><"datagrid-info-notice simple"><"status-line"p>',
@@ -971,6 +973,8 @@ define([
                         }
                     } else {
                         templateKey = "datagrid_full_manager_Template";
+                        // bugfix: 7047 need this to fix extended grid issue.
+                        selectedDatasetId = "";
 
                         // filter out static layers
                         var nonStaticFeatureLayers = dojoArray.filter(RAMP.config.layers.feature, function (layerConfig) {
