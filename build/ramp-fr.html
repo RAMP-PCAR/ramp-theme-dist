@@ -149,6 +149,11 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                 </div>
             </li>
             <li class="map-toolbar-item">
+                <button class="btn btn-xs map-toolbar-item-button button-none _tooltip" title="Désactiver les requêtes sur toutes les couches WMS" id="uglyGetFiToggle">
+                    <i class="fa fa-map-marker"></i><span class="on-right">Désactiver les requêtes</span>
+                </button>
+            </li>
+            <li class="map-toolbar-item">
                 <button class="btn btn-xs map-toolbar-item-button button-none" id="getlink-toggle">
                     <i class="fa fa-link"></i><span class="on-right">Obtenir le lien</span>
                 </button>
@@ -218,7 +223,7 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
             </li>
             <li class="map-toolbar-item">
                 <a class="btn btn-xs map-toolbar-item-button button-none wb-lbx lbx-modal" href="#map-export-modal" aria-controls="map-export-modal" id="map-export-toggle" disabled>
-                    <i class="fa fa-download"></i><span class="on-right">[fr] Map Export</span>
+                    <i class="fa fa-download"></i><span class="on-right">Exportation de la carte</span>
                 </a>
 
                 <section id="map-export-modal" class="mfp-hide modal-dialog modal-content overlay-def">
@@ -227,41 +232,41 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                         <div class="row">
                             <div class="map-export-preview">
                                 <div class="map-export-stretcher" role="presentation"><section class="map-export-notice alert alert-danger">
-                                            <h3>[fr] Error</h3>
-                                            <p>[fr] Image cannot be generated. Please try again later.</p>
+                                            <h3>Erreur</h3>
+                                            <p>L’image ne peut être générée. Veuillez essayer de nouveau plus tard.</p>
                                         </section>
                                     <div class="sk-spinner sk-spinner-chasing-dots">
                                         <div class="sk-dot1"></div>
                                         <div class="sk-dot2"></div>
                                     </div>
-                                    <span class="wb-inv">[fr] Generating image. Please wait.</span>
+                                    <span class="wb-inv">Génération de l’image Veuillez attendre.</span>
                                 </div>
                                 <div class="map-export-image">
                                     <img src="" alt="">
                                 </div>
                             </div>
                             <div class="map-export-controls">
-                                <h2 class="mrgn-tp-sm mrgn-bttm-sm page-header h3">[fr] Map Export</h2>
+                                <h2 class="mrgn-tp-sm mrgn-bttm-sm page-header h3">Exportation de carte</h2>
                                 <button class="button-none button-close _tooltip popup-modal-dismiss" title="Fermer">
                                     <span class="wb-invisible">Fermer</span>
                                 </button>
                                 <div class="">
                                     <!--<div class="checkbox">
-                            <label>[fr] Include Legend<input type="checkbox" value="" /></label>
+                            <label>Ajouter la légende<input type="checkbox" value="" /></label>
                         </div>-->
 
                                     <div class="download-buttons mrgn-tp-lg">
                                         <!--<button class="btn btn-primary" type="button">
-                                <i class="fa fa-download"></i><span class="on-right">[fr] Download Image</span>
+                                <i class="fa fa-download"></i><span class="on-right">Télécharger l’image</span>
                             </button>-->
                                         <a class="btn btn-primary" type="button" href="" target="_blank" download="">
-                                            <i class="fa fa-download"></i><span class="on-right">[fr] Download Image</span>
+                                            <i class="fa fa-download"></i><span class="on-right">Télécharger l’image</span>
                                         </a>
                                         <!--<button class="btn btn-primary" type="button">
-                                <i class="fa fa-download"></i><span class="on-right">[fr] PNG</span>
+                                <i class="fa fa-download"></i><span class="on-right">PNG</span>
                             </button>-->
                                         <!--<button class="btn btn-primary" type="button">
-                                <i class="fa fa-download"></i><span class="on-right">[fr] JPG</span>
+                                <i class="fa fa-download"></i><span class="on-right">JPG</span>
                             </button>-->
                                     </div>
 
@@ -270,47 +275,6 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                         </div>
                     </div>
                 </section>
-
-                <div id="mapExport-section-container" class="map-toolbar-item-container">
-                    <div id="mapExport-section" class="map-toolbar-item-section text-left box-shadow-section">
-                        <section>
-                            <h2 class="mrgn-tp-sm page-header h3">
-                                [fr] Map Export
-                            </h2>
-                            <button class="button-none button-close _tooltip" title="Fermer">
-                                <span class="wb-invisible">Fermer</span>
-                            </button>
-                            <div class="get-link-content">
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default btn-sm getlink-shorten-button" type="button">
-                                                    <i class="fa fa-link"></i>
-                                                    <span class="on-right">Lien raccourci</span>
-                                                </button>
-                                            </span>
-                                            <label class="wb-inv" for="getlink-input">Lien vers le visualiseur de cartes</label>
-                                            <input type="text" data-role="none" readonly="readonly" class="form-control input-sm" id="getlink-input" />
-
-                                            <span class="input-group-btn">
-                                                <a href="mailto:" class="btn btn-info btn-sm getlink-email-button">
-                                                    <i class="fa fa-envelope-o"></i>
-                                                    <span class="on-right">Courriel</span>
-                                                </a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="clearfix">
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-
             </li>
             <li class="map-toolbar-item">
                 <button class="btn btn-xs map-toolbar-item-button button-none" id="helpToggle">
@@ -379,29 +343,6 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
 </details>
 <div class="clearfix"></div>
 <!-- basemaps ENDS -->
-<!-- Add Layer BEGINS -->
-<!--<details class="mrgn-tp-0">
-<summary class="h5 mrgn-tp-0 mrgn-bttm-md">Ajout d’une couche provenant du Web</summary>
-<div>
-    <div class="helpSectionBody">
-        <p>Ajouter une couche provenant du Web vous permettra de consulter les données à partir des services de cartographie accessibles au public en tant que copie à affichage seule et de les comparer à d’autres couches disponibles dans l’application de cartographie.</p>
-        <h3 class="h5">Utilisation</h3>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/fr/help_addlayer.png" title="Fenêtre d’ajout de couche">
-                <img src="./assets/images/help/fr/help_addlayer.png" alt="Fenêtre d’ajout de couche" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Fenêtre d’ajout de couche</p>
-            </figcaption>
-        </figure>
-        <p>À partir du menu déroulant, sélectionnez le type de service que vous désirez ajouter, puis saisissez une URL valide pour le point de terminaison du service, puis sélectionnez le niveau d’opacité pour la couche que vous ajoutez.</p>
-    </div>
-</div>
-</details>
-<div class="clearfix">
-</div>-->
-<!-- Add Layer ENDS -->
 <!-- getLink BEGINS -->
 <details class="mrgn-tp-0">
 <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Obtenir le lien</summary>
@@ -437,7 +378,7 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
         Le plein écran est utilisé pour masquer le haut et le bas de page du Ministère afin d’allouer plus d’espace à l’écran pour l’affichage cartographique.
         </p>
         <h3 class="h5">Utilisation</h3>
-        <p>Cliquez sur le bouton « Plein écran » dans la barre d’outils pour masquer le haut et le bas de page du Ministère. Cliquez sur le lien « Afficher haut de page » pour rétablir l’affichage par défaut.</p>
+        <p>Cliquer sur le bouton Plein écran (Full Screen) de la barre d’outils pour cacher l’en-tête et le pied de page du Ministère. Choisir de nouveau le bouton Plein écran (Full Screen) pour rétablir la vue par défaut.</p>
     </div>
 </div>
 </details>
@@ -446,58 +387,127 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
 <!-- fullScreen ENDS -->
 <!-- datasets BEGINS -->
 <details class="mrgn-tp-0">
-<summary class="h5 mrgn-tp-0 mrgn-bttm-md">Ensembles de données</summary>
-<div>
-    <div class="helpSectionBody">
-        <p>Les ensembles de données présentent la liste des couches disponibles pour l’affichage sur la carte. La grille de données présente aussi les couches d’éléments interactifs. Les ensembles de données agissent également à titre de légende de la carte.</p>
-        <h3 class="h5">Utilisation</h3>
-        <h4>Types de couche</h4>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/fr/help_datasets.png" title="Ensembles de données">
-                <img src="./assets/images/help/fr/help_datasets.png" alt="Ensembles de données" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Ensembles de données</p>
-            </figcaption>
-        </figure>
-        <p>
-        Trois types de couche peuvent être présentés sous l’onglet « Ensemble de données ».
-        <ul>
-            <li>Les couches d’éléments interactifs affichent des données avec lesquelles on peut interagir sur la carte, et qui peuvent être affichées dans la grille de données.</li>
-            <li>Les couches statiques ajoutent un contexte géographique au fond de carte. Elles ne sont pas interactives et ne sont pas affichées dans la grille de données.</li>
-            <li>Les couches SCW sont des couches superposées de données fournies par un service de cartes Web. Ces données sont interactives sur la carte, mais ne sont pas affichées dans la grille de données.</li>
-        </ul>
-        </p>
-        <h4>Visibilité de la couche</h4>
-        <p>Sélectionnez l’icône en forme d’œil près du nom de l’ensemble de données pour masquer ou afficher la couche.</p>
-        <h4>Tracé des limites des couches</h4>
-        <p>Cliquez sur l’icône hachurée placée à droite de l’icône en forme d’œil pour afficher le tracé des limites pour l’ensemble de données associé.</p>
-        <div class="clearfix"></div>
-        <h4>Changement de l’ordre des couches</h4>
-        
-        <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/fr/help_datasets_reordering.png" title="Changement de l’ordre des couches">
-                <img src="./assets/images/help/fr/help_datasets_reordering.png" alt="Changement de l’ordre des couches" class="" />
-            </a>
-            <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Changement de l’ordre des couches</p>
-            </figcaption>
-        </figure>
-        <p>Cliquez et faites glisser les six points à gauche de l’ensemble de données vers le haut ou vers le bas pour changer l’ordre d’affichage des couches sur la carte.</p>
-        <p>L’ordre des couches peut être modifié, mais les couches SCW et les couches d’éléments interactifs ou les couches statiques ne peuvent être combinées. Les couches SCW seront toujours affichées sous les autres couches; toutefois, leur ordre d’affichage peut être modifié parmi les autres couches SCW.</p>
-        <div class="clearfix"></div>
-        
-        <h4>Métadonnées sur la couche</h4>
-        <p>Sélectionnez le lien « Métadonnées » pour afficher les métadonnées associées à cette source dans un panneau d’information repliable.</p>
-        <h4>Paramètres de la couche</h4>
-        <p>Sélectionnez le lien « Paramètres » pour modifier l’opacité de la couche à l’aide de la barre de contrôle.</p>
+    <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Ensembles de données</summary>
+    <div>
+        <div class="helpSectionBody">
+            <p>Les ensembles de données présentent la liste des couches disponibles pour l’affichage sur la carte. La grille de données présente aussi les couches d’éléments interactifs. Les ensembles de données agissent également à titre de légende de la carte.</p>
+            <h3 class="h5">Utilisation</h3>
+            <h4>Types de couche</h4>
+
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/help_datasets.png" title="Ensembles de données">
+                    <img src="./assets/images/help/fr/help_datasets.png" alt="Ensembles de données" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Ensembles de données</p>
+                </figcaption>
+            </figure>
+            <p>
+                Trois types de couche peuvent être présentés sous l’onglet « Ensemble de données ».
+                <ul>
+                    <li>Les couches d’éléments interactifs affichent des données avec lesquelles on peut interagir sur la carte, et qui peuvent être affichées dans la grille de données.</li>
+                    <li>Les couches statiques ajoutent un contexte géographique au fond de carte. Elles ne sont pas interactives et ne sont pas affichées dans la grille de données.</li>
+                    <li>Les couches SCW sont des couches superposées de données fournies par un service de cartes Web. Ces données sont interactives sur la carte, mais ne sont pas affichées dans la grille de données.</li>
+                </ul>
+            </p>
+            <h4>Visibilité de la couche</h4>
+            <p>Sélectionnez l’icône en forme d’œil près du nom de l’ensemble de données pour masquer ou afficher la couche.</p>
+            <h4>Tracé des limites des couches</h4>
+            <p>Cliquez sur l’icône hachurée placée à droite de l’icône en forme d’œil pour afficher le tracé des limites pour l’ensemble de données associé.</p>
+            <h4>Légende des couches</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/layer_legends.png" title="Légendes">
+                    <img src="./assets/images/help/fr/layer_legends.png" alt="Légendes" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Légendes</p>
+                </figcaption>
+            </figure>
+            <p>Une certaine symbologie est associée à chaque couche. Pour des couches de fonctionnalité (feature layer) simples, une seule icône sera présente à côté du nom de la couche. Pour les couches de fonctionnalité complexes (c.-à-d. celles où de multiples symboles sont utilisés par couche), l’icône apparaîtra comme une pile qui peut être activée ou désactivée. Quand </p>
+            <div class="clearfix"></div>
+            <h4>Traitement des erreurs de couche</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/layer_errors.png" title="Erreurs de couche">
+                    <img src="./assets/images/help/fr/layer_errors.png" alt="Erreurs de couche" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Erreurs de couche</p>
+                </figcaption>
+            </figure>
+            <p>Si la couche ne se charge pas correctement, elle sera identifiée par un avis d’erreur. Au lieu des mesures standards liées à la couche, on peut choisir de recharger la couche (ce qui est particulièrement utile en cas de problème temporaire de connexion au réseau) ou de retirer la couche. Si une couche est […] </p>
+
+            <div class="clearfix"></div>
+            <h4>Changement de l’ordre des couches</h4>
+
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/help_datasets_reordering.png" title="Changement de l’ordre des couches">
+                    <img src="./assets/images/help/fr/help_datasets_reordering.png" alt="Changement de l’ordre des couches" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Changement de l’ordre des couches</p>
+                </figcaption>
+            </figure>
+            <p>Cliquez et faites glisser les six points à gauche de l’ensemble de données vers le haut ou vers le bas pour changer l’ordre d’affichage des couches sur la carte.</p>
+            <div class="clearfix"></div>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/layer_grouping.png" title="Limites du groupe de couche">
+                    <img src="./assets/images/help/fr/layer_grouping.png" alt="Limites du groupe de couche" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Limites du groupe de couche</p>
+                </figcaption>
+            </figure>
+            <p>Alors que toutes les couches peuvent être réordonnées, les couches WMS et les couches Fonctionnalité / Statique (Feature/Static) ne peuvent être mélangées. En réordonnant les couches, les couches qui ne peuvent être mélangées apparaîtront en gris. Même si les couches peuvent être réordonnées à l’intérieur de leurs groupes, le groupement est statique pour ce qui est des couches Feature et Static. </p>
+            <div class="clearfix"></div>
+
+            <h4>Métadonnées sur la couche</h4>
+            <p>Sélectionnez le lien « Métadonnées » pour afficher les métadonnées associées à cette source dans un panneau d’information repliable.</p>
+            <h4>Paramètres de la couche</h4>
+            <p>Sélectionnez le lien « Paramètres » pour modifier l’opacité de la couche à l’aide de la barre de contrôle.</p>
+            <h4>Couches dépendantes de l’échelle de zoom</h4>
+            <figure class="thumbnail col-md-4 pull-right">
+                <a class="wb-lbx" href="./assets/images/help/fr/layer_zoom_scale.png" title="Couches dépendantes de l’échelle de zoom">
+                    <img src="./assets/images/help/fr/layer_zoom_scale.png" alt="Couches dépendantes de l’échelle de zoom" class="" />
+                </a>
+                <figcaption class="caption text-right">
+                    <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Couches dépendantes de l’échelle de zoom</p>
+                </figcaption>
+            </figure>
+            <p>Certaines couches peuvent être visibles uniquement à certains niveaux de zoom. Si une couche n’est pas visible à un niveau de zoom donné, le sélecteur de couche (Layer Selector) affichera un avis et offrira une action afin d’établir un zoom au niveau de zoom le plus prêt auquel la couche sera visible (cela peut consister à faire un zoom in) </p>
+        </div>
     </div>
-</div>
 </details>
 <div class="clearfix">
 </div>
 <!-- datasets ENDS -->
+<!-- user added datasets BEGINS -->
+<details class="mrgn-tp-0">
+    <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Ensembles de données ajoutées par l’utilisateur.</summary>
+    <div>
+        <div class="helpSectionBody">
+            <p>Des ensembles de données supplémentaires peuvent être ajoutés au visualisateur de cartes (map viewer). Les formats pris en charge sont : couche de fonctionnalité (Feature Layer) ESRI, WMS, GeoJSON, Shapefile (fichier de forme) et fichier CSV. Le bouton « + » au coin supérieur gauche du sélecteur de couche (Layer Selector) lancera l’assistant « Ajouter ensemble de données » (Add Dataset).</p>
+            <h3 class="h5">Utilisation</h3>
+            <h4>Types de couche</h4>            
+            <p>Sélectionner le type de données sources à ajouter : « Service » (Service) pour ajouter un service de carte Web; « Fichier » (File) pour télécharger un fichier GeoJSON, CSV ou Shapefile.</p>
+            <h4>Préciser l’emplacement de l’ensemble de données.</h4>
+            <p>Saisir l’emplacement du service URL ou du fichier de l’ensemble de données. Si l’ensemble de données est un fichier du système de dossiers, sélectionner le bouton « Fichier » (File) et naviguer jusqu’à l’emplacement.</p>
+            <p>Une adresse URL peut être tapée ou collée dans la case.</p>
+            <p>RAMP prédira le type d’ensemble de données; si elles sont incorrectes, cliquer sur le bouton qui précise le type exact.</p>
+            <p>Cliquer sur le bouton « Connecter » (Connect) ou « Charger » (Load) pour amorcer le chargement de l’ensemble de données.</p>
+            <h4>Préciser les caractéristiques de l’ensemble de données.</h4>
+            <p>Selon le type d’ensemble de données chargé, divers paramètres peuvent être établis à cette étape-ci.</p>
+            <p>Un service de fonctionnalité (Feature Service) permet de choisir un attribut primaire, qui détermine l’attribut servant à déterminer une caractéristique dans la grille de données et des conseils sur la cartographie. Tous les autres renseignements proviennent des métadonnées du service.</p>
+            <p>Un service WMS permet de choisir le nom de la couche, ce qui détermine la couche du WMS qui servira de source de l’ensemble de données. Tous les autres renseignements proviennent des métadonnées du service.</p>
+            <p>Les ensembles de données axés sur les fichiers permettent de choisir ce qui suit : le nom de l’ensemble de données, qui sera affiché dans le sélecteur de couche (Layer Selector); un attribut primaire (Primary Attribute), qui agit de la même manière que le service de fonctionnalité (Feature Service); une couleur de symbole (Symbol colour), qui détermine la couleur des points, des lignes, des polygones sur la carte.  </p>
+            <p>En cliquant sur le bouton « Ajouter ensemble de données » (Add Dataset), on peut insérer la couche dans la carte.</p>
+
+            <div class="clearfix"></div>           
+        </div>
+    </div>
+</details>
+<div class="clearfix">
+</div>
+<!-- user added datasets ENDS -->
 <!-- summary grid BEGINS -->
 <details class="mrgn-tp-0">
 <summary class="h5 mrgn-tp-0 mrgn-bttm-md">Grille synthèse</summary>
@@ -765,17 +775,29 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
         </figure>
         <p>Cliquez sur le bouton « Délimitation » pour activer l’outil de délimitation. Saisissez la taille de délimitation désirée en kilomètres dans l’outil de saisie. Tracez un polygone sur la carte, puis relâchez le bouton de la souris. Une délimitation de la taille désirée sera appliquée au polygone et affichée.</p>
         <div class="clearfix"></div>
-        <h4>Outil de mesure</h4>
+        <h4>Outil de zone</h4>
         
         <figure class="thumbnail col-md-4 pull-right">
-            <a class="wb-lbx" href="./assets/images/help/fr/advanced_toolbar/measure_tool.jpg" title="Mesure du polygone et résultats">
-                <img src="./assets/images/help/fr/advanced_toolbar/measure_tool.jpg" alt="Mesure du polygone et résultats" class="" />
+            <a class="wb-lbx" href="./assets/images/help/fr/advanced_toolbar/measure_tool.jpg" title="Polygone de la zone et résultats">
+                <img src="./assets/images/help/fr/advanced_toolbar/measure_tool.jpg" alt="Polygone de la zone et résultats" class="" />
             </a>
             <figcaption class="caption text-right">
-            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Mesure du polygone et résultats</p>
+            <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Polygone de la zone et résultats</p>
             </figcaption>
         </figure>
-        <p>Cliquez sur le bouton « Mesure » pour activer l’outil. Tracez un polygone sur la carte, puis relâchez le bouton de la souris. L’aire et le périmètre du polygone seront affichés dans la fenêtre de résultats.</p>
+        <p>Choisir le bouton Zone (Area) pour activer l’outil. Amenez un polygone sur la carte et relâchez la souris. La zone et la circonférence du polygone seront affichées dans la fenêtre de résultats.</p>
+        <div class="clearfix"></div>
+        <h4>Outil de distance</h4>
+
+        <figure class="thumbnail col-md-4 pull-right">
+            <a class="wb-lbx" href="./assets/images/help/fr/advanced_toolbar/distance_tool.jpg" title="Ligne de distance et résultats">
+                <img src="./assets/images/help/fr/advanced_toolbar/distance_tool.jpg" alt="Ligne de distance et résultats" class="" />
+            </a>
+            <figcaption class="caption text-right">
+                <p class="mrgn-tp-sm mrgn-bttm-sm pstn-bttm-md pstn-rght-md caption-header small">Ligne de distance et résultats</p>
+            </figcaption>
+        </figure>
+        <p>Choisir le bouton Distance (Distance) pour activer l’outil. Tracer une ligne sur la carte et relâcher la souris. La distance de la ligne sera affichée dans la fenêtre de résultats.</p>
         <div class="clearfix"></div>
     </div>
 </div>
@@ -831,7 +853,7 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                 <details id="tabs1_1" data-panel-name="filterManager">
                     <summary class="">Ensembles de données</summary>
                     <!-- SEARCH MAP BEGIN -->
-                    <div id="searchMapSection">
+                    <!--<div id="searchMapSection">-->
                         <!--<h2 id="searchMapHeader">
                         </h2>-->
                         <div id="searchMapSectionBody">
@@ -846,7 +868,7 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                             </ul>
                             <!--LAYER SECTION END-->
                         </div>
-                    </div>
+                    <!--</div>-->
                     <!-- SEARCH MAP END -->
                 </details>
                 <details id="tabs1_2" data-panel-name="datagrid">
