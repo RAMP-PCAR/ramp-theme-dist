@@ -1,4 +1,4 @@
-/*! ramp-theme-intranet Plugins 26-03-2015 22:28:46 : v. 5.2.0-rc4 
+/*! ramp-theme-intranet Plugins 27-03-2015 18:26:51 : v. 5.2.0-rc5 
  * 
  * RAMP GIS viewer - Elk; Sample of an implementation of RAMP with Intranet Theme 
  **/
