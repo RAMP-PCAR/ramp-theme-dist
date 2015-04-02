@@ -1,4 +1,4 @@
-/*! ramp-theme-canada 31-03-2015 20:10:17 : v. 5.2.0 
+/*! ramp-theme-canada 02-04-2015 18:10:47 : v. 5.2.1-1 
  * 
  * RAMP GIS viewer - Elk; Sample of an implementation of RAMP with Canada.ca Theme 
  **/
