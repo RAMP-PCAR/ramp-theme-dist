@@ -16,10 +16,10 @@
 		"colour": "Colour",
 		"connect": "Connect",
 		"csv": "CSV",
-		"datasetName": "Dataset Name",
 		"dataSource": "Data Source",
 		"dataSourceFile": "File",
 		"dataSourceService": "Service",
+		"datasetName": "Dataset Name",
 		"error": {
 			"headerCSV": "CSV error",
 			"headerFeature": "Feature layer error",
@@ -219,17 +219,17 @@
 				"dog_guts": {
 					"displayName": "Bird Habitats"
 				},
-				"limits": {
-					"displayName": "Limits"
-				},
-				"geomet_wind": {
-					"displayName": "Wind speed"
-				},
 				"geomet_rain": {
 					"displayName": "Rain"
 				},
 				"geomet_temp": {
 					"displayName": "Air temperature"
+				},
+				"geomet_wind": {
+					"displayName": "Wind speed"
+				},
+				"limits": {
+					"displayName": "Limits"
 				},
 				"wms6": {
 					"displayName": "Railway Network"
@@ -300,12 +300,11 @@
 		"hideAllFeatures": "Hide All",
 		"hideBounds": "Hide Bounds of {0}",
 		"hideFeatures": "Hide {0}",
+		"hideLegend": "Hide Legend",
 		"layerHandle": "Layer Handle",
 		"layerHandleLabel": "Layer handle for __layerName__",
 		"layerListLabel": "Sortable layer list",
 		"legend": "Legend",
-		"showLegend": "Show Legend",
-		"hideLegend": "Hide Legend",
 		"linkToCap": "Link To Capabilities",
 		"metadata": "Metadata",
 		"metadataNotFound": "No metadata was found for this layer.",
@@ -327,6 +326,7 @@
 		"showAllFeatures": "Show All",
 		"showBounds": "Show Bounds of {0}",
 		"showFeatures": "Show {0}",
+		"showLegend": "Show Legend",
 		"zoomToData": "Zoom to data"
 	},
 	"gui": {
@@ -408,6 +408,8 @@
 			"h4": "Specifying the Specifics of the Dataset",
 			"header": "User Added Datasets",
 			"p1": "Additional datasets can be added to the map viewer.  Supported formats are: ESRI Feature Layer, WMS, GeoJSON, Shapefile, and CSV File.  The '+' button at the top-left of the Layer Selector will launch the Add Dataset wizard.",
+			"p10": "File based datasets allow the choice of the following: a Dataset Name, which will be displayed in the Layer Selector; a Primary Attribute, which acts the same as in the Feature Service; a Symbol Colour, which determines the colour of the points / lines / polygons on the map.  CSV files also allow the specification of the columns that contain the Latitude and Longitude values, used to derive the point location on the map.",
+			"p11": "Clicking the 'Add Dataset' button will insert the layer into the map.",
 			"p2": "Select the type of data source you would like to add: 'Service' to add a web-based map service; 'File' to upload a GeoJSON, CSV, or Shapefile.",
 			"p3": "Enter the location of the service URL or dataset file in the location box.  If the dataset is a file on your file system, you must click the 'File' button and browse to the location.",
 			"p4": "A web based URL can be typed or pasted into the box.",
@@ -415,9 +417,7 @@
 			"p6": "Click the 'Connect' or 'Load' button to initiate the loading of the dataset.",
 			"p7": "Depending on the type of dataset being loaded, various parameters can be set in this phase.",
 			"p8": "A Feature Service allows the choice of a Primary Attribute, which determines the attribute used to identify a feature in the data grid and map tips.  All other information is derived from the service's metadata.",
-			"p9": "A WMS Service allows the choice of the Layer Name, which determines the layer in the WMS to be used as the source for the dataset.  All other information is derived from the service's metadata.",
-			"p10": "File based datasets allow the choice of the following: a Dataset Name, which will be displayed in the Layer Selector; a Primary Attribute, which acts the same as in the Feature Service; a Symbol Colour, which determines the colour of the points / lines / polygons on the map.  CSV files also allow the specification of the columns that contain the Latitude and Longitude values, used to derive the point location on the map.",
-			"p11": "Clicking the 'Add Dataset' button will insert the layer into the map."
+			"p9": "A WMS Service allows the choice of the Layer Name, which determines the layer in the WMS to be used as the source for the dataset.  All other information is derived from the service's metadata."
 		},
 		"s4": {
 			"h1": "Usage",
@@ -437,6 +437,7 @@
 		},
 		"s6": {
 			"h1": "Usage",
+			"h10": "Zoom Scale Dependent Layers",
 			"h2": "Layer Types",
 			"h3": "Layer Visibility",
 			"h4": "Layer Bounding Box",
@@ -445,15 +446,15 @@
 			"h7": "Layer Reordering",
 			"h8": "Layer Metadata",
 			"h9": "Layer Settings",
-			"h10": "Zoom Scale Dependent Layers",
 			"header": "Datasets",
+			"img10": "Zoom Scale Dependent Layers",
 			"img2": "Datasets",
 			"img5": "Legends",
 			"img6": "Layer Errors",
 			"img7": "Layer Reordering",
 			"img7a": "Layer Group Boundaries",
-			"img10": "Zoom Scale Dependent Layers",
 			"p1": "The Datasets tab lists the layers available to display in the map.  Feature layers also display in the data grid. The Datasets tab also serves as a map legend.",
+			"p10": "Some layers may only be visible at certain zoom levels.  If a layer is not visible at a given zoom level the layer selector will display a notice and have an action available to zoom to the closest zoom level at which the layer will be visible (this may involve either zooming in or zooming out).",
 			"p2": "There are three types of layers that can reside in the Dataset tab.",
 			"p3": "Select the \"eye\" icon next to a dataset name to toggle the layer on or off.",
 			"p4": "Use the \"cross hatch\" icon to the right of the eye icon to display the bounding box of the dataset.",
@@ -463,7 +464,6 @@
 			"p7a": "While all layers can be re-ordered, WMS layers and Feature / Static layers may not be mixed together.  When reordering layers, layers which cannot be mixed will be greyed out.  Although layers can be reordered within their groups the grouping is static with feature and static layers always displaying over the WMS layer group.",
 			"p8": "Select the \"Metadata\" link to display relevant metadata for that source in a collapsible Info Panel.",
 			"p9": "Select the \"Settings\" link to change layer's opacity using the slider control.",
-			"p10": "Some layers may only be visible at certain zoom levels.  If a layer is not visible at a given zoom level the layer selector will display a notice and have an action available to zoom to the closest zoom level at which the layer will be visible (this may involve either zooming in or zooming out).",
 			"ul2": {
 				"li1": "Feature layers represent data that can be interacted with on the map, and viewed in the data grid.",
 				"li2": "Static layers provide additional geographical context against the basemap.  They are not interactive and do not show in the data grid.",

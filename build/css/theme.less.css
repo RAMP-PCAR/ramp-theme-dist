@@ -2130,7 +2130,6 @@
 .btn-choice {
   border-color: #808080 !important;
   background-color: #eeeeee;
-  min-width: 95px;
   color: #000;
 }
 .btn-option.focused,
