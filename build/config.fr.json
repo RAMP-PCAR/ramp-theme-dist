@@ -4,6 +4,8 @@
     "proxyUrl": "http://cp.zz9.ca/index",
     "exportMapUrl": "http://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
     "exportProxyUrl": "http://142.135.82.123/proxy/proxy.ashx",
+    "geonameUrl": "http://geogratis.gc.ca/services/geoname/",
+    "geolocationUrl":  "http://geogratis.gc.ca/services/geolocation/",
     "advancedToolbar": {
         "enabled": false,
         "tools": [
@@ -761,8 +763,8 @@
         "htmlRawParse.js",
         "jsonRawParse.js",
         "tempParse.js",
-        "windParse.js"
+        "windParse.js",
+        "epsgio.js"
     ],
-
-    "mapInitFailUrl": "./error-en.html"
+    "mapInitFailUrl": "./error-fr.html"
 }
