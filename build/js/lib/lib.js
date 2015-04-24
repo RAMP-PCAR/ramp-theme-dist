@@ -31172,7 +31172,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
     i18n.options = o;
 
 })();/* */ 
- /* *//*! Nestoria Slider - v1.0.10 - 2015-02-08
+ /* *//*! Nestoria Slider - v1.0.10 - 2015-04-09
 * http://lokku.github.io/jquery-nstslider/
 * Copyright (c) 2015 Lokku Ltd.; Licensed MIT */
 (function($) {
@@ -31363,7 +31363,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 settings = $this.data('settings'),
                 $leftGrip = $this.find(settings.left_grip_selector);
 
-            return Math.round($leftGrip.width());
+            return Math.round($leftGrip.outerWidth());
          },
          /*
           * Return the width of the right grip. The calling method should
@@ -31375,7 +31375,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 settings = $this.data('settings'),
                 $rightGrip = $this.find(settings.right_grip_selector);
 
-            return Math.round($rightGrip.width());
+            return Math.round($rightGrip.outerWidth());
          },
          'binarySearchValueToPxCompareFunc' : function (s, a, i) {
             // Must return:
@@ -31810,7 +31810,11 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
             _methods.notify_changed_implicit.call($this, 'drag_start', prev_min, prev_max);
 
-            e.preventDefault();
+            // no need to call preventDefault on touch events, as we called
+            // preventDefault on the original event already
+            if (Object.prototype.toString.apply(e) !== "[object Touch]") {
+                e.preventDefault();
+            }
         },
         'drag_move_func_touch' : function (e) {
             if (_is_mousedown === true) {
@@ -31963,7 +31967,12 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
                 // prepare for next movement
                 _original_mousex = absoluteMousePosition;
 
-                e.preventDefault();
+                
+                // no need to call preventDefault on touch events, as we called
+                // preventDefault on the original event already
+                if (Object.prototype.toString.apply(e) !== "[object Touch]") {
+                    e.preventDefault();
+                }
             }
         },
         'drag_end_func_touch' : function (e) {
@@ -67599,7 +67608,8 @@ RAMP = {
      * @property configServiceURL
      * @type String
      */
-    configServiceURL: "http://localhost:5000/",
+    configServiceURL: "http://sncr01wbingsdv1.ncr.int.ec.gc.ca:8000/v1/",
+    // FIXME move the config service URL out of this file since it is now minified and appended to lib.js in the build
 
     /**
      * The RAMP application config, it should be treated as read only by all modules other than globalStorage and bootstrapper
