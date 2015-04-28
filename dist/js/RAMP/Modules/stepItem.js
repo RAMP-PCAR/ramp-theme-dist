@@ -1,4 +1,4 @@
-/*! ramp-theme-usability 28-04-2015 15:45:41 : v. 5.3.0-rc2 
+/*! ramp-theme-usability 28-04-2015 20:04:53 : v. 5.3.0 
  * 
  * RAMP GIS viewer - Elk; Sample of an implementation of RAMP with Usability Theme 
  **/
