@@ -14,16 +14,18 @@
 * This includes dealing with errors, and raising appropriate events when the layer loads
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "EventManager"}}{{/crossLink}}  
-* {{#crossLink "FeatureClickHandler"}}{{/crossLink}}  
-* {{#crossLink "FilterManager"}}{{/crossLink}}  
-* {{#crossLink "GlobalStorage"}}{{/crossLink}}  
-* {{#crossLink "LayerItem"}}{{/crossLink}}  
-* {{#crossLink "Map"}}{{/crossLink}}  
-* {{#crossLink "MapClickHandler"}}{{/crossLink}}  
-* {{#crossLink "Ramp"}}{{/crossLink}}  
-* {{#crossLink "Util"}}{{/crossLink}}  
-* 
+* {{#crossLink "AttributeLoader"}}{{/crossLink}}
+* {{#crossLink "EventManager"}}{{/crossLink}}
+* {{#crossLink "FeatureClickHandler"}}{{/crossLink}}
+* {{#crossLink "FilterManager"}}{{/crossLink}}
+* {{#crossLink "GlobalStorage"}}{{/crossLink}}
+* {{#crossLink "GraphicExtension"}}{{/crossLink}}
+* {{#crossLink "LayerItem"}}{{/crossLink}}
+* {{#crossLink "Map"}}{{/crossLink}}
+* {{#crossLink "MapClickHandler"}}{{/crossLink}}
+* {{#crossLink "Ramp"}}{{/crossLink}}
+* {{#crossLink "Util"}}{{/crossLink}}
+*
 * @class LayerLoader
 * @static
 * @uses dojo/topic
@@ -43,7 +45,7 @@ define([
 
 /* RAMP */
 "ramp/eventManager", "ramp/map", "ramp/globalStorage", "ramp/featureClickHandler", "ramp/mapClickHandler", "ramp/ramp",
-"ramp/filterManager", "ramp/layerItem",
+"ramp/filterManager", "ramp/layerItem", "ramp/attributeLoader", "ramp/graphicExtension",
 
 /* Util */
 "utils/util"],
@@ -57,7 +59,7 @@ define([
 
     /* RAMP */
     EventManager, RampMap, GlobalStorage, FeatureClickHandler, MapClickHandler, Ramp,
-    FilterManager, LayerItem,
+    FilterManager, LayerItem, AttributeLoader, GraphicExtension,
 
      /* Util */
     UtilMisc) {
@@ -102,6 +104,27 @@ define([
         }
 
         /**
+        * Determines if the layer has an active hilight for the highlight type (defined by the state).
+        *
+        * @method isValidHilight
+        * @private
+        * @param  {Object} layer map layer object
+        * @param  {Object} state the state of a highlight (defines if active and layer it applies to)
+        * @returns {Boolean} if layer has valid highlight
+        */
+        function isValidHilight(layer, state) {
+            var ret = false;
+            if (state.objId >= 0) {
+                //there is an active highlight
+                if (layer.id === state.layerId) {
+                    //it belongs to this layer
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        /**
         * Will remove a layer from the map, and adjust counts.
         *
         * @method onLayerError
@@ -126,6 +149,11 @@ define([
                     map.removeLayer(bbLayer);
                     RAMP.layerCounts.bb -= 1;
                 }
+            }
+
+            //remove data, if it exists
+            if (RAMP.data[layerId]) {
+                delete RAMP.data[layerId];
             }
 
             //just incase its really weird and layer is not in the registry
@@ -280,6 +308,15 @@ define([
 
                 case GlobalStorage.layerType.feature:
 
+                    //initiate the feature data download
+                    if (layer.url) {
+                        //service based. get feature data from the service
+                        AttributeLoader.loadAttributeData(layer.id, layer.url, layer.ramp.type);
+                    } else {
+                        //file based. scrape data from the layer
+                        AttributeLoader.extractAttributeData(layer);
+                    }
+
                     //TODO consider the case where a layer was loaded by the user, and we want to disable things like maptips?
 
                     //wire up click handler
@@ -356,18 +393,6 @@ define([
             * @method init
             */
             init: function () {
-                //counters for layers loaded, so we know where to insert things
-                //default basemap count to 1, as we always load 1 to begin with
-
-                RAMP.layerCounts = {
-                    feature: 0,
-                    bb: 0,
-                    wms: 0,
-                    base: 1
-                };
-
-                RAMP.layerRegistry = {};
-
                 topic.subscribe(EventManager.LayerLoader.LAYER_LOADED, this.onLayerLoaded);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATED, this.onLayerUpdateEnd);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATING, this.onLayerUpdateStart);
@@ -386,12 +411,12 @@ define([
             */
             onLayerError: function (evt) {
                 console.error("failed to load layer " + evt.layer.url, evt.error);
-                
+
                 evt.layer.ramp.load.state = "error";
 
                 var layerId = evt.layer.id,
                     // generic error notice
-                    errorMessage  = i18n.t("filterManager.notices.error.load"),
+                    errorMessage = i18n.t("filterManager.notices.error.load"),
                     options;
 
                 //get that failed layer outta here
@@ -425,6 +450,8 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateStart: function (evt) {
+                RampMap.updateDatagridUpdatingState(evt.layer, true);
+
                 //console.log("LAYER UPDATE START: " + evt.layer.url);
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.UPDATING, true);
             },
@@ -437,11 +464,37 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateEnd: function (evt) {
-                //IE10 hack.  since IE10 doesn't fire a loaded event, we need to also set the loaded flag on layer here. 
+                var g;
+
+                //check if we have any active highlites for this layer
+                if (isValidHilight(evt.layer, RAMP.state.hilite.click)) {
+                    //re-request the click hilight
+                    g = GraphicExtension.findGraphic(RAMP.state.hilite.click.objId, evt.layer.id);
+                    if (g) {
+                        topic.publish(EventManager.FeatureHighlighter.HIGHLIGHT_SHOW, {
+                            graphic: g
+                        });
+                    } //else graphic is off-view and does not exist in layer. dont' change higlight
+                }
+
+                if (isValidHilight(evt.layer, RAMP.state.hilite.zoom)) {
+                    //re-request the zoom hilight
+                    g = GraphicExtension.findGraphic(RAMP.state.hilite.zoom.objId, evt.layer.id);
+                    if (g) {
+                        topic.publish(EventManager.FeatureHighlighter.ZOOMLIGHT_SHOW, {
+                            graphic: g
+                        });
+                    } //else graphic is off-view and does not exist in layer. dont' change higlight
+                }
+
+                //IE10 hack.  since IE10 doesn't fire a loaded event, we need to also set the loaded flag on layer here.
                 //            don't do it if it's in error state.  once an error, always an error
                 if (evt.layer.ramp.load.state !== "error") {
                     evt.layer.ramp.load.state = "loaded";
                 }
+
+                RampMap.updateDatagridUpdatingState(evt.layer);
+
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.LOADED, true);
             },
 
@@ -534,10 +587,10 @@ define([
                     idArray,
                     cleanIdArray;
 
-               removeFromMap(evt.layerId);
+                removeFromMap(evt.layerId);
 
-               curlayer = map._layers[evt.layerId];  //map.getLayer is not reliable, so we use this
-             
+                curlayer = map._layers[evt.layerId];  //map.getLayer is not reliable, so we use this
+
                 if (curlayer) {
                     inMap = true;
                 } else {

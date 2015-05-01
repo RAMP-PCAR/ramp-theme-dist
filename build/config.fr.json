@@ -696,6 +696,7 @@
             }
         ],
         "wms": [
+           
             {
                 "id": "geomet_wind",
                 "displayName": "Vitesse du vent",
