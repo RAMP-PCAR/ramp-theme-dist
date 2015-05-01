@@ -44,6 +44,7 @@ define([
 
 // Text
         "dojo/text!./templates/sub_panel_template.json",
+        "dojo/text!./templates/datagrid_template.json",
 
 // Util
         "utils/util", "utils/dictionary", "utils/popupManager", "utils/tmplHelper",
@@ -63,6 +64,7 @@ define([
 
     // Text
         subPanelTemplate,
+        datagridTemplate,
 
     // Util
         UtilMisc, utilDict, popupManager, TmplHelper) {
@@ -73,7 +75,7 @@ define([
             sidePanelWbTabs = $("#panel-div > .wb-tabs"),
             sidePanelTabList = sidePanelWbTabs.find(" > ul[role=tablist]"),
             sidePanelTabPanels = sidePanelWbTabs.find(" > .tabpanels"),
-
+                   
             mapContent = $("#mapContent"),
             loadIndicator = mapContent.find("#map-load-indicator"),
 
@@ -725,6 +727,9 @@ define([
                 panelWidthDefault, // default width of the SidePanel.
                 layoutWidthThreshold = 1200, // minimum width of the wide layout
 
+                dataTabNode,
+                dataTabUpdateNotice,
+
                 windowWidth,
 
                 layoutChange,
@@ -1087,6 +1092,15 @@ define([
                         fullScreenPopup.open();
                     }
 
+                    // find a Data tab append an update notice to it
+                    dataTabUpdateNotice = $(TmplHelper.template('datagrid_notice_update', {}, datagridTemplate));
+                    dataTabNode = panelDiv.find(".wb-tabs > ul li:last");
+                    dataTabNode.append(dataTabUpdateNotice);
+
+                    topic.subscribe(EventManager.Datagrid.UPDATING, function (event) {
+                        dataTabUpdateNotice.toggle(event);
+                    });
+
                     adjustHeight();
                 },
 
@@ -1431,6 +1445,7 @@ define([
 
                 subPanelTemplate = JSON.parse(TmplHelper.stringifyTemplate(subPanelTemplate));
                 subPanelLoadingAnimation = TmplHelper.template('loading_simple', null, subPanelTemplate);
+                datagridTemplate = JSON.parse(TmplHelper.stringifyTemplate(datagridTemplate));
 
                 layoutController.init();
 
@@ -1626,14 +1641,14 @@ define([
                             captureSubPanel(na);
                         });
                     } else {
-                        dojoArray.forEach(attr.consumeOrigin.split(","), function (element) {
-                            na = Object.create(attr);
-                            na.consumeOrigin = element;
-                            captureSubPanel(na);
-                        });
+                            dojoArray.forEach(attr.consumeOrigin.split(","), function (element) {
+                                na = Object.create(attr);
+                                na.consumeOrigin = element;
+                                captureSubPanel(na);
+                            });
                     }
                 });
-
+                
                 sidePanelTabList.find("li a").click(function () {
 
                     console.log("inside side panel tab list on click");
