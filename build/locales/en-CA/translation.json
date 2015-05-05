@@ -280,8 +280,7 @@
 		},
 		"notices": {
 			"offScaleFullData": "Data is not visible at this zoom level.",
-			"offScaleSummary": "Some data is not visible at this zoom level.",
-			"update": "Updating"
+			"offScaleSummary": "Some data is not visible at this zoom level."
 		},
 		"sort": "Sort",
 		"zoomBack": "Zoom Back",
