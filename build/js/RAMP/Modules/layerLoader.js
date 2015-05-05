@@ -14,12 +14,10 @@
 * This includes dealing with errors, and raising appropriate events when the layer loads
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "AttributeLoader"}}{{/crossLink}}
 * {{#crossLink "EventManager"}}{{/crossLink}}
 * {{#crossLink "FeatureClickHandler"}}{{/crossLink}}
 * {{#crossLink "FilterManager"}}{{/crossLink}}
 * {{#crossLink "GlobalStorage"}}{{/crossLink}}
-* {{#crossLink "GraphicExtension"}}{{/crossLink}}
 * {{#crossLink "LayerItem"}}{{/crossLink}}
 * {{#crossLink "Map"}}{{/crossLink}}
 * {{#crossLink "MapClickHandler"}}{{/crossLink}}
@@ -45,7 +43,7 @@ define([
 
 /* RAMP */
 "ramp/eventManager", "ramp/map", "ramp/globalStorage", "ramp/featureClickHandler", "ramp/mapClickHandler", "ramp/ramp",
-"ramp/filterManager", "ramp/layerItem", "ramp/attributeLoader", "ramp/graphicExtension",
+"ramp/filterManager", "ramp/layerItem",
 
 /* Util */
 "utils/util"],
@@ -59,7 +57,7 @@ define([
 
     /* RAMP */
     EventManager, RampMap, GlobalStorage, FeatureClickHandler, MapClickHandler, Ramp,
-    FilterManager, LayerItem, AttributeLoader, GraphicExtension,
+    FilterManager, LayerItem,
 
      /* Util */
     UtilMisc) {
@@ -104,27 +102,6 @@ define([
         }
 
         /**
-        * Determines if the layer has an active hilight for the highlight type (defined by the state).
-        *
-        * @method isValidHilight
-        * @private
-        * @param  {Object} layer map layer object
-        * @param  {Object} state the state of a highlight (defines if active and layer it applies to)
-        * @returns {Boolean} if layer has valid highlight
-        */
-        function isValidHilight(layer, state) {
-            var ret = false;
-            if (state.objId >= 0) {
-                //there is an active highlight
-                if (layer.id === state.layerId) {
-                    //it belongs to this layer
-                    ret = true;
-                }
-            }
-            return ret;
-        }
-
-        /**
         * Will remove a layer from the map, and adjust counts.
         *
         * @method onLayerError
@@ -149,11 +126,6 @@ define([
                     map.removeLayer(bbLayer);
                     RAMP.layerCounts.bb -= 1;
                 }
-            }
-
-            //remove data, if it exists
-            if (RAMP.data[layerId]) {
-                delete RAMP.data[layerId];
             }
 
             //just incase its really weird and layer is not in the registry
@@ -197,7 +169,8 @@ define([
                 map = RampMap.getMap(),
                 layerConfig = layer.ramp.config,
                 lsState,
-                options = {};
+                options = {},
+                isNotReload = typeof reloadIndex === 'undefined';
 
             if (!layer.ramp) {
                 console.log('you failed to supply a ramp.type to the layer!');
@@ -207,7 +180,7 @@ define([
             switch (layer.ramp.type) {
                 case GlobalStorage.layerType.wms:
                     layerSection = GlobalStorage.layerType.wms;
-                    if (!reloadIndex) {
+                    if (isNotReload) {
                         insertIdx = RAMP.layerCounts.base + RAMP.layerCounts.wms;
 
                         // generate wms legend image url and store in the layer config
@@ -234,7 +207,7 @@ define([
                 case GlobalStorage.layerType.feature:
                 case GlobalStorage.layerType.Static:
                     layerSection = GlobalStorage.layerType.feature;
-                    if (!reloadIndex) {
+                    if (isNotReload) {
                         //NOTE: these static layers behave like features, in that they can be in any position and be re-ordered.
                         insertIdx = RAMP.layerCounts.feature;
                     } else {
@@ -250,6 +223,11 @@ define([
             //do this before creating layer selector item, as the layer selector inspects the map
             //object to make state decisions
             map.addLayer(layer, insertIdx);
+
+            //sometimes the ESRI api will kick a layer out of the map if it errors after the add process.
+            //store a pointer here so we can find it (and it's information)
+            // TODO - this write to layer registry should be refactored into a call to state manager
+            RAMP.layerRegistry[layer.id] = layer;
 
             // publish LAYER_ADDED event for every user-added layer
             topic.publish(EventManager.LayerLoader.LAYER_ADDED, { layer: layer });
@@ -279,17 +257,13 @@ define([
             }
 
             //add entry to layer selector
-            if (!reloadIndex) {
+            if (isNotReload) {
                 options.state = lsState; // pass initial state in the options object
                 FilterManager.addLayer(layerSection, layer.ramp, options);
             } else {
                 updateLayerSelectorState(layerConfig.id, lsState, false, options);
             }
             layer.ramp.load.inLS = true;
-
-            //sometimes the ESRI api will kick a layer out of the map if it errors after the add process.
-            //store a pointer here so we can find it (and it's information)
-            RAMP.layerRegistry[layer.id] = layer;
 
             //this will force a recreation of the highlighting graphic group.
             //if not done, can cause mouse interactions to get messy if adding more than
@@ -307,15 +281,6 @@ define([
                     break;
 
                 case GlobalStorage.layerType.feature:
-
-                    //initiate the feature data download
-                    if (layer.url) {
-                        //service based. get feature data from the service
-                        AttributeLoader.loadAttributeData(layer.id, layer.url, layer.ramp.type);
-                    } else {
-                        //file based. scrape data from the layer
-                        AttributeLoader.extractAttributeData(layer);
-                    }
 
                     //TODO consider the case where a layer was loaded by the user, and we want to disable things like maptips?
 
@@ -336,7 +301,7 @@ define([
 
                     //generate bounding box
                     //if a reload, the bounding box still exists from the first load
-                    if (!reloadIndex) {
+                    if (isNotReload) {
                         var boundingBoxExtent,
                             boundingBox = new GraphicsLayer({
                                 id: String.format("boundingBoxLayer_{0}", layer.id),
@@ -393,6 +358,18 @@ define([
             * @method init
             */
             init: function () {
+                //counters for layers loaded, so we know where to insert things
+                //default basemap count to 1, as we always load 1 to begin with
+
+                RAMP.layerCounts = {
+                    feature: 0,
+                    bb: 0,
+                    wms: 0,
+                    base: 1
+                };
+
+                RAMP.layerRegistry = {};
+
                 topic.subscribe(EventManager.LayerLoader.LAYER_LOADED, this.onLayerLoaded);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATED, this.onLayerUpdateEnd);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATING, this.onLayerUpdateStart);
@@ -450,8 +427,6 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateStart: function (evt) {
-                RampMap.updateDatagridUpdatingState(evt.layer, true);
-
                 //console.log("LAYER UPDATE START: " + evt.layer.url);
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.UPDATING, true);
             },
@@ -464,37 +439,11 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateEnd: function (evt) {
-                var g;
-
-                //check if we have any active highlites for this layer
-                if (isValidHilight(evt.layer, RAMP.state.hilite.click)) {
-                    //re-request the click hilight
-                    g = GraphicExtension.findGraphic(RAMP.state.hilite.click.objId, evt.layer.id);
-                    if (g) {
-                        topic.publish(EventManager.FeatureHighlighter.HIGHLIGHT_SHOW, {
-                            graphic: g
-                        });
-                    } //else graphic is off-view and does not exist in layer. dont' change higlight
-                }
-
-                if (isValidHilight(evt.layer, RAMP.state.hilite.zoom)) {
-                    //re-request the zoom hilight
-                    g = GraphicExtension.findGraphic(RAMP.state.hilite.zoom.objId, evt.layer.id);
-                    if (g) {
-                        topic.publish(EventManager.FeatureHighlighter.ZOOMLIGHT_SHOW, {
-                            graphic: g
-                        });
-                    } //else graphic is off-view and does not exist in layer. dont' change higlight
-                }
-
                 //IE10 hack.  since IE10 doesn't fire a loaded event, we need to also set the loaded flag on layer here.
                 //            don't do it if it's in error state.  once an error, always an error
                 if (evt.layer.ramp.load.state !== "error") {
                     evt.layer.ramp.load.state = "loaded";
                 }
-
-                RampMap.updateDatagridUpdatingState(evt.layer);
-
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.LOADED, true);
             },
 

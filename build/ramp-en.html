@@ -209,18 +209,22 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                                             <h3>Error</h3>
                                             <p>Image cannot be generated. Please try again later.</p>
                                         </section>
-                                    <div class="sk-spinner sk-spinner-chasing-dots">
-                                        <div class="sk-dot1"></div>
-                                        <div class="sk-dot2"></div>
-                                    </div>
-                                    <span class="wb-inv">Generating image. Please wait.</span>
-                                </div>
+                                    <div class="loading-simple">
+                                        <span>Loading</span>
+                                        <ul role="presentation">
+                                            <li></li>
+                                            <li></li>
+                                            <li></li>
+                                        </ul>
+                                    </div>                                </div>
                                 <div class="map-export-image">
                                     <img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="">
                                 </div>
                             </div>
                             <div class="map-export-controls">
-                                <h2 class="mrgn-tp-sm mrgn-bttm-sm page-header h3">Map Export</h2>
+                                <header>
+                                    <h2 class="mrgn-tp-sm mrgn-bttm-md h3">Map Export</h2>
+                                </header>
                                 <button class="button-none button-close _tooltip popup-modal-dismiss" title="Close">
                                     <span class="wb-invisible">Close</span>
                                 </button>
@@ -808,12 +812,14 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                     </div>
                 </div>
                 <div id="map-load-indicator" class="">
-                    <span>Loading</span><ul>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                </div>
+                    <div class="loading-simple">
+                        <span>Loading</span>
+                        <ul role="presentation">
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>                </div>
             </div>
         </div>
         <button id="panel-toggle" class="button-none side-toggle state-expanded _tooltip" title="Close">
@@ -831,14 +837,15 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                         </h2>-->
                         <div id="searchMapSectionBody">
                             <!--LAYER SELECTION BEGINS-->
-                            <ul class="loadingAnimation">
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                            </ul>
+                            <div class="loadingAnimation">
+                                <div class="loading-simple">
+                                    <span>Loading</span>
+                                    <ul role="presentation">
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </div>                            </div>
                             <!--LAYER SECTION END-->
                         </div>
                     <!--</div>-->
@@ -847,14 +854,15 @@ Reusable Accessible Mapping Platform (RAMP) - Usability Theme
                 <details id="tabs1_2" data-panel-name="datagrid">
                     <summary class="">Data</summary>
                     <div id="gridpane">
-                        <ul class="loadingAnimation">
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                        </ul>
+                        <div class="loadingAnimation">
+                            <div class="loading-simple">
+                                <span>Loading</span>
+                                <ul role="presentation">
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>                        </div>
                     </div>
                 </details>
             </div>
