@@ -3681,6 +3681,9 @@ ul.loadingAnimation li:nth-child(1) {
   overflow: hidden;
   padding: 0;
 }
+#map-toolbar.compact .map-toolbar-item-button:not(#baseMapToggle) > span {
+  display: none !important;
+}
 #map-toolbar .map-toolbar-item {
   display: inline;
 }
@@ -6739,12 +6742,6 @@ footer {
   font-weight: bold;
   cursor: text;
   padding-top: 4px;
-}
-#panel-div .wb-tabs .tab-notice {
-  position: absolute;
-  left: 12px;
-  top: 8px;
-  line-height: initial;
 }
 #panel-div .tabpanels {
   position: absolute;

@@ -205,18 +205,22 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                                             <h3>Erreur</h3>
                                             <p>L’image ne peut être générée. Veuillez essayer de nouveau plus tard.</p>
                                         </section>
-                                    <div class="sk-spinner sk-spinner-chasing-dots">
-                                        <div class="sk-dot1"></div>
-                                        <div class="sk-dot2"></div>
-                                    </div>
-                                    <span class="wb-inv">Génération de l’image Veuillez attendre.</span>
-                                </div>
+                                    <div class="loading-simple">
+                                        <span>Chargement</span>
+                                        <ul role="presentation">
+                                            <li></li>
+                                            <li></li>
+                                            <li></li>
+                                        </ul>
+                                    </div>                                </div>
                                 <div class="map-export-image">
                                     <img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="">
                                 </div>
                             </div>
                             <div class="map-export-controls">
-                                <h2 class="mrgn-tp-sm mrgn-bttm-sm page-header h3">Exportation de carte</h2>
+                                <header>
+                                    <h2 class="mrgn-tp-sm mrgn-bttm-md h3">Exportation de carte</h2>
+                                </header>
                                 <button class="button-none button-close _tooltip popup-modal-dismiss" title="Fermer">
                                     <span class="wb-invisible">Fermer</span>
                                 </button>
@@ -804,12 +808,14 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                     </div>
                 </div>
                 <div id="map-load-indicator" class="">
-                    <span>Chargement</span><ul>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                </div>
+                    <div class="loading-simple">
+                        <span>Chargement</span>
+                        <ul role="presentation">
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>                </div>
             </div>
         </div>
         <button id="panel-toggle" class="button-none side-toggle state-expanded _tooltip" title="Fermer">
@@ -827,14 +833,15 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                         </h2>-->
                         <div id="searchMapSectionBody">
                             <!--LAYER SELECTION BEGINS-->
-                            <ul class="loadingAnimation">
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                            </ul>
+                            <div class="loadingAnimation">
+                                <div class="loading-simple">
+                                    <span>Chargement</span>
+                                    <ul role="presentation">
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </div>                            </div>
                             <!--LAYER SECTION END-->
                         </div>
                     <!--</div>-->
@@ -843,14 +850,15 @@ Plateforme de cartographie accessible et réutilisable - Thème d'intranet
                 <details id="tabs1_2" data-panel-name="datagrid">
                     <summary class="">Données</summary>
                     <div id="gridpane">
-                        <ul class="loadingAnimation">
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                        </ul>
+                        <div class="loadingAnimation">
+                            <div class="loading-simple">
+                                <span>Chargement</span>
+                                <ul role="presentation">
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>                        </div>
                     </div>
                 </details>
             </div>
