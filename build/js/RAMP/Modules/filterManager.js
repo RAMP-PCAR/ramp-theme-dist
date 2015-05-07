@@ -36,7 +36,6 @@
 * 
 * @class FilterManager
 * @static
-* @uses dojo/_base/array
 * @uses dojo/Deferred
 * @uses dojo/topic
 * @uses esri/tasks/query
@@ -44,7 +43,7 @@
 
 define([
 /* Dojo */
-        "dojo/_base/lang", "dojo/_base/array", "dojo/Deferred", "dojo/topic",
+        "dojo/_base/lang", "dojo/Deferred", "dojo/topic",
 /* Text */
         "dojo/text!./templates/filter_manager_template.json",
         "dojo/text!./templates/filter_wms_meta_Template.json",
@@ -53,14 +52,14 @@ define([
         "esri/tasks/query",
 
 /* Ramp */
-        "ramp/ramp", "ramp/globalStorage", "ramp/map", "ramp/eventManager", "ramp/theme", "ramp/layerGroup", "ramp/layerItem",
+        "ramp/globalStorage", "ramp/map", "ramp/eventManager", "ramp/theme", "ramp/layerGroup", "ramp/layerItem", "ramp/layerLoader",
 
 /* Util */
-        "utils/tmplHelper", "utils/util", "utils/dictionary", "utils/popupManager", "utils/checkbox", "utils/checkboxGroup"],
+        "utils/tmplHelper", "utils/util", "utils/dictionary", "utils/popupManager", "utils/checkboxGroup"],
 
     function (
     /* Dojo */
-        lang, dojoArray, Deferred, topic,
+        lang, Deferred, topic,
     /* Text */
         filter_manager_template_json,
         filter_wms_meta_Template,
@@ -69,10 +68,10 @@ define([
         EsriQuery,
 
     /* Ramp */
-        Ramp, GlobalStorage, RampMap, EventManager, Theme, LayerGroup, LayerItem,
+        GlobalStorage, RampMap, EventManager, Theme, LayerGroup, LayerItem, LayerLoader,
 
     /* Util */
-        TmplHelper, UtilMisc, UtilDict, PopupManager, Checkbox, CheckboxGroup) {
+        TmplHelper, UtilMisc, UtilDict, PopupManager, CheckboxGroup) {
         "use strict";
 
         var config,
@@ -313,7 +312,8 @@ define([
                                     //check if layer is in error state.  error layers should not be part of the count
                                     return (getLayerItem(elm).state !== LayerItem.state.ERROR);
                                 }),
-                                index = dojoArray.indexOf(cleanIdArray, layerId);
+                                index;
+                            index = cleanIdArray.toArray().indexOf(layerId);
 
                             if (index < 0) {
                                 return;
@@ -558,7 +558,7 @@ define([
                         if (!node.hasClass("selected-row")) {
                             //var guid = $(this).data("guid") || $(this).data("guid", UtilMisc.guid()).data("guid");
                             var id = button.data("layer-id"),
-                                layerConfig = Ramp.getLayerConfigWithId(id),
+                                layerConfig = LayerLoader.getLayerConfig(id),
                                 metadataUrl;
 
                             topic.publish(EventManager.GUI.SUBPANEL_OPEN, {
@@ -855,9 +855,7 @@ define([
        */
         function setLayerOffScaleState(layerId) {
             var visibleLayers = RampMap.getVisibleLayers(),
-                invisibleLayers = RampMap.getInvisibleLayers(),
-                layer = RAMP.layerRegistry[layerId],
-                layerItem;
+                invisibleLayers = RampMap.getInvisibleLayers();
 
             function filterLayerIds(layers) {
                 layers = layers
@@ -885,15 +883,7 @@ define([
             }
 
             if (invisibleLayers.contains(layerId)) {
-                if (layer && RampMap.layerInLODRange(layer.maxScale, layer.minScale)) {
-                    setLayerState(invisibleLayers, LayerItem.state.OFF_SCALE, true);
-                } else {
-                    setLayerState(layerId, LayerItem.state.ERROR, { notices: { error: { message: i18n.t("addDataset.error.messageFeatureOutsideZoomRange") } } });
-                    layerItem = layerGroups[GlobalStorage.layerType.feature].getLayerItem(layerId);
-                    LayerItem.removeStateMatrixPart(layerItem.stateMatrix, "controls", LayerItem.controls.RELOAD);
-                    layerItem.setState(LayerItem.state.ERROR, null, true);
-                }
-
+                setLayerState(invisibleLayers, LayerItem.state.OFF_SCALE, true);
             }
         }
 
@@ -1057,7 +1047,7 @@ define([
                 var deferred = new Deferred();
 
                 this._getFeatures(fl).then(function (featureSet) {
-                    deferred.resolve(dojoArray.map(featureSet.features, function (feature) {
+                    deferred.resolve(featureSet.features.map(function (feature) {
                         return feature.attributes[field];
                     }));
                 });

@@ -334,7 +334,7 @@ define([
                                                 handle = delayLoadingState(step, 100),
                                                 bricksData = step.getData().bricksData,
                                                 serviceTypeValue = bricksData.serviceType.selectedChoice,
-                                                serviceUrlValue = bricksData.serviceURL.inputValue.trim(); // trimming spaces from service url string
+                                                serviceUrlValue = bricksData.serviceURL.inputValue;
 
                                             switch (serviceTypeValue) {
                                                 case "featureServiceAttrStep":
@@ -678,7 +678,7 @@ define([
                                                 bricksData = step.getData().bricksData,
                                                 fileTypeValue = bricksData.fileType.selectedChoice,
                                                 fileValue = bricksData.fileOrFileURL.fileValue,
-                                                fileUrlValue = bricksData.fileOrFileURL.inputValue.trim(), // trimming spaces from file url string
+                                                fileUrlValue = bricksData.fileOrFileURL.inputValue,
                                                 fileName = bricksData.fileOrFileURL.fileName;
 
                                             promise = DataLoader.loadDataSet({
