@@ -67640,18 +67640,7 @@ RAMP = {
         ui: {
             sidePanelOpened: true,
             fullscreen: false,
-            wmsQuery: true,
-            datagridUpdating: 0
-        },
-        hilite: { //tracks active hilights to allow them to refresh if feature graphics redraw at different resolution
-            click: {
-                objId: -1,
-                layerId: ''
-            },
-            zoom: {
-                objId: -1,
-                layerId: ''
-            }
+            wmsQuery: true
         }
     },
 
@@ -67669,55 +67658,26 @@ RAMP = {
      * @property scripts
      * @type array
      */
-    scripts: ['http://js.arcgis.com/3.13/', jsPrefix + 'lib/wet-boew/js/wet-boew.js', jsPrefix + 'RAMP/bootstrapper.js'],
-
-    /**
-    * Store feature datasets.  Keyed by layer id, value is set of attribute data.
-    *
-    * @property data
-    * @type Object
-    */
-    data: {},
-
-    /**
-    * Store layer object.  Keyed by layer id, value layer object.
-    *
-    * @property layerRegistry
-    * @type Object
-    */
-    layerRegistry: {},
-
-    /**
-    * Store layer counts.  Used to accurately determine layer ordering and insertion positions in the map stack
-    * default basemap count to 1, as we always load 1 to begin with.
-    *
-    * @property layerCounts
-    * @type Object
-    */
-    layerCounts: {
-        feature: 0,
-        bb: 0,
-        wms: 0,
-        base: 1
-    }
+    scripts: ['http://js.arcgis.com/3.13/', jsPrefix + 'lib/wet-boew/js/wet-boew.js', jsPrefix + 'RAMP/bootstrapper.js']
 };
 
 var importScript = (function (oHead) {
-    'use strict';
+        'use strict';
 
-    function loadError(oError) {
-        throw new URIError("The script " + oError.target.src + " is not accessible.");
-    }
+        function loadError (oError) {
+            throw new URIError("The script " + oError.target.src + " is not accessible.");
+        }
 
-    return function (sSrc, fOnload) {
-        var oScript = document.createElement("script");
-        oScript.type = "text\/javascript";
-        oScript.onerror = loadError;
-        if (fOnload) { oScript.onload = fOnload; }
-        oHead.appendChild(oScript);
-        oScript.src = sSrc;
-    };
-})(document.head || document.getElementsByTagName("head")[0]);
+        return function (sSrc, fOnload) {
+            var oScript = document.createElement("script");
+            oScript.type = "text\/javascript";
+            oScript.onerror = loadError;
+            if (fOnload) { oScript.onload = fOnload; }
+                oHead.appendChild(oScript);
+                oScript.src = sSrc;
+            };
+
+    })(document.head || document.getElementsByTagName("head")[0]);
 
 dojoConfig = {
     parseOnLoad: false,
@@ -67746,4 +67706,4 @@ dojoConfig = {
     importScript(scripts[0], function () { loadRampScripts(scripts.slice(1)); });
 })(RAMP.scripts);
 
-console.log("   \n                         _,-' ______\n        WWWWWW| |WWWWWW'  .-'  ____7\n         W W W| |W W W   /   ___7\n              | |   |   /  ___7\n            ( O O )_ \\ | ___7_\n             /   \\          ~ \\\n            /     |  ~   ~     \\\n           /o   o/W          ~  \\         Elk:    Bernhard Schwarz\n           \\____/ |_| |__| |_| | *        Wings:  jgs\n                | | | |  | | | |\n   ______ _    _| |_| | _| |_| |   _______    _ __    _____ _ _\n   |  ___| |  (___|___|(___|___|  / /  ___|  | |\\ \\  |  ___| | |\n   | |_  | |_   _ _ _ __   __ _  | || |_ __ _| |_| | | |__ | | | __\n   |  _| | | | | | | '_ \\ / _` | | ||  _/ _` | __| | |  __|| | |/ /\n   | |   | | |_| | | | | | (_| | | || || (_| | |_| | | |___| |   <\n   \\_|   |_|\\__, |_|_| |_|\\__, | | |\\_| \\__,_|\\__| | \\____/|_|_|\\_\\\n             __/ |         __/ |  \\_\\           /_/                                                                  \n            |___/         |___/       ._ v5.2 _.\n\n");
+console.log("   \n                         _,-' ______\n        WWWWWW| |WWWWWW'  .-'  ____7\n         W W W| |W W W   /   ___7\n              | |   |   /  ___7\n            ( O O )_ \\ | ___7_\n             /   \\          ~ \\\n            /     |  ~   ~     \\\n           /o   o/W          ~  \\         Elk:    Bernhard Schwarz\n           \\____/ |_| |__| |_| | *        Wings:  jgs\n                | | | |  | | | |\n   ______ _    _| |_| | _| |_| |   _______    _ __    _____ _ _\n   |  ___| |  (___|___|(___|___|  / /  ___|  | |\\ \\  |  ___| | |\n   | |_  | |_   _ _ _ __   __ _  | || |_ __ _| |_| | | |__ | | | __\n   |  _| | | | | | | '_ \\ / _` | | ||  _/ _` | __| | |  __|| | |/ /\n   | |   | | |_| | | | | | (_| | | || || (_| | |_| | | |___| |   <\n   \\_|   |_|\\__, |_|_| |_|\\__, | | |\\_| \\__,_|\\__| | \\____/|_|_|\\_\\\n             __/ |         __/ |  \\_\\           /_/                                                                  \n            |___/         |___/       ._ v5.3 _.\n\n");
