@@ -12,19 +12,18 @@
 *
 * ####Uses RAMP Templates:
 * {{#crossLink "templates/basemap_selector_template.json"}}{{/crossLink}}
-* 
+*
 * ####Imports RAMP Modules:
-* {{#crossLink "GlobalStorage"}}{{/crossLink}}  
-* {{#crossLink "Map"}}{{/crossLink}}  
-* {{#crossLink "EventManager"}}{{/crossLink}}  
-* {{#crossLink "Dictionary"}}{{/crossLink}}  
-* {{#crossLink "PopupManager"}}{{/crossLink}}  
-* {{#crossLink "Util"}}{{/crossLink}}  
-* {{#crossLink "TmplHelper"}}{{/crossLink}}  
+* {{#crossLink "GlobalStorage"}}{{/crossLink}}
+* {{#crossLink "Map"}}{{/crossLink}}
+* {{#crossLink "EventManager"}}{{/crossLink}}
+* {{#crossLink "Dictionary"}}{{/crossLink}}
+* {{#crossLink "PopupManager"}}{{/crossLink}}
+* {{#crossLink "Util"}}{{/crossLink}}
+* {{#crossLink "TmplHelper"}}{{/crossLink}}
 *
 * @class BaseMapSelector
 * @static
-* @uses dojo/_base/array
 * @uses dojo/_base/lang
 * @uses dojo/dom-attr
 * @uses dojo/query
@@ -34,7 +33,7 @@
 
 define([
 // Dojo
-    "dojo/_base/array", "dojo/_base/lang", "dojo/dom-attr", "dojo/query", "dojo/topic",
+    "dojo/_base/lang", "dojo/dom-attr", "dojo/query", "dojo/topic",
 // Templates
     "dojo/text!./templates/basemap_selector_template.json",
 // Ramp
@@ -46,7 +45,7 @@ define([
 
 function (
         // Dojo
-        dojoArray, dojoLang, domAttr, query, topic,
+        dojoLang, domAttr, query, topic,
         // Templates
         basemapselectorTemplate,
         // Ramp
@@ -255,8 +254,6 @@ function (
 
                     selectorSectionContainer.hide(); // hide baseselector after it's initiated
 
-                    this.updateToggleLabel();
-
                     topic.publish(EventManager.BasemapSelector.UI_COMPLETE);
 
                     return this;
@@ -284,7 +281,11 @@ function (
         basemapGallery.on("selection-change", function () {
             var basemap = basemapGallery.getSelected();
 
+            //update global layer counts and UI
+            RAMP.layerCounts.base = basemap.layers.length;
             ui.updateToggleLabel();
+
+            //event to update the basemap
             topic.publish(EventManager.BasemapSelector.BASEMAP_CHANGED, {
                 id: basemap.id,
                 cssStyle: basemap.scaleCssClass
@@ -352,7 +353,7 @@ function (
 
             RAMP.basemapIndex = {};
 
-            dojoArray.forEach(basemaps, function (basemap, i) {
+            basemaps.forEach(function (basemap, i) {
                 var basemapDijit,
                     basemapLayers = [];
 
@@ -403,7 +404,7 @@ function (
 
             ui
                 .init(basemapId, currentTileSchema)
-            ;
+                .updateToggleLabel();
         }
     };
 });
