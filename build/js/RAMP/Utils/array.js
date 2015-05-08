@@ -9,14 +9,15 @@
 * Set of functions that deal with arrays.
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "Util"}}{{/crossLink}}
-*
+* {{#crossLink "Util"}}{{/crossLink}}  
+* 
 * @class Array
 * @static
+* @uses dojo/_base/array
 * @uses dojo/_base/lang
 */
-define(["dojo/_base/lang", "utils/util"],
-    function (dojoLang, Util) {
+define(["dojo/_base/array", "dojo/_base/lang", "utils/util"],
+    function (dojoArray, dojoLang, Util) {
         "use strict";
         return {
             /**
@@ -49,7 +50,7 @@ define(["dojo/_base/lang", "utils/util"],
             * @param {Array} arr Array to be searched
             * @param {Function} predicate a function that takes two arguments (element and its index) and returns true if the
             * argument satisfies some condition, and false otherwise.
-            * @param {Object} scope value to use as 'this'
+            * @param {Object} scope ???
             * @return {Object} first element that satisfies the given predicate; `null` if no such element is found
             */
             find: function (arr, predicate, scope) {
@@ -71,7 +72,7 @@ define(["dojo/_base/lang", "utils/util"],
             * @param {Array} arr Array to be searched
             * @param {Function} predicate a function that takes two arguments (element and its index) and returns true if the
             * argument satisfies some condition, and false otherwise.
-            * @param {Object} scope value to use as 'this'
+            * @param {Object} scope ???
             * @return {Number} index of the first element that satisfied the predicate; `-1` if no such element is found
             */
             indexOf: function (arr, predicate, scope) {

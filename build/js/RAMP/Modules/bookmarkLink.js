@@ -41,37 +41,50 @@
 *    serialize and update the given object instead of all objects).
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "GlobalStorage"}}{{/crossLink}}
-* {{#crossLink "Map"}}{{/crossLink}}
-* {{#crossLink "EventManager"}}{{/crossLink}}
-* {{#crossLink "RAMP"}}{{/crossLink}}
-* {{#crossLink "Url"}}{{/crossLink}}
-* {{#crossLink "Util"}}{{/crossLink}}
-* {{#crossLink "Dictionary"}}{{/crossLink}}
-* {{#crossLink "PopupManager"}}{{/crossLink}}
-*
+* {{#crossLink "GlobalStorage"}}{{/crossLink}}  
+* {{#crossLink "Map"}}{{/crossLink}}  
+* {{#crossLink "EventManager"}}{{/crossLink}}  
+* {{#crossLink "RAMP"}}{{/crossLink}}  
+* {{#crossLink "Url"}}{{/crossLink}}  
+* {{#crossLink "Util"}}{{/crossLink}}  
+* {{#crossLink "Dictionary"}}{{/crossLink}}  
+* {{#crossLink "PopupManager"}}{{/crossLink}}  
+* 
 * @class BookmarkLink
 * @static
+* @uses dojo/_base/declare
 * @uses require
+* @uses dojo/dom-construct
 * @uses dojo/io-query
 * @uses dojo/_base/lang
+* @uses dojo/dom
+* @uses dojo/_base/array
 * @uses dojo/topic
+* @uses dijit/form/TextBox
+* @uses dijit/TitlePane
+* @uses esri/geometry/Extent
 */
 
 define([
 // Dojo
-        "require", "dojo/io-query", "dojo/_base/lang", "dojo/topic",
+        "dojo/_base/declare", "require", "dojo/dom-construct", "dojo/io-query", "dojo/_base/lang",
+        "dojo/dom", "dojo/_base/array", "dojo/topic", "dijit/form/TextBox", "dijit/TitlePane",
+// Esri
+        "esri/geometry/Extent",
 // Ramp
-        "ramp/globalStorage", "ramp/map", "ramp/eventManager", "ramp/layerLoader",
+        "ramp/globalStorage", "ramp/map", "ramp/eventManager", "ramp/ramp",
 // Util
         "utils/url", "utils/util", "utils/dictionary", "utils/array", "utils/popupManager"
 ],
 
     function (
     // Dojo
-        dojoRequire, dojoQuery, dojoLang, topic,
+        declare, dojoRequire, dojoDomConstruct, dojoQuery, dojoLang,
+        dojoDom, dojoArray, topic, TextBox, TitlePane,
+    // Esri
+        Extent,
     // Ramp
-        GlobalStorage, RampMap, EventManager, LayerLoader,
+        GlobalStorage, RampMap, EventManager, Ramp,
     // Util
         Url, UtilMisc, UtilDict, UtilArray, PopupManager) {
         "use strict";
@@ -111,7 +124,7 @@ define([
                 HIDDEN_BOXES: "hb"
             },
 
-            HREF_MAILTO_TEMPLATE = "mailto:?subject={0}&body={1}",
+            HREF_MAILTO_TEMPLATE = "mailto:?subject={0}&body={1}%0D%0A%0D%0A{2}",
 
             config,
 
@@ -233,13 +246,13 @@ define([
                             topic.publish(EventManager.BookmarkLink.GETLINK_PANEL_CHANGED, { visible: true });
                             topic.publish(EventManager.GUI.TOOLBAR_SECTION_OPEN, { id: "get-link-section" });
                             console.log(EventManager.BookmarkLink.GETLINK_PANEL_CHANGED + " visible:", true);
-
+                            
                             //when called in gui.js, elements for sidePanelTabList is not available yet
                             //re-publish on selected tab
                             sidePanelWbTabs = $("#panel-div > .wb-tabs");
                             sidePanelTabList = sidePanelWbTabs.find(" > ul[role=tablist]");
                             sidePanelTabPanels = sidePanelWbTabs.find(" > .tabpanels");
-
+                            
                             sidePanelTabList.find("li a").click(function () {
                                 console.log("inside side panel tab list on click");
                                 var selectedPanelId = $(this).attr("href").substr(1);
@@ -337,6 +350,7 @@ define([
         function setNewUrl(url) {
             var mailToHref = String.format(HREF_MAILTO_TEMPLATE,
                 i18n.t("bookmarkLink.emailUrlSubject"),
+                i18n.t("bookmarkLink.emailUrlBody"),
                 encodeURIComponent(url));
 
             linkPaneTextbox.val(url);
@@ -363,6 +377,7 @@ define([
                         //first param has a question mark in front of it.  all others have an &
                         delim = "&";
                     }
+                   
                 }
             });
 
@@ -424,10 +439,10 @@ define([
                 url = element.attr('href'),
                 dstLang = element.attr('lang'),
                 srcLang = RAMP.locale,
-                re = new RegExp('rcs\\.([\\w-+=]+)\\.({0})'.format(srcLang), 'g');
+                re = new RegExp('rcs\\.([\\w-+=]+)\\.({0})'.format(srcLang),'g');
 
             console.log(paras);
-            paras = paras.replace(re, 'rcs.$1.{0}'.format(dstLang));
+            paras = paras.replace(re,'rcs.$1.{0}'.format(dstLang));
             console.log(paras);
 
             url = url.split('?')[0] + '?' + paras;
@@ -494,7 +509,7 @@ define([
 
             //replace "#" with "st=", otherwise RAMP treats as regular parameters, not archors
             urlObj.query = urlObj.query.replace("#", URL_KEYS.SELECT_TAB + "=");
-
+          
             queryObject = dojoQuery.queryToObject(urlObj.query);
 
             //adds homePage (e.g. default.aspx or rampmap.aspx) if not present;
@@ -594,8 +609,9 @@ define([
                 //addParameter(EVENT_TAB_CHANGE, {
                 //    index: queryObject[URL_KEYS.SELECT_TAB]
                 //});
-
-                addAnchor(EVENT_TAB_CHANGE, queryObject[URL_KEYS.SELECT_TAB]);
+                                
+                addAnchor(EVENT_TAB_CHANGE,queryObject[URL_KEYS.SELECT_TAB]);
+               
             }
 
             var layerIds;
@@ -604,7 +620,7 @@ define([
                 layerIds = queryObject[URL_KEYS.VISIBLE_LAYERS].split("+");
 
                 layerIds.forEach(function (layerId) {
-                    var layerConfig = LayerLoader.getLayerConfig(layerId);
+                    var layerConfig = Ramp.getLayerConfigWithId(layerId);
                     // make sure not null
                     if (layerConfig !== null) {
                         layerConfig.settings.visible = true;
@@ -622,7 +638,7 @@ define([
                 layerIds = queryObject[URL_KEYS.HIDDEN_LAYERS].split("+");
 
                 layerIds.forEach(function (layerId) {
-                    var layerConfig = LayerLoader.getLayerConfig(layerId);
+                    var layerConfig = Ramp.getLayerConfigWithId(layerId);
 
                     if (layerConfig !== null) {
                         layerConfig.settings.visible = false;
@@ -640,7 +656,7 @@ define([
                 layerIds = queryObject[URL_KEYS.VISIBLE_BOXES].split("+");
 
                 layerIds.forEach(function (layerId) {
-                    var layerConfig = LayerLoader.getLayerConfig(layerId);
+                    var layerConfig = Ramp.getLayerConfigWithId(layerId);
                     if (layerConfig !== null) {
                         layerConfig.settings.boundingBoxVisible = true;
                         boundingBoxVisibility[layerId] = true;
@@ -656,7 +672,7 @@ define([
                 layerIds = queryObject[URL_KEYS.HIDDEN_BOXES].split("+");
 
                 layerIds.forEach(function (layerId) {
-                    var layerConfig = LayerLoader.getLayerConfig(layerId);
+                    var layerConfig = Ramp.getLayerConfigWithId(layerId);
 
                     if (layerConfig !== null) {
                         layerConfig.settings.boundingBoxVisible = false;
@@ -808,10 +824,10 @@ define([
 
                     // Only keep attributes that are different from the default config
                     var visibleLayers = UtilDict.filter(layerVisibility, function (key, layerVisible) {
-                        return layerVisible && !LayerLoader.getLayerConfig(key).settings.visible;
+                        return layerVisible && !Ramp.getLayerConfigWithId(key).settings.visible;
                     }),
                         hiddenLayers = UtilDict.filter(layerVisibility, function (key, boxVisible) {
-                            return !boxVisible && LayerLoader.getLayerConfig(key).settings.visible;
+                            return !boxVisible && Ramp.getLayerConfigWithId(key).settings.visible;
                         });
 
                     addParameter(PARAM.FILTER.HIDDEN_LAYERS, UtilDict.isEmpty(hiddenLayers) ? null : {
@@ -839,10 +855,10 @@ define([
 
                     // Only keep attributes that are different from the default config
                     var visibleBoxes = UtilDict.filter(boundingBoxVisibility, function (key, boxVisible) {
-                        return boxVisible && !LayerLoader.getLayerConfig(key).settings.boundingBoxVisible;
+                        return boxVisible && !Ramp.getLayerConfigWithId(key).settings.boundingBoxVisible;
                     }),
                         hiddenBoxes = UtilDict.filter(boundingBoxVisibility, function (key, boxVisible) {
-                            return !boxVisible && LayerLoader.getLayerConfig(key).settings.boundingBoxVisible;
+                            return !boxVisible && Ramp.getLayerConfigWithId(key).settings.boundingBoxVisible;
                         });
 
                     addParameter(PARAM.FILTER.HIDDEN_BOXES, UtilDict.isEmpty(hiddenBoxes) ? null : {

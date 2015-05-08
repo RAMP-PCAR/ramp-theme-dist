@@ -1,4 +1,4 @@
-﻿/*global define, i18n, RAMP */
+﻿/*global define, i18n */
 
 /**
 *
@@ -9,12 +9,12 @@
 
 /**
 * Datagridclick handler class.
-*
+*   
 * ####Imports RAMP Modules:
-* {{#crossLink "GraphicExtension"}}{{/crossLink}}
-* {{#crossLink "EventManager"}}{{/crossLink}}
-* {{#crossLink "Util"}}{{/crossLink}}
-*
+* {{#crossLink "GraphicExtension"}}{{/crossLink}}  
+* {{#crossLink "EventManager"}}{{/crossLink}}  
+* {{#crossLink "Util"}}{{/crossLink}}  
+* 
 * @class DatagridClickHandler
 * @static
 * @uses dojo/topic
@@ -62,13 +62,12 @@ define([
             *
             * @method onDetailSelect
             * @param {JObject} buttonNode the "Details" button node
-            * @param {Object} fData the feature data for the entry in the data grid
-            * @param {esri/Graphic} selectedGraphic the on-map graphic object associated with the entry in the datagrid
+            * @param {Object} selectedGraphic {esri/Graphic} the graphic object associated with the entry in the datagrid
             */
-            onDetailSelect: function (buttonNode, fData, selectedGraphic, mode) {
+            onDetailSelect: function (buttonNode, selectedGraphic, mode) {
                 var guid = buttonNode.data("guid") || buttonNode.data("guid", UtilMisc.guid()).data("guid"),
-                    content = GraphicExtension.getFDataTextContent(fData),
-                    title = GraphicExtension.getFDataTitle(fData),
+                    content = GraphicExtension.getTextContent(selectedGraphic),
+                    title = GraphicExtension.getGraphicTitle(selectedGraphic),
                     node = buttonNode.parents(".record-row").parent();
 
                 if (mode === "summary") {
@@ -84,13 +83,11 @@ define([
                             UtilMisc.subscribeOnce(EventManager.Maptips.EXTENT_CHANGE, function (evt) {
                                 var scroll = evt.scroll;
                                 topic.publish(EventManager.Datagrid.HIGHLIGHTROW_SHOW, {
-                                    fData: fData,
+                                    graphic: selectedGraphic,
                                     scroll: scroll
                                 });
                             });
 
-                            RAMP.state.hilite.click.objId = GraphicExtension.getFDataOid(fData);
-                            RAMP.state.hilite.click.layerId = fData.parent.layerId;
                             topic.publish(EventManager.FeatureHighlighter.HIGHLIGHT_SHOW, {
                                 graphic: selectedGraphic
                             });
@@ -118,7 +115,7 @@ define([
                         //doOnOpen: function () {
                         doAfterUpdate: function () {
                             topic.publish(EventManager.Datagrid.HIGHLIGHTROW_SHOW, {
-                                fData: fData,
+                                graphic: selectedGraphic,
                                 scroll: true
                             });
                         },
@@ -160,15 +157,12 @@ define([
             *
             * @method onZoomTo
             * @param {esri/geometry/Extent} currentExtent the current extent of the map
-            * @param {Object} fData the feature data for the entry in the data grid
             * @param {Object} zoomToGraphic graphic object of the feature to zoom to
             */
-            onZoomTo: function (currentExtent, fData, zoomToGraphic) {
+            onZoomTo: function (currentExtent, zoomToGraphic) {
                 zoomBackExtent = currentExtent;
 
                 function callback() {
-                    RAMP.state.hilite.zoom.objId = GraphicExtension.getFDataOid(fData);
-                    RAMP.state.hilite.zoom.layerId = fData.parent.layerId;
                     topic.publish(EventManager.FeatureHighlighter.ZOOMLIGHT_SHOW, {
                         graphic: zoomToGraphic
                     });
@@ -202,7 +196,7 @@ define([
                 }
 
                 topic.publish(EventManager.Datagrid.ZOOMLIGHTROW_SHOW, {
-                    fData: fData
+                    graphic: zoomToGraphic
                 });
             },
 
