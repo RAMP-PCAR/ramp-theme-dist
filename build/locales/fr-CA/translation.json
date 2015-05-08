@@ -112,6 +112,7 @@
 	"bookmarkLink": {
 		"description": "Lien vers le visualiseur de cartes",
 		"email": "Courriel",
+		"emailUrlBody": "",
 		"emailUrlSubject": "Visionneuse de PCAR des SIG",
 		"longLink": "Lien intégral",
 		"shortLink": "Lien raccourci",
@@ -279,20 +280,14 @@
 		},
 		"notices": {
 			"offScaleFullData": "Les données ne sont pas visibles à ce niveau du Zoom",
-			"offScaleSummary": "Quelques données ne sont pas visibles à ce niveau du Zoom",
-			"update": "[fr] Updating"
+			"offScaleSummary": "Quelques données ne sont pas visibles à ce niveau du Zoom"
 		},
 		"sort": "Sorte",
 		"zoomBack": "Zoom arrière",
 		"zoomTo": "Zoom vers"
 	},
 	"filterManager": {
-		"WMSAllQueryDisable": "Désactiver les requêtes sur toutes les couches WMS",
-		"WMSAllQueryEnable": "Activer les requêtes sur toutes les couches WMS",
-		"WMSQueryDisable": "[fr] Disable query on {0}",
-		"WMSQueryEnable": "[fr] Enable query on {0}",
 		"allData": "Toutes les données",
-		"boundingBox": "[fr] Bounding Box",
 		"controlsMatrix": {
 			"error": "Erreur",
 			"metadata": "Métadonnées",
@@ -306,8 +301,6 @@
 		"hideBounds": "Masquer les limites de {0}",
 		"hideFeatures": "Masquer {0}",
 		"hideLegend": "Cacher la légende",
-		"layerData": "[fr] Layer data",
-		"layerDataPrefetch": "[fr] Download all data",
 		"layerHandle": "Descripteur de couche",
 		"layerHandleLabel": "Descripteur de couche pour __layerName__",
 		"layerListLabel": "Liste des couches sortable",
@@ -342,7 +335,11 @@
 			"expand": "[fr] Expand",
 			"fullScreen": "Plein écran",
 			"mapExport": "Exportation de la carte",
-			"open": "Ouvrir"
+			"open": "Ouvrir",
+			"wmsQueryDisable": "Désactiver les requêtes",
+			"wmsQueryDisableTooltip": "Désactiver les requêtes sur toutes les couches WMS",
+			"wmsQueryEnable": "Requêtes",
+			"wmsQueryEnableTooltip": "Activer les requêtes sur toutes les couches WMS"
 		}
 	},
 	"help": {
@@ -550,9 +547,6 @@
 		"includeLegend": "Ajouter la légende",
 		"loading": "Génération de l’image Veuillez attendre.",
 		"title": "Exportation de carte"
-	},
-	"maptips": {
-		"attribsDownloading": "[fr] Attribute data is still downloading"
 	},
 	"page": {
 		"footer": {
