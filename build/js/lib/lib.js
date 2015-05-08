@@ -66180,6 +66180,1483 @@ _dfsPostOrder = function(nodes, config, callback) {
 
 }());
 /* */ 
+ /* */
+/**
+ * @plugin
+ * @name Core
+ * @description Formstone Library core. Required for all plugins.
+ */
+
+var Formstone = this.Formstone = (function ($, window, document, undefined) {
+
+	/* global ga */
+
+	"use strict";
+
+	// Namespace
+
+	var Core = function() {
+			this.Plugins = {};
+			this.ResizeHandlers = [];
+
+			// Globals
+
+			this.window               = window;
+			this.$window              = $(window);
+			this.document             = document;
+			this.$document            = $(document);
+			this.$body                = null;
+
+			this.windowWidth          = 0;
+			this.windowHeight         = 0;
+			this.userAgent            = window.navigator.userAgent || window.navigator.vendor || window.opera;
+			this.isFirefox            = /Firefox/i.test(this.userAgent);
+			this.isChrome             = /Chrome/i.test(this.userAgent);
+			this.isSafari             = /Safari/i.test(this.userAgent) && !this.isChrome;
+			this.isMobile             = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( this.userAgent );
+			this.isFirefoxMobile      = (this.isFirefox && this.isMobile);
+			this.transform            = null;
+			this.transition           = null;
+
+			this.support = {
+				file          : !!(window.File && window.FileList && window.FileReader),
+				history       : !!(window.history && window.history.pushState && window.history.replaceState),
+				matchMedia    : !!(window.matchMedia || window.msMatchMedia),
+				raf           : !!(window.requestAnimationFrame && window.cancelAnimationFrame),
+				touch         : !!(("ontouchstart" in window) || window.DocumentTouch && document instanceof window.DocumentTouch),
+				transition    : false,
+				transform     : false
+			};
+		},
+
+		Functions = {
+
+			/**
+			 * @method private
+			 * @name killEvent
+			 * @description Stops event action and bubble.
+			 * @param e [object] "Event data"
+			 */
+
+			killEvent: function(e, immediate) {
+				try {
+					e.preventDefault();
+					e.stopPropagation();
+
+					if (immediate) {
+						e.stopImmediatePropagation();
+					}
+				} catch(error) {
+					//
+				}
+			},
+
+			/**
+			 * @method private
+			 * @name startTimer
+			 * @description Starts an internal timer.
+			 * @param timer [int] "Timer ID"
+			 * @param time [int] "Time until execution"
+			 * @param callback [function] "Function to execute"
+			 * @return [int] "Timer ID"
+			 */
+
+			startTimer: function(timer, time, callback, interval) {
+				Functions.clearTimer(timer);
+
+				return (interval) ? setInterval(callback, time) : setTimeout(callback, time);
+			},
+
+			/**
+			 * @method private
+			 * @name clearTimer
+			 * @description Clears an internal timer.
+			 * @param timer [int] "Timer ID"
+			 */
+
+			clearTimer: function(timer, interval) {
+				if (timer) {
+					if (interval) {
+						clearInterval(timer);
+					} else {
+						clearTimeout(timer);
+					}
+
+					timer = null;
+				}
+			},
+
+			/**
+			 * @method private
+			 * @name sortAsc
+			 * @description Sorts an array (ascending).
+			 * @param a [mixed] "First value"
+			 * @param b [mixed] "Second value"
+			 * @return Difference between second and first values
+			 */
+
+			sortAsc: function(a, b) {
+				return (parseInt(b) - parseInt(a));
+			},
+
+			/**
+			 * @method private
+			 * @name sortDesc
+			 * @description Sorts an array (descending).
+			 * @param a [mixed] "First value"
+			 * @param b [mixed] "Second value"
+			 * @return Difference between second and first values
+			 */
+
+			sortDesc: function(a, b) {
+				return (parseInt(b) - parseInt(a));
+			}
+		},
+
+		Formstone = new Core(),
+
+		// Classes
+
+		Classes = {
+			base                 : "{ns}",
+			element              : "{ns}-element"
+		},
+
+		// Events
+
+		Events = {
+			namespace            : ".{ns}",
+			blur                 : "blur.{ns}",
+			change               : "change.{ns}",
+			click                : "click.{ns}",
+			dblClick             : "dblclick.{ns}",
+			drag                 : "drag.{ns}",
+			dragEnd              : "dragend.{ns}",
+			dragEnter            : "dragenter.{ns}",
+			dragLeave            : "dragleave.{ns}",
+			dragOver             : "dragover.{ns}",
+			dragStart            : "dragstart.{ns}",
+			drop                 : "drop.{ns}",
+			error                : "error.{ns}",
+			focus                : "focus.{ns}",
+			focusIn              : "focusin.{ns}",
+			focusOut             : "focusout.{ns}",
+			input                : "input.{ns}",
+			keyDown              : "keydown.{ns}",
+			keyPress             : "keypress.{ns}",
+			keyUp                : "keyup.{ns}",
+			load                 : "load.{ns}",
+			mouseDown            : "mousedown.{ns}",
+			mouseEnter           : "mouseenter.{ns}",
+			mouseLeave           : "mouseleave.{ns}",
+			mouseMove            : "mousemove.{ns}",
+			mouseOut             : "mouseout.{ns}",
+			mouseOver            : "mouseover.{ns}",
+			mouseUp              : "mouseup.{ns}",
+			resize               : "resize.{ns}",
+			scroll               : "scroll.{ns}",
+			select               : "select.{ns}",
+			touchCancel          : "touchcancel.{ns}",
+			touchEnd             : "touchend.{ns}",
+			touchLeave           : "touchleave.{ns}",
+			touchMove            : "touchmove.{ns}",
+			touchStart           : "touchstart.{ns}"
+		};
+
+	/**
+	 * @method
+	 * @name Plugin
+	 * @description Builds a plugin and registers it with jQuery.
+	 * @param namespace [string] "Plugin namespace"
+	 * @param settings [object] "Plugin settings"
+	 * @return [object] "Plugin properties. Includes `defaults`, `classes`, `events`, `functions`, `methods` and `utilities` keys"
+	 * @example Formstone.Plugin("namespace", { ... });
+	 */
+
+	Core.prototype.Plugin = function(namespace, settings) {
+		Formstone.Plugins[namespace] = (function(namespace, settings) {
+
+			var namespaceDash = "fs-" + namespace,
+				namespaceDot  = "fs." + namespace;
+
+			/**
+			 * @method private
+			 * @name initialize
+			 * @description Creates plugin instance by adding base classname, creating data and scoping a _construct call.
+			 * @param options [object] <{}> "Instance options"
+			 */
+
+			function initialize(options) {
+				// Extend Defaults
+
+				var hasOptions = $.type(options) === "object";
+
+				options = $.extend(true, {}, settings.defaults || {}, (hasOptions ? options : {}));
+
+				// Maintain Chain
+
+				var $targets = this;
+
+				for (var i = 0, count = $targets.length; i < count; i++) {
+					var $element = $targets.eq(i);
+
+					// Gaurd Against Exiting Instances
+
+					if (!getData($element)) {
+
+						// Extend w/ Local Options
+
+						var localOptions = $element.data(namespace + "-options"),
+							data = $.extend(true, {
+								$el : $element
+							}, options, ($.type(localOptions) === "object" ? localOptions : {}) );
+
+						// Cache Instance
+
+						$element.addClass(settings.classes.raw.element)
+						        .data(namespaceDash, data);
+
+						// Constructor
+
+						settings.methods._construct.apply($element, [ data ].concat(Array.prototype.slice.call(arguments, (hasOptions ? 1 : 0) )));
+					}
+
+				}
+
+				return $targets;
+			}
+
+			/**
+			 * @method private
+			 * @name destroy
+			 * @description Removes plugin instance by scoping a _destruct call, and removing the base classname and data.
+			 * @param data [object] <{}> "Instance data"
+			 */
+
+			/**
+			 * @method widget
+			 * @name destroy
+			 * @description Removes plugin instance.
+			 * @example $(".target").{ns}("destroy");
+			 */
+
+			function destroy(data) {
+				settings.functions.iterate.apply(this, [ settings.methods._destruct ].concat(Array.prototype.slice.call(arguments, 1)));
+
+				this.removeClass(settings.classes.raw.element)
+					.removeData(namespaceDash);
+			}
+
+			/**
+			 * @method private
+			 * @name getData
+			 * @description Creates class selector from text.
+			 * @param $element [jQuery] "Target jQuery object"
+			 * @return [object] "Instance data"
+			 */
+
+			function getData($element) {
+				return $element.data(namespaceDash);
+			}
+
+			/**
+			 * @method private
+			 * @name delegateWidget
+			 * @description Delegates public methods.
+			 * @param method [string] "Method to execute"
+			 * @return [jQuery] "jQuery object"
+			 */
+
+			function delegateWidget(method) {
+
+				// If jQuery object
+
+				if (this instanceof $) {
+
+					var _method = settings.methods[method];
+
+					// Public method OR false
+
+					if ($.type(method) === "object" || !method) {
+
+						// Initialize
+
+						return initialize.apply(this, arguments);
+					} else if (_method && method.indexOf("_") !== 0) {
+
+						// Wrap Public Methods
+
+						return settings.functions.iterate.apply(this, [ _method ].concat(Array.prototype.slice.call(arguments, 1)));
+					}
+
+					return this;
+				}
+			}
+
+			/**
+			 * @method private
+			 * @name delegateUtility
+			 * @description Delegates utility methods.
+			 * @param method [string] "Method to execute"
+			 */
+
+			function delegateUtility(method) {
+
+				// public utility OR utility init OR false
+
+				var _method = settings.utilities[method] || settings.utilities._initialize || false;
+
+				if (_method) {
+
+					// Wrap Utility Methods
+
+					return _method.apply(window, Array.prototype.slice.call(arguments, ($.type(method) === "object" ? 0 : 1) ));
+				}
+			}
+
+			/**
+			 * @method utility
+			 * @name defaults
+			 * @description Extends plugin default settings; effects instances created hereafter.
+			 * @param options [object] <{}> "New plugin defaults"
+			 * @example $.{ns}("defaults", { ... });
+			 */
+
+			function defaults(options) {
+				settings.defaults = $.extend(true, settings.defaults, options || {});
+			}
+
+			/**
+			 * @method private
+			 * @name iterate
+			 * @description Loops scoped function calls over jQuery object with instance data as first parameter.
+			 * @param func [function] "Function to execute"
+			 * @return [jQuery] "jQuery object"
+			 */
+
+			function iterate(fn) {
+				var $targets = this;
+
+				for (var i = 0, count = $targets.length; i < count; i++) {
+					var $element = $targets.eq(i),
+						data = getData($element) || {};
+
+					if ($.type(data.$el) !== "undefined") {
+						fn.apply($element, [ data ].concat(Array.prototype.slice.call(arguments, 1)));
+					}
+				}
+
+				return $targets;
+			}
+
+			// Locals
+
+			settings.initialized = false;
+			settings.priority    = settings.priority || 10;
+
+			// Namespace Classes & Events
+
+			settings.classes   = namespaceProperties("classes", namespaceDash, Classes, settings.classes);
+			settings.events    = namespaceProperties("events",  namespace,     Events,  settings.events);
+
+			// Extend Functions
+
+			settings.functions = $.extend({
+				getData    : getData,
+				iterate    : iterate
+			}, Functions, settings.functions);
+
+			// Extend Methods
+
+			settings.methods = $.extend(true, {
+
+				// Private Methods
+
+				_setup         : $.noop,    // Document ready
+				_construct     : $.noop,    // Constructor
+				_destruct      : $.noop,    // Destructor
+				_resize        : false,    // Window resize
+
+				// Public Methods
+
+				destroy        : destroy
+
+			}, settings.methods);
+
+			// Extend Utilities
+
+			settings.utilities = $.extend(true, {
+
+				// Private Utilities
+
+				_initialize    : false,    // First Run
+				_delegate      : false,    // Custom Delegation
+
+				// Public Utilities
+
+				defaults       : defaults
+
+			}, settings.utilities);
+
+			// Register Plugin
+
+			// Widget
+
+			if (settings.widget) {
+
+				// Widget Delegation: $(".target").plugin("method", ...);
+				$.fn[namespace] = delegateWidget;
+			}
+
+			// Utility
+
+				// Utility Delegation: $.plugin("method", ... );
+				$[namespace] = settings.utilities._delegate || delegateUtility;
+
+			// Run Setup
+
+			settings.namespace = namespace;
+
+			// Resize handler
+
+			if (settings.methods._resize) {
+				Formstone.ResizeHandlers.push({
+					namespace: namespace,
+					priority: settings.priority,
+					callback: settings.methods._resize
+				});
+
+				// Sort handlers on push
+				Formstone.ResizeHandlers.sort(sortPriority);
+			}
+
+			return settings;
+		})(namespace, settings);
+
+		return Formstone.Plugins[namespace];
+	};
+
+	// Namespace Properties
+
+	function namespaceProperties(type, namespace, globalProps, customProps) {
+		var _props = {
+				raw: {}
+			},
+			i;
+
+		customProps = customProps || {};
+
+		for (i in customProps) {
+			if (customProps.hasOwnProperty(i)) {
+				if (type === "classes") {
+
+					// Custom classes
+					_props.raw[ customProps[i] ] = namespace + "-" + customProps[i];
+					_props[ customProps[i] ]     = "." + namespace + "-" + customProps[i];
+				} else {
+					// Custom events
+					_props.raw[ i ] = customProps[i];
+					_props[ i ]     = customProps[i] + "." + namespace;
+				}
+			}
+		}
+
+		for (i in globalProps) {
+			if (globalProps.hasOwnProperty(i)) {
+				if (type === "classes") {
+
+					// Global classes
+					_props.raw[ i ] = globalProps[i].replace(/{ns}/g, namespace);
+					_props[ i ]     = globalProps[i].replace(/{ns}/g, "." + namespace);
+				} else {
+					// Global events
+					_props.raw[ i ] = globalProps[i].replace(/.{ns}/g, "");
+					_props[ i ]     = globalProps[i].replace(/{ns}/g, namespace);
+				}
+			}
+		}
+
+		return _props;
+	}
+
+	// Set Transition Information
+
+	function setTransitionInformation() {
+		var transitionEvents = {
+				"transition"          : "transitionend",
+				"MozTransition"       : "transitionend",
+				"OTransition"         : "otransitionend",
+				"WebkitTransition"    : "webkitTransitionEnd"
+			},
+			transitionProperties = [
+				"transition",
+				"-webkit-transition"
+			],
+			transformProperties = {
+				'transform'          : 'transform',
+				'MozTransform'       : '-moz-transform',
+				'OTransform'         : '-o-transform',
+				'msTransform'        : '-ms-transform',
+				'webkitTransform'    : '-webkit-transform'
+			},
+			transitionEvent       = "transitionend",
+			transitionProperty    = "",
+			transformProperty     = "",
+			test                  = document.createElement("div"),
+			i;
+
+
+		for (i in transitionEvents) {
+			if (transitionEvents.hasOwnProperty(i) && i in test.style) {
+				transitionEvent = transitionEvents[i];
+				Formstone.support.transition = true;
+				break;
+			}
+		}
+
+		Events.transitionEnd = transitionEvent + ".{ns}";
+
+		for (i in transitionProperties) {
+			if (transitionProperties.hasOwnProperty(i) && transitionProperties[i] in test.style) {
+				transitionProperty = transitionProperties[i];
+				break;
+			}
+		}
+
+		Formstone.transition = transitionProperty;
+
+		for (i in transformProperties) {
+			if (transformProperties.hasOwnProperty(i) && transformProperties[i] in test.style) {
+				Formstone.support.transform = true;
+				transformProperty = transformProperties[i];
+				break;
+			}
+		}
+
+		Formstone.transform = transformProperty;
+	}
+
+	// Window resize
+
+	var ResizeTimer = null,
+		Debounce = 20;
+
+	function onWindowResize() {
+		Formstone.windowWidth  = Formstone.$window.width();
+		Formstone.windowHeight = Formstone.$window.height();
+
+		ResizeTimer = Functions.startTimer(ResizeTimer, Debounce, handleWindowResize);
+	}
+
+	function handleWindowResize() {
+		for (var i in Formstone.ResizeHandlers) {
+			if (Formstone.ResizeHandlers.hasOwnProperty(i)) {
+				Formstone.ResizeHandlers[i].callback.call(window, Formstone.windowWidth, Formstone.windowHeight);
+			}
+		}
+	}
+
+	Formstone.$window.on("resize.fs", onWindowResize);
+	onWindowResize();
+
+	// Sort Priority
+
+	function sortPriority(a, b) {
+		return (parseInt(a.priority) - parseInt(b.priority));
+	}
+
+	// Document Ready
+
+	$(function() {
+		Formstone.$body = $("body");
+
+		for (var i in Formstone.Plugins) {
+			if (Formstone.Plugins.hasOwnProperty(i) && !Formstone.Plugins[i].initialized) {
+				Formstone.Plugins[i].methods._setup.call(document);
+				Formstone.Plugins[i].initialized = true;
+			}
+		}
+	});
+
+	// Custom Events
+
+	Events.clickTouchStart = Events.click + " " + Events.touchStart;
+
+	// Transitions
+
+	setTransitionInformation();
+
+	return Formstone;
+
+})(jQuery, this, document);/* */ 
+ /* */;(function ($, Formstone, undefined) {
+
+	"use strict";
+
+	/**
+	 * @method private
+	 * @name construct
+	 * @description Builds instance.
+	 * @param data [object] "Instance data"
+	 */
+
+	function construct(data) {
+		data.touches     = [];
+		data.touching    = false;
+
+		if (data.tap) {
+			// Tap
+
+			data.pan   = false;
+			data.scale = false;
+			data.swipe = false;
+
+			this.on( [Events.touchStart, Events.pointerDown].join(" "), data, onPointerStart)
+				.on(Events.click, data, onClick);
+		} else if (data.pan || data.swipe || data.scale) {
+			// Pan / Swipe / Scale
+
+			data.tap = false;
+
+			if (data.swipe) {
+				data.pan = true;
+			}
+
+			if (data.scale) {
+				data.axis = false;
+			}
+
+			if (data.axis) {
+				data.axisX = data.axis === "x";
+				data.axisY = data.axis === "y";
+
+				// touchAction(this, "pan-" + (data.axisY ? "y" : "x"));
+			} else {
+				touchAction(this, "none");
+			}
+
+			this.on( [Events.touchStart, Events.pointerDown].join(" "), data, onTouch);
+
+			if (data.pan) {
+				this.on( Events.mouseDown, data, onPointerStart);
+			}
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name destruct
+	 * @description Tears down instance.
+	 * @param data [object] "Instance data"
+	 */
+
+	function destruct(data) {
+		touchAction(this.off(Events.namespace), "");
+	}
+
+	/**
+	 * @method private
+	 * @name onTouch
+	 * @description Delegates touch events.
+	 * @param e [object] "Event data"
+	 */
+
+	function onTouch(e) {
+		// Stop panning and zooming
+		if (e.preventManipulation) {
+			e.preventManipulation();
+		}
+
+		var data    = e.data,
+			oe      = e.originalEvent;
+
+		if (oe.type.match(/(up|end)$/i)) {
+			onPointerEnd(e);
+			return;
+		}
+
+		if (oe.pointerId) {
+			// Normalize MS pointer events back to standard touches
+			var activeTouch = false;
+			for (var i in data.touches) {
+				if (data.touches[i].id === oe.pointerId) {
+					activeTouch = true;
+					data.touches[i].pageX    = oe.clientX;
+					data.touches[i].pageY    = oe.clientY;
+				}
+			}
+			if (!activeTouch) {
+				data.touches.push({
+					id       : oe.pointerId,
+					pageX    : oe.clientX,
+					pageY    : oe.clientY
+				});
+			}
+		} else {
+			// Alias normal touches
+			data.touches = oe.touches;
+		}
+
+		// Delegate touch actions
+		if (oe.type.match(/(down|start)$/i)) {
+			onPointerStart(e);
+		} else if (oe.type.match(/move$/i)) {
+			onPointerMove(e);
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name onPointerStart
+	 * @description Handles pointer start.
+	 * @param e [object] "Event data"
+	 */
+
+	function onPointerStart(e) {
+		var data     = e.data,
+			touch    = ($.type(data.touches) !== "undefined") ? data.touches[0] : null;
+
+		if (!data.touching) {
+			data.startE      = e.originalEvent;
+			data.startX      = (touch) ? touch.pageX : e.pageX;
+			data.startY      = (touch) ? touch.pageY : e.pageY;
+			data.startT      = new Date().getTime();
+			data.scaleD      = 1;
+			data.passed      = false;
+		}
+
+		if (data.tap) {
+			// Tap
+
+			data.clicked = false;
+
+			data.$el.on( [Events.touchMove, Events.pointerMove].join(" "), data, onTouch)
+					.on( [Events.touchEnd, Events.touchCancel, Events.pointerUp, Events.pointerCancel].join(" ") , data, onTouch);
+
+		} else if (data.pan || data.scale) {
+			// Clear old click events
+
+			if (data.$links) {
+				data.$links.off(Events.click);
+			}
+
+			// Pan / Scale
+
+			var newE = buildEvent(data.scale ? Events.scaleStart : Events.panStart, e, data.startX, data.startY, data.scaleD, 0, 0, "", "");
+
+			if (data.scale && data.touches && data.touches.length >= 2) {
+				var t = data.touches;
+
+				data.pinch = {
+					startX     : midpoint(t[0].pageX, t[1].pageX),
+					startY     : midpoint(t[0].pageY, t[1].pageY),
+					startD     : pythagorus((t[1].pageX - t[0].pageX), (t[1].pageY - t[0].pageY))
+				};
+
+				newE.pageX    = data.startX   = data.pinch.startX;
+				newE.pageY    = data.startY   = data.pinch.startY;
+			}
+
+			// Only bind at first touch
+			if (!data.touching) {
+				data.touching = true;
+
+				if (data.pan) {
+					$Window.on(Events.mouseMove, data, onPointerMove)
+						   .on(Events.mouseUp, data, onPointerEnd);
+				}
+
+				$Window.on( [
+					Events.touchMove,
+					Events.touchEnd,
+					Events.touchCancel,
+					Events.pointerMove,
+					Events.pointerUp,
+					Events.pointerCancel
+				].join(" ") , data, onTouch);
+
+				data.$el.trigger(newE);
+			}
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name onPointerMove
+	 * @description Handles pointer move.
+	 * @param e [object] "Event data"
+	 */
+
+	function onPointerMove(e) {
+		var data      = e.data,
+			touch     = ($.type(data.touches) !== "undefined") ? data.touches[0] : null,
+			newX      = (touch) ? touch.pageX : e.pageX,
+			newY      = (touch) ? touch.pageY : e.pageY,
+			deltaX    = newX - data.startX,
+			deltaY    = newY - data.startY,
+			dirX      = (deltaX > 0) ? "right" : "left",
+			dirY      = (deltaY > 0) ? "down"  : "up",
+			movedX    = Math.abs(deltaX) > TouchThreshold,
+			movedY    = Math.abs(deltaY) > TouchThreshold;
+
+		if (data.tap) {
+			// Tap
+
+			if (movedX || movedY) {
+				data.$el.off( [
+					Events.touchMove,
+					Events.touchEnd,
+					Events.touchCancel,
+					Events.pointerMove,
+					Events.pointerUp,
+					Events.pointerCancel
+				].join(" ") );
+			}
+		} else if (data.pan || data.scale) {
+			if (!data.passed && data.axis && ((data.axisX && movedY) || (data.axisY && movedX)) ) {
+				// if axis and moved in opposite direction
+				onPointerEnd(e);
+			} else {
+				if (!data.passed && (!data.axis || (data.axis && (data.axisX && movedX) || (data.axisY && movedY)))) {
+					// if has axis and moved in same direction
+					data.passed = true;
+				}
+
+				if (data.passed) {
+					Functions.killEvent(e);
+					Functions.killEvent(data.startE);
+				}
+
+				// Pan / Scale
+
+				var fire    = true,
+					newE    = buildEvent(data.scale ? Events.scale : Events.pan, e, newX, newY, data.scaleD, deltaX, deltaY, dirX, dirY);
+
+				if (data.scale) {
+					if (data.touches && data.touches.length >= 2) {
+						var t = data.touches;
+
+						data.pinch.endX     = midpoint(t[0].pageX, t[1].pageX);
+						data.pinch.endY     = midpoint(t[0].pageY, t[1].pageY);
+						data.pinch.endD     = pythagorus((t[1].pageX - t[0].pageX), (t[1].pageY - t[0].pageY));
+						data.scaleD    = (data.pinch.endD / data.pinch.startD);
+						newE.pageX     = data.pinch.endX;
+						newE.pageY     = data.pinch.endY;
+						newE.scale     = data.scaleD;
+						newE.deltaX    = data.pinch.endX - data.pinch.startX;
+						newE.deltaY    = data.pinch.endY - data.pinch.startY;
+					} else if (!data.pan) {
+						fire = false;
+					}
+				}
+
+				if (fire) {
+					data.$el.trigger( newE );
+				}
+			}
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name bindLink
+	 * @description Bind events to internal links
+	 * @param $link [object] "Object to bind"
+	 * @param data [object] "Instance data"
+	 */
+
+	function bindLink($link, data) {
+		$link.on(Events.click, data, onLinkClick);
+
+		// http://www.elijahmanor.com/how-to-access-jquerys-internal-data/
+		var events = $._data($link[0], "events")["click"];
+		events.unshift(events.pop());
+	}
+
+	/**
+	 * @method private
+	 * @name onLinkClick
+	 * @description Handles clicks to internal links
+	 * @param e [object] "Event data"
+	 */
+
+	function onLinkClick(e) {
+		Functions.killEvent(e, true);
+		e.data.$links.off(Events.click);
+	}
+
+	/**
+	 * @method private
+	 * @name onPointerEnd
+	 * @description Handles pointer end / cancel.
+	 * @param e [object] "Event data"
+	 */
+
+	function onPointerEnd(e) {
+		var data = e.data;
+
+		if (data.tap) {
+			// Tap
+
+			data.$el.off( [
+				Events.touchMove,
+				Events.touchEnd,
+				Events.touchCancel,
+				Events.pointerMove,
+				Events.pointerUp,
+				Events.pointerCancel,
+				Events.mouseMove,
+				Events.mouseUp
+			].join(" ") );
+
+			data.startE.preventDefault();
+
+			onClick(e);
+		} else if (data.pan || data.scale) {
+
+			// Pan / Swipe / Scale
+
+			var touch     = ($.type(data.touches) !== "undefined") ? data.touches[0] : null,
+				newX      = (touch) ? touch.pageX : e.pageX,
+				newY      = (touch) ? touch.pageY : e.pageY,
+				deltaX    = newX - data.startX,
+				deltaY    = newY - data.startY,
+				endT      = new Date().getTime(),
+				eType     = data.scale ? Events.scaleEnd : Events.panEnd,
+				dirX      = (deltaX > 0) ? "right" : "left",
+				dirY      = (deltaY > 0) ? "down"  : "up",
+				movedX    = Math.abs(deltaX) > 1,
+				movedY    = Math.abs(deltaY) > 1;
+
+			// Swipe
+
+			if (data.swipe && Math.abs(deltaX) > TouchThreshold && (endT - data.startT) < TouchTime) {
+				eType = Events.swipe;
+			}
+
+			// Kill clicks to internal links
+
+			if ( (data.axis && ((data.axisX && movedY) || (data.axisY && movedX))) || (movedX || movedY) ) {
+				data.$links = data.$el.find("a");
+
+				for (var i = 0, count = data.$links.length; i < count; i++) {
+					bindLink(data.$links.eq(i), data);
+				}
+			}
+
+			var newE = buildEvent(eType, e, newX, newY, data.scaleD, deltaX, deltaY, dirX, dirY);
+
+			$Window.off( [
+				Events.touchMove,
+				Events.touchEnd,
+				Events.touchCancel,
+				Events.mouseMove,
+				Events.mouseUp,
+				Events.pointerMove,
+				Events.pointerUp,
+				Events.pointerCancel
+			].join(" ") );
+
+			data.$el.trigger(newE);
+
+			data.touches = [];
+
+			if (data.scale) {
+				/*
+				if (e.originalEvent.pointerId) {
+					for (var i in data.touches) {
+						if (data.touches[i].id === e.originalEvent.pointerId) {
+							data.touches.splice(i, 1);
+						}
+					}
+				} else {
+					data.touches = e.originalEvent.touches;
+				}
+				*/
+
+				/*
+				if (data.touches.length) {
+					onPointerStart($.extend(e, {
+						data: data,
+						originalEvent: {
+							touches: data.touches
+						}
+					}));
+				}
+				*/
+			}
+		}
+
+		data.touching = false;
+	}
+
+	/**
+	 * @method private
+	 * @name onClick
+	 * @description Handles click.
+	 * @param e [object] "Event data"
+	 */
+
+	function onClick(e) {
+		Functions.killEvent(e);
+
+		var data = e.data;
+
+		if (!data.clicked) {
+			if (e.type !== "click") {
+				data.clicked = true;
+			}
+
+			var newX    = (data.startE) ? data.startX : e.pageX,
+				newY    = (data.startE) ? data.startY : e.pageY,
+				newE    = buildEvent(Events.tap, e.originalEvent, newX, newY, 1, 0, 0);
+
+			data.$el.trigger( newE );
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name buildEvents
+	 * @description Builds new event.
+	 * @param type [type] "Event type"
+	 * @param oe [object] "Original event"
+	 * @param x [int] "X value"
+	 * @param y [int] "Y value"
+	 * @param scale [float] "Scale value"
+	 * @param dx [float] "Delta X value"
+	 * @param dy [float] "Delta Y value"
+	 */
+
+	function buildEvent(type, oe, px, py, s, dx, dy, dirx, diry) {
+		return $.Event(type, {
+			originalEvent : oe,
+			bubbles       : true,
+			pageX         : px,
+			pageY         : py,
+			scale         : s,
+			deltaX        : dx,
+			deltaY        : dy,
+			directionX    : dirx,
+			directionY    : diry
+		});
+	}
+
+	/**
+	 * @method private
+	 * @name midpoint
+	 * @description Calculates midpoint.
+	 * @param a [float] "Value 1"
+	 * @param b [float] "Value 2"
+	 */
+
+	function midpoint(a, b) {
+		return (a + b) / 2.0;
+	}
+
+	/**
+	 * @method private
+	 * @name pythagorus
+	 * @description Pythagorean theorem.
+	 * @param a [float] "Value 1"
+	 * @param b [float] "Value 2"
+	 */
+
+	function pythagorus(a, b) {
+		return Math.sqrt((a * a) + (b * b));
+	}
+
+	/**
+	 * @method private
+	 * @name touchAction
+	 * @description Set ms touch action on target.
+	 * @param action [string] "Touch action value"
+	 */
+
+	function touchAction($target, action) {
+		$target.css({
+			"-ms-touch-action": action,
+			    "touch-action": action
+		});
+	}
+
+	/**
+	 * @plugin
+	 * @name Touch
+	 * @description A jQuery plugin for multi-touch events.
+	 * @type widget
+	 * @dependency core.js
+	 */
+
+	var legacyPointer = !(Formstone.window.PointerEvent),
+		Plugin = Formstone.Plugin("touch", {
+			widget: true,
+
+			/**
+			 * @options
+			 * @param axis [string] <null> "Limit axis for pan and swipe; 'x' or 'y'"
+			 * @param pan [boolean] <false> "Pan events"
+			 * @param scale [boolean] <false> "Scale events"
+			 * @param swipe [boolean] <false> "Swipe events"
+			 * @param tap [boolean] <false> "'Fastclick' event"
+			 */
+
+			defaults : {
+				axis     : false,
+				pan      : false,
+				scale    : false,
+				swipe    : false,
+				tap      : false
+			},
+
+			methods : {
+				_construct    : construct,
+				_destruct     : destruct
+			},
+
+			events: {
+				pointerDown    : legacyPointer ? "MSPointerDown"   : "pointerdown",
+				pointerUp      : legacyPointer ? "MSPointerUp"     : "pointerup",
+				pointerMove    : legacyPointer ? "MSPointerMove"   : "pointermove",
+				pointerCancel  : legacyPointer ? "MSPointerCancel" : "pointercancel"
+			}
+		}),
+
+		// Localize References
+
+		Events        = Plugin.events,
+		Functions     = Plugin.functions,
+
+		// Local
+
+		$Window           = Formstone.$window,
+		TouchThreshold    = 5,
+		TouchTime         = 200;
+
+		/**
+		 * @events
+		 * @event tap "'Fastclick' event; Prevents ghost clicks on mobile"
+		 * @event panstart "Panning started"
+		 * @event pan "Panning"
+		 * @event panend "Panning ended"
+		 * @event scalestart "Scaling started"
+		 * @event scale "Scaling"
+		 * @event scaleend "Scaling ended"
+		 * @event swipe "Swipe"
+		 */
+
+		Events.tap           = "tap";
+		Events.pan           = "pan";
+		Events.panStart      = "panstart";
+		Events.panEnd        = "panend";
+		Events.scale         = "scale";
+		Events.scaleStart    = "scalestart";
+		Events.scaleEnd      = "scaleend";
+		Events.swipe         = "swipe";
+
+})(jQuery, Formstone);/* */ 
+ /* */;(function ($, Formstone, undefined) {
+
+	"use strict";
+
+	/**
+	 * @method private
+	 * @name construct
+	 * @description Builds instance.
+	 * @param data [object] "Instance data"
+	 */
+
+	function construct(data) {
+		var $parent      = this.closest("label"),
+			$label       = $parent.length ? $parent.eq(0) : $("label[for=" + this.attr("id") + "]"),
+			baseClass    = [RawClasses.base, data.customClass].join(" "),
+			html         = "";
+
+		data.radio = (this.attr("type") === "radio");
+		data.group = this.attr("name");
+
+		html += '<div class="' + RawClasses.marker + '">';
+		html += '<div class="' + RawClasses.flag + '"></div>';
+
+		if (data.toggle) {
+			baseClass += " " + RawClasses.toggle;
+			html += '<span class="' + [RawClasses.state, RawClasses.state_on].join(" ") + '">'  + data.labels.on  + '</span>';
+			html += '<span class="' + [RawClasses.state, RawClasses.state_off].join(" ") + '">' + data.labels.off + '</span>';
+		}
+
+		if (data.radio) {
+			baseClass += " " + RawClasses.radio;
+		}
+
+		html += '</div>';
+
+		// Modify DOM
+
+		if ($label.length) {
+			$label.addClass(RawClasses.label)
+				  .wrap('<div class="' + baseClass + '"></div>')
+				  .before(html);
+		} else {
+			this.before('<div class=" ' + baseClass + '">' + html + '</div>');
+		}
+
+		// Store plugin data
+		data.$checkbox    = ($label.length) ? $label.parents(Classes.base) : this.prev(Classes.base);
+		data.$marker      = data.$checkbox.find(Classes.marker);
+		data.$states      = data.$checkbox.find(Classes.state);
+		data.$label       = $label;
+
+		// Check checked
+		if (this.is(":checked")) {
+			data.$checkbox.addClass(RawClasses.checked);
+		}
+
+		// Check disabled
+		if (this.is(":disabled")) {
+			data.$checkbox.addClass(RawClasses.disabled);
+		}
+
+		// Hide original checkbox
+		this.wrap('<div class="' + RawClasses.element_wrapper + '"></div>');
+
+		// Bind click events
+		this.on(Events.focus, data, onFocus)
+			.on(Events.blur, data, onBlur)
+			.on(Events.change, data, onChange)
+			.on(Events.click, data, onClick)
+			.on(Events.deselect, data, onDeselect);
+
+		data.$checkbox.touch({
+			tap: true
+		}).on(Events.tap, data, onClick);
+	}
+
+	/**
+	 * @method private
+	 * @name destruct
+	 * @description Tears down instance.
+	 * @param data [object] "Instance data"
+	 */
+
+	function destruct(data) {
+		data.$checkbox.off(Events.namespace)
+					  .touch("destroy");
+
+		data.$marker.remove();
+		data.$states.remove();
+		data.$label.unwrap()
+				   .removeClass(RawClasses.label);
+
+		this.unwrap()
+			.off(Events.namespace);
+	}
+
+	/**
+	 * @method
+	 * @name enable
+	 * @description Enables target instance
+	 * @example $(".target").checkbox("enable");
+	 */
+
+	function enable(data) {
+		this.prop("disabled", false);
+		data.$checkbox.removeClass(RawClasses.disabled);
+	}
+
+	/**
+	 * @method
+	 * @name disable
+	 * @description Disables target instance
+	 * @example $(".target").checkbox("disable");
+	 */
+
+	function disable(data) {
+		this.prop("disabled", true);
+		data.$checkbox.addClass(RawClasses.disabled);
+	}
+
+	/**
+	 * @method
+	 * @name update
+	 * @description Updates target instance
+	 * @example $(".target").checkbox("update");
+	 */
+
+	function update(data) {
+		var disabled    = data.$el.is(":disabled"),
+			checked     = data.$el.is(":checked");
+
+		if (!disabled) {
+			if (checked) {
+				onSelect({ data: data });
+			} else {
+				onDeselect({ data: data });
+			}
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name onClick
+	 * @description Handles click
+	 */
+
+	function onClick(e) {
+		e.stopPropagation();
+
+		var data = e.data;
+
+		if (!$(e.target).is(data.$el)) {
+			e.preventDefault();
+
+			data.$el.trigger("click");
+		}
+	}
+
+	/**
+	 * @method private
+	 * @name onChange
+	 * @description Handles external changes
+	 * @param e [object] "Event data"
+	 */
+
+	function onChange(e) {
+		var data        = e.data,
+			disabled    = data.$el.is(":disabled"),
+			checked     = data.$el.is(":checked");
+
+		if (!disabled) {
+			if (data.radio) {
+				// radio
+				// if (checked || (isIE8 && !checked)) {
+					onSelect(e);
+				// }
+			} else {
+				// Checkbox change events fire after state has changed
+				if (checked) {
+					onSelect(e);
+				} else {
+					onDeselect(e);
+				}
+			}
+		}
+	}
+
+	/*
+	 * @method private
+	 * @name onSelect
+	 * @description Changes input to "checked"
+	 * @param e [object] "Event data"
+	 */
+	function onSelect(e) {
+		if (e.data.radio) {
+			$('input[name="' + e.data.group + '"]').not(e.data.$el).trigger("deselect");
+		}
+
+		e.data.$checkbox.addClass(RawClasses.checked);
+	}
+
+	/**
+	 * @method private
+	 * @name onDeselect
+	 * @description Changes input to "checked"
+	 * @param e [object] "Event data"
+	 */
+	function onDeselect(e) {
+		e.data.$checkbox.removeClass(RawClasses.checked);
+	}
+
+	/**
+	 * @method private
+	 * @name onFocus
+	 * @description Handles instance focus
+	 * @param e [object] "Event data"
+	 */
+
+	function onFocus(e) {
+		e.data.$checkbox.addClass(RawClasses.focus);
+	}
+
+	/**
+	 * @method private
+	 * @name onBlur
+	 * @description Handles instance blur
+	 * @param e [object] "Event data"
+	 */
+
+	function onBlur(e) {
+		e.data.$checkbox.removeClass(RawClasses.focus);
+	}
+
+	/**
+	 * @plugin
+	 * @name Checkbox
+	 * @description A jQuery plugin for replacing checkboxes.
+	 * @type widget
+	 * @dependency core.js
+	 * @dependency touch.js
+	 */
+
+	var Plugin = Formstone.Plugin("checkbox", {
+			widget: true,
+
+			/**
+			 * @options
+			 * @param customClass [string] <''> "Class applied to instance"
+			 * @param toggle [boolean] <false> "Render 'toggle' styles"
+			 * @param labels.on [string] <'ON'> "Label for 'On' position; 'toggle' only"
+			 * @param labels.off [string] <'OFF'> "Label for 'Off' position; 'toggle' only"
+			 */
+
+			defaults: {
+				customClass    : "",
+				toggle         : false,
+				labels : {
+					on         : "ON",
+					off        : "OFF"
+				}
+			},
+
+			classes: [
+				"element_wrapper",
+				"label",
+				"marker",
+				"flag",
+				"radio",
+				"focus",
+				"checked",
+				"disabled",
+				"toggle",
+				"state",
+				"state_on",
+				"state_off"
+			],
+
+			methods: {
+				_construct    : construct,
+				_destruct     : destruct,
+
+				// Public Methods
+
+				enable        : enable,
+				disable       : disable,
+				update        : update
+			},
+
+			events: {
+				deselect : "deselect",
+				tap      : "tap"
+			}
+		}),
+
+		// Localize References
+
+		Classes       = Plugin.classes,
+		RawClasses    = Classes.raw,
+		Events        = Plugin.events,
+		Functions     = Plugin.functions;
+
+})(jQuery, Formstone);/* */ 
  /* *//* global $, window */
 
 $.fn.dataTableExt.oPagination.executeOnLoad = function (target, func, callback) {
