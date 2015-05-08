@@ -35,7 +35,7 @@
 */
 define([
 // Dojo
-        "dojo/topic", "dojo/_base/lang", "dojo/Deferred",
+        "dojo/_base/array", "dojo/topic", "dojo/_base/lang", "dojo/Deferred",
 
 // Ramp
         "ramp/globalStorage", "ramp/eventManager",
@@ -44,7 +44,6 @@ define([
 
 // Text
         "dojo/text!./templates/sub_panel_template.json",
-        "dojo/text!./templates/datagrid_template.json",
 
 // Util
         "utils/util", "utils/dictionary", "utils/popupManager", "utils/tmplHelper",
@@ -55,7 +54,7 @@ define([
 
     function (
     // Dojo
-        topic, dojoLang, Deferred,
+        dojoArray, topic, dojoLang, Deferred,
 
     // Ramp
         GlobalStorage, EventManager,
@@ -64,7 +63,6 @@ define([
 
     // Text
         subPanelTemplate,
-        datagridTemplate,
 
     // Util
         UtilMisc, utilDict, popupManager, TmplHelper) {
@@ -687,14 +685,146 @@ define([
             helpSectionContainer = $("#help-section-container"),
             helpSection = $("#help-section"),
 
+            addLayerToggle = $("#addLayer-toggle"),
+            addLayerSectionContainer = $("#addLayer-section-container"),
+            //AddLayerSection = $("#addLayer-section"),
+
+            wmsToggle = $("#uglyGetFiToggle"),
+
             cssButtonPressedClass = "button-pressed",
             cssExpandedClass = "state-expanded",
 
             helpPanelPopup,
-            
+            addLayerPanelPopup,
+            wmsQueryPopup,
+
             transitionDuration = 0.5,
 
+            toolbarController,
             layoutController;
+
+        toolbarController = (function () {
+            var mapToolbar,
+                mapTools,
+
+                toolbarWidth,
+                toolsWidth,
+
+                toolsTimeline = new TimelineLite(),
+
+                isTooltipsSet = false;
+
+            function updateToolbarStats() {
+                if (!layoutController.isFullData()) {
+                    toolbarWidth = mapToolbar.width();
+
+                    if (!isTooltipsSet) {
+                        toolsWidth = mapTools
+                            .map(function (i, n) { return $(n).outerWidth(); })
+                            .get() // need to use get() as jquery.map doesn't return a true array
+                            .reduce(function (total, width) { return total + width; })
+                        ;
+                    }
+
+                    if (!isToolbarWideEnough()) {
+                        setToolbarTooltips();
+                    } else {
+                        removeToolbarTooltips();
+                    }
+                }
+            }
+
+            function isToolbarWideEnough() {
+                return toolbarWidth > toolsWidth;
+            }
+
+            function setToolbarTooltips() {
+                toolsTimeline.invalidate();
+
+                if (!isTooltipsSet) {
+                    // set tooltips on the collapsed toolbar
+                    mapToolbar.addClass("compact");
+
+                    mapTools
+                        .filter(":not(.tooltipstered)")
+                        .map(function (i, node) {
+                            node = $(node);
+                            node
+                                .addClass("_tooltip tooltip-temp")
+                                .attr(
+                                    "title",
+                                    node.find("span").text()
+                                );
+                        });
+
+                    Theme.tooltipster(mapToolbar);
+
+                    isTooltipsSet = true;
+                }
+
+            }
+
+            function removeToolbarTooltips() {
+                if (isTooltipsSet && isToolbarWideEnough()) {
+                    // remove tooltips from the restored toolbar and only from the buttons with a temporary tooltip
+                    Theme.tooltipster(
+                        mapTools
+                            .filter(".tooltip-temp")
+                            .parent(),
+                        null, "destroy");
+
+                    mapToolbar
+                        .removeClass("compact");
+                    mapTools
+                        .filter(".tooltip-temp")
+                        .removeClass("_tooltip")
+                        .removeAttr("title");
+
+                    isTooltipsSet = false;
+                }
+            }
+
+            return {
+                init: function () {
+                    mapToolbar = $("#map-toolbar");
+                    mapTools = mapToolbar.find("> .map-toolbar-item > .map-toolbar-item-button");
+
+                    updateToolbarStats();
+
+                    jWindow.on("resize", updateToolbarStats);
+
+                    return this;
+                },
+
+                mapTools: function () {
+                    return mapTools;
+                },
+
+                toolsTimeline: function () {
+                    return toolsTimeline;
+                },
+
+                update: function () {
+                    updateToolbarStats();
+
+                    return this;
+                },
+
+                setTooltips: function () {
+                    setToolbarTooltips();
+
+                    return this;
+                },
+
+                removeTooltips: function () {
+                    removeToolbarTooltips();
+
+                    return this;
+                }
+
+            };
+
+        }());
 
         /**
         * Controls layout transition such as full-data and full-screen modes, opening and closing of the side panel, adjusts layout when resizing the browser window.
@@ -719,9 +849,6 @@ define([
                 panelWidthDefault, // default width of the SidePanel.
                 layoutWidthThreshold = 1200, // minimum width of the wide layout
 
-                dataTabNode,
-                dataTabUpdateNotice,
-
                 windowWidth,
 
                 layoutChange,
@@ -733,20 +860,7 @@ define([
                         adjustHeight();
                         layoutChange();
 
-                        // set tooltips on the collapsed toolbar
-                        mapToolbar
-                            .find(".map-toolbar-item-button:visible")
-                            .map(function (i, node) {
-                                node = $(node);
-                                node
-                                    .addClass("_tooltip tooltip-temp")
-                                    .attr(
-                                        "title",
-                                        node.find("span").text()
-                                    );
-                            });
-
-                        Theme.tooltipster(mapToolbar);
+                        toolbarController.setTooltips();
 
                         //console.log("finished", EventManager.Datagrid.APPLY_EXTENT_FILTER);
                         //topic.publish(EventManager.Datagrid.APPLY_EXTENT_FILTER);
@@ -760,17 +874,9 @@ define([
                         adjustHeight();
                         layoutChange();
 
-                        // remove tooltips from the restored toolbar and only from the buttons with a temporary tooltip
-                        Theme.tooltipster(
-                            mapToolbar
-                                .find(".map-toolbar-item-button.tooltip-temp")
-                                .parent(),
-                            null, "destroy");
-
-                        mapToolbar
-                            .find(".map-toolbar-item-button.tooltip-temp")
-                            .removeClass("_tooltip")
-                            .removeAttr("title");
+                        toolbarController
+                            .update()
+                            .removeTooltips();
 
                         //console.log("reverse finished", EventManager.Datagrid.APPLY_EXTENT_FILTER);
                         //topic.publish(EventManager.Datagrid.APPLY_EXTENT_FILTER);
@@ -819,8 +925,10 @@ define([
                         { width: "100%", height: "32px" },
                         { width: "32px", height: $("#map-div").height(), ease: "easeOutCirc" }, transitionDuration / 2)
 
-                    .to(mapToolbar.find(".map-toolbar-item-button span"), transitionDuration / 2, { width: 0, ease: "easeOutCirc" }, 0)
-                    .set(mapToolbar.find(".map-toolbar-item-button span"), { display: "none" }, transitionDuration / 2)
+                    .add(toolbarController.toolsTimeline(), 0)
+
+                    //.fromTo(toolbarController.mapTools().find("> span"), transitionDuration / 2, { width: "auto" }, { width: 0, ease: "easeOutCirc" }, 0)
+                    //.fromTo(toolbarController.mapTools().find("> span"), 0, { display: "inline-block" }, { display: "none" }, transitionDuration / 2)
 
                     .fromTo(panelDiv.find(".wb-tabs > ul li:first"), transitionDuration, { width: "50%" }, { width: "0%", display: "none", ease: "easeOutCirc" }, 0)
                     .fromTo(panelDiv.find(".wb-tabs > ul li:last"), transitionDuration, { width: "50%" }, { width: "100%", className: "+=h5", ease: "easeOutCirc" }, 0)
@@ -935,6 +1043,8 @@ define([
                             layoutChange();
                             panelChange(true);
 
+                            toolbarController.update();
+
                             // update close button tooltips
                             panelToggle
                                 .tooltipster("content", i18n.t("gui.actions.close"))
@@ -961,6 +1071,8 @@ define([
                             console.log("GUI <-- map/update-end from gui");
                             layoutChange();
                             panelChange(false);
+
+                            toolbarController.update();
 
                             // update open button tooltips
                             panelToggle
@@ -1024,6 +1136,7 @@ define([
             * @private
             */
             function optimizeLayout() {
+
                 if ((windowWidth < layoutWidthThreshold && jWindow.width() > layoutWidthThreshold) ||
                     (windowWidth > layoutWidthThreshold && jWindow.width() < layoutWidthThreshold)) {
                     windowWidth = jWindow.width();
@@ -1044,6 +1157,8 @@ define([
                     jWindow.on("resize", optimizeLayout);
                     updatePanelWidth();
 
+                    toolbarController.init();
+
                     UtilMisc.resetTimelines(timeLines);
 
                     Theme
@@ -1063,6 +1178,11 @@ define([
                         panelPopup.toggle(null, event.visible);
                     });
 
+                    if (!RAMP.config.ui.mapQueryToggle.show) {
+                        RAMP.state.ui.wmsQuery = false;
+                        wmsToggle.remove();
+                    }
+
                     // set listener to the full-screen toggle
                     fullScreenPopup = popupManager.registerPopup(fullScreenToggle, "click",
                         function (d) {
@@ -1078,15 +1198,6 @@ define([
                     if (mapContent.height() < jWindow.height() * 0.6) {
                         fullScreenPopup.open();
                     }
-
-                    // find a Data tab append an update notice to it
-                    dataTabUpdateNotice = $(TmplHelper.template('datagrid_notice_update', {}, datagridTemplate));
-                    dataTabNode = panelDiv.find(".wb-tabs > ul li:last");
-                    dataTabNode.append(dataTabUpdateNotice);
-
-                    topic.subscribe(EventManager.Datagrid.UPDATING, function (event) {
-                        dataTabUpdateNotice.toggle(event);
-                    });
 
                     adjustHeight();
                 },
@@ -1345,9 +1456,28 @@ define([
                 subPanels[attr.origin] = subPanel;
             }
         }
-        
-        // TODO: notify bookmark module that layer query toggle has changed its state
-        
+
+        /**
+         * A helper method that fires WMS_QUERY_CHANGE event.
+         * 
+         * @method wmsQueryPopupHelper
+         * @private
+         * @param {Object} d deferred to be resolved
+         */
+        function wmsQueryPopupHelper(d) {
+            topic.publish(EventManager.FilterManager.WMS_QUERY_CHANGE, { allowed: RAMP.state.ui.wmsQuery });
+
+            /*jshint validthis: true */
+            // I think there is no need to change the label of the button as we are already changing its visual state
+            // this is also consistent with how fullscreen and other toolbar buttons work
+            /*this.handle
+                .children('span')
+                .html(i18n.t('gui.actions.wmsQueryEnable'))
+            ;*/
+
+            d.resolve();
+        }
+
         /**
          * Stops event propagation.
          * 
@@ -1366,18 +1496,36 @@ define([
          */
         function autoHideDataTab() {
             // initialize to the correct state (this might be happening after some layers have already loaded)
-            if (RAMP.layerCounts && RAMP.layerCounts.feature === 0) {
-                layoutController.toggleDataTab();
+            if (RAMP.layerRegistry) {
+                var features = Object
+                    .keys(RAMP.layerRegistry)
+                    .some(function (layer) {
+                        return RAMP.layerRegistry[layer].ramp.type === GlobalStorage.layerType.feature;
+                    })
+                ;
+
+                if (features) {
+                    layoutController.toggleDataTab();
+                }
             }
             
             // subscribe to Layer added event which is fired every time a layer is added to the map through layer loader
             topic.subscribe(EventManager.LayerLoader.LAYER_ADDED, function (args) {
-                layoutController.toggleDataTab(args.layerCounts.feature > 0);
+                if (args.layer.ramp.type === GlobalStorage.layerType.feature) {
+                    layoutController.toggleDataTab(true);
+                }
             });
 
             // on each remove check if there are still feature layers in the layer list
-            topic.subscribe(EventManager.LayerLoader.LAYER_REMOVED, function (args) {
-                layoutController.toggleDataTab(args.layerCounts.feature > 0);
+            topic.subscribe(EventManager.LayerLoader.REMOVE_LAYER, function () {
+                var features = Object.keys(RAMP.layerRegistry).filter(function (layer) {
+                    var l = RAMP.layerRegistry[layer];
+                    return l ? l.ramp.type === GlobalStorage.layerType.feature : false;
+                });
+                console.log('features left (including the layer to be removed): ' + features.length);
+                if (features.length === 1) {
+                    layoutController.toggleDataTab();
+                }
             });
         }
 
@@ -1395,7 +1543,6 @@ define([
 
                 subPanelTemplate = JSON.parse(TmplHelper.stringifyTemplate(subPanelTemplate));
                 subPanelLoadingAnimation = TmplHelper.template('loading_simple', null, subPanelTemplate);
-                datagridTemplate = JSON.parse(TmplHelper.stringifyTemplate(datagridTemplate));
 
                 layoutController.init();
 
@@ -1434,9 +1581,103 @@ define([
                     }
                 );
 
-                // TODO: remove mapQueryToggle.autoHide from config schema
+                // WMS query Start
+                wmsQueryPopup = popupManager.registerPopup(wmsToggle, "click",
+                    function (d) {
+                        RAMP.state.ui.wmsQuery = false;
+                        wmsQueryPopupHelper.call(this, d);
+                    },
+                    {
+                        activeClass: cssButtonPressedClass,
+                        closeHandler: function (d) {
+                            RAMP.state.ui.wmsQuery = true;
+                            wmsQueryPopupHelper.call(this, d);
+                        }
+                    }
+                );
+
+                if (RAMP.config.ui.mapQueryToggle.autoHide) {
+
+                    // initialize to the correct state (this might be happening after some layers have already loaded)
+                    if (RAMP.layerRegistry) {
+                        var wmses = Object.keys(RAMP.layerRegistry).filter(function (layer) { return RAMP.layerRegistry[layer].ramp.type === GlobalStorage.layerType.wms; });
+                        if (wmses.length === 0) {
+                            wmsToggle.hide();
+                        } else {
+                            wmsToggle.show();
+                        }
+                    }
+
+                    // on each load if the layer is a WMS make sure the button is visible
+                    topic.subscribe(EventManager.LayerLoader.LAYER_LOADED, function (args) {
+                        if (args.layer.ramp.type === GlobalStorage.layerType.wms) {
+                            wmsToggle.show();
+                        }
+                    });
+
+                    // on each remove check if there are still WMSes in the layer list
+                    topic.subscribe(EventManager.LayerLoader.REMOVE_LAYER, function () {
+                        if (wmsToggle.is(':hidden')) { return; }
+                        var wmses = Object.keys(RAMP.layerRegistry).filter(function (layer) {
+                            var l = RAMP.layerRegistry[layer];
+                            return l ? l.ramp.type === GlobalStorage.layerType.wms : false;
+                        });
+                        console.log('wmses left (including the layer to be removed): ' + wmses.length);
+                        if (wmses.length === 1) {
+                            wmsToggle.hide();
+                        }
+                    });
+                }
+
+                // if the query is disabled (from bookmarklink) toggle the button
+                if (!RAMP.state.ui.wmsQuery) {
+                    wmsQueryPopup.open();
+                }
+                // WMS query end
 
                 autoHideDataTab();
+
+                //Start AddLayer popup controller
+                addLayerPanelPopup = popupManager.registerPopup(addLayerToggle, "click",
+                    function (d) {
+                        topic.publish(EventManager.GUI.ADD_LAYER_PANEL_CHANGE, { visible: true });
+                        topic.publish(EventManager.GUI.TOOLBAR_SECTION_OPEN, { id: "add-layer-section" });
+                        console.log(EventManager.GUI.ADD_LAYER_PANEL_CHANGE + " visible:", true);
+
+                        // close this panel if any other panel is opened
+                        UtilMisc.subscribeOnce(EventManager.GUI.TOOLBAR_SECTION_OPEN, dojoLang.hitch(this,
+                            function () {
+                                if (this.isOpen()) {
+                                    this.close();
+                                }
+                            })
+                        );
+
+                        addLayerSectionContainer.slideToggle("fast", function () {
+                            d.resolve();
+                        });
+                    }, {
+                        activeClass: cssButtonPressedClass,
+                        target: addLayerSectionContainer,
+                        closeHandler: function (d) {
+                            topic.publish(EventManager.GUI.ADD_LAYER_PANEL_CHANGE, { visible: false });
+                            topic.publish(EventManager.GUI.TOOLBAR_SECTION_CLOSE, { id: "add-layer-section" });
+                            console.log(EventManager.GUI.ADD_LAYER_PANEL_CHANGE + " visible:", false);
+
+                            addLayerSectionContainer.slideToggle("fast", function () {
+                                d.resolve();
+                            });
+                        },
+                        resetFocusOnClose: true
+                    }
+                );
+
+                $("#addLayer-add").on("click", function () {
+                    topic.publish(EventManager.Map.ADD_LAYER, null);
+
+                    addLayerPanelPopup.close();
+                });
+                //End Add Layer
 
                 //start extended grid
                 topic.subscribe(EventManager.GUI.DATAGRID_EXPAND, function () {
@@ -1461,7 +1702,7 @@ define([
                             });
                         });
                     } else {
-                        attr.origin.split(",").forEach(function (element) {
+                        dojoArray.forEach(attr.origin.split(","), function (element) {
                             //attr.origin = element;
                             hideSubPanel({
                                 origin: element
@@ -1479,7 +1720,7 @@ define([
                             dockSubPanel(na);
                         });
                     } else {
-                        attr.origin.split(",").forEach(function (element) {
+                        dojoArray.forEach(attr.origin.split(","), function (element) {
                             na = Object.create(attr);
                             na.origin = element;
                             dockSubPanel(na);
@@ -1497,12 +1738,20 @@ define([
                             captureSubPanel(na);
                         });
                     } else {
-                        attr.consumeOrigin.split(",").forEach(function (element) {
+                        dojoArray.forEach(attr.consumeOrigin.split(","), function (element) {
                             na = Object.create(attr);
                             na.consumeOrigin = element;
                             captureSubPanel(na);
                         });
                     }
+                });
+                // since basemap toggle may differ in width based on the basemap name, check if everything still fits
+                topic.subscribe(EventManager.BasemapSelector.UI_COMPLETE, function () {
+                    toolbarController.update();
+                });
+
+                topic.subscribe(EventManager.BasemapSelector.BASEMAP_CHANGED, function () {
+                    toolbarController.update();
                 });
 
                 sidePanelTabList.find("li a").click(function () {
@@ -1573,7 +1822,7 @@ define([
                     // using the waitList (otherwise if we just publish the
                     // event like above, then subscribe to it here, the event
                     // might have completed before reaching this point)
-                    var eventNames = waitList.map(function (obj) {
+                    var eventNames = dojoArray.map(waitList, function (obj) {
                         return obj.subscribeName;
                     });
 
@@ -1581,7 +1830,7 @@ define([
                         topic.publish(EventManager.GUI.UPDATE_COMPLETE);
                     });
 
-                    waitList.forEach(function (obj) {
+                    dojoArray.forEach(waitList, function (obj) {
                         topic.publish(obj.publishName, obj.eventArg);
                     });
                 }

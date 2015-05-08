@@ -11,6 +11,7 @@
 * A set of functions used to support and standardize the use of templating.
 *
 * ####Imports RAMP Modules:
+* {{#crossLink "GlobalStorage"}}{{/crossLink}}  
 * {{#crossLink "RAMP"}}{{/crossLink}}  
 * {{#crossLink "TmplUtil"}}{{/crossLink}}  
 *
@@ -19,8 +20,17 @@
 * @uses dojo/_base/lang
 */
 
-define(["dojo/_base/lang", "utils/tmplUtil"],
-    function (lang, TmplUtil) {
+define([
+        /* Dojo */
+        "dojo/_base/lang",
+
+        /* Ramp Modules */
+        "ramp/globalStorage",
+        "ramp/ramp",
+        "utils/tmplUtil"
+
+],
+    function (lang, GlobalStorage, Ramp, TmplUtil) {
         "use strict";
 
         return {
