@@ -1,4 +1,4 @@
-/*! ramp-ti-fgp-id 08-05-2015 12:13:01 : v. 5.4.0-4 
+/*! ramp-ti-fgp-id 08-05-2015 15:10:47 : v. 5.4.0-6 
  * 
  * RAMP GIS viewer - Elk; Sample of an implementation of RAMP with Intranet Theme 
  **/
