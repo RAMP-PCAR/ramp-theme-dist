@@ -293,9 +293,7 @@ define([],
                 *
                 * @event FeatureHighlighter.HIGHLIGHT_SHOW [subscribed]
                 * @for FeatureHighlighter
-                * @param evt {Object} the event Object
-                * @param evt.graphic {esri/Graphic} original graphic that should be highlighted
-
+                * @param {Object} eventAttr ESRI feature click even attributes
                 */
                 HIGHLIGHT_SHOW: "highlighter/highlight-show",
 
@@ -335,8 +333,7 @@ define([],
                 *
                 * @event FeatureHighlighter.ZOOMLIGHT_SHOW [subscribed]
                 * @for FeatureHighlighter
-                * @param evt {Object} the event Object
-                * @param evt.graphic {esri/Graphic} original graphic that should be highlighted
+                * @param {Object} eventAttr ESRI feature click even attributes
                 */
                 ZOOMLIGHT_SHOW: "highlighter/zoomlight-show",
 
@@ -410,29 +407,15 @@ define([],
                 LAYER_LOADED: "layerLoader/layer-loaded",
 
                 /**
-                * Indicates that a map layer has been added to the layer selector. This means the LayerLoader has added a layer to the map.
+                * Indicates that a map layer has been added to the layer selector
                 *
                 * @event LayerLoader.LAYER_ADDED
                 * @for LayerLoader
                 * @param event {Object}
                 * @param event.layer {Object} layer object that has been added
-                * @param event.layerCounts {Object} layer counts
                 *
                 */
                 LAYER_ADDED: "layerLoader/layer-added",
-
-                /**
-                * Indicates that a map layer has been removed to the layer selector. This means the LayerLoader has removed a layer from the map. 
-                * When a layer errors, it's removed from the map, but it might still be in the layer selector in the error state.
-                *
-                * @event LayerLoader.LAYER_REMOVED
-                * @for LayerLoader
-                * @param event {Object}
-                * @param event.layer {Object} layer object that has been added
-                * @param event.layerCounts {Object} layer counts
-                *
-                */
-                LAYER_REMOVED: "layerLoader/layer-removed",
 
                 /**
                 * Indicates that a map layer has updated.  This means the data it is showing is visible and up-to-date
@@ -474,7 +457,6 @@ define([],
                 * @for LayerLoader
                 * @param event {Object}
                 * @param event.layerId {String} ESRI layer id to be reloaded
-                * @param event.mode {String} layer mode: ondemand or snapshot
                 *
                 */
                 RELOAD_LAYER: "layerLoader/reload-layer",
@@ -712,7 +694,7 @@ define([],
                 *
                 * @event Datagrid.HIGHLIGHTROW_SHOW
                 * @param event {Object}
-                * @param event.fData {Object} feature data object corresponding to the selected feature
+                * @param event.graphic {Object} ESRI graphic object corresponding to the selected feature
                 */
                 HIGHLIGHTROW_SHOW: "datagrid/highlightrow-show",
 
@@ -727,7 +709,7 @@ define([],
                 *
                 * @event Datagrid.ZOOMLIGHTROW_SHOW
                 * @param event {Object}
-                * @param event.fData {Object} feature data object corresponding to the zoomed to feature
+                * @param event.graphic {Object} ESRI graphic object corresponding to the zoomed to feature
                 */
                 ZOOMLIGHTROW_SHOW: "datagrid/zoomlightrow-show",
 
@@ -736,18 +718,9 @@ define([],
                 *
                 * @event Datagrid.ZOOMLIGHTROW_HIDE
                 *
-                */
-                ZOOMLIGHTROW_HIDE: "datagrid/zoomlightrow-hide",
-
-                /**
-                * Is fired by the state manager when datagrid is being updated.
-                *
-                * @event Datagrid.UPDATING
-                * @param event {Boolean} true if updating; false if not 
-                * 
                 * @for Datagrid
                 */
-                UPDATING: 'datagrid/updating'
+                ZOOMLIGHTROW_HIDE: "datagrid/zoomlightrow-hide"
             },
 
             Navigation: {

@@ -38,21 +38,21 @@
 */
 
 define([
-    "dojo/Evented", "dojo/_base/declare", "dojo/_base/lang",
+    "dojo/Evented", "dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array",
 
     /* Text */
     "dojo/text!./templates/layer_selector_template.json",
 
     /* Util */
-    "utils/tmplHelper", "utils/array",
+    "utils/tmplHelper", "utils/array", "utils/dictionary",
 
     /* RAMP */
     "ramp/layerItem"
 ],
     function (
-        Evented, declare, lang,
+        Evented, declare, lang, dojoArray,
         layer_selector_template,
-        TmplHelper, UtilArray,
+        TmplHelper, UtilArray, UtilDict,
         LayerItem) {
         "use strict";
 
@@ -166,11 +166,11 @@ define([
                     layerItemOptions = {};
 
                 // augment existing stateMatrix or create a new one
-                /*if (options && options.stateMatrix) {
+                if (options && options.stateMatrix) {
                     options.stateMatrix = this._constructStateMatrix(layer, options.stateMatrix);
                 } else {
                     layerItemOptions.stateMatrix = this._constructStateMatrix(layer);
-                }*/
+                }
 
                 lang.mixin(layerItemOptions,
                     {
@@ -233,14 +233,10 @@ define([
                     LayerItem.removeStateMatrixPart(stateMatrix, "controls", LayerItem.controls.SETTINGS);
                 }
 
-                // add wms query toggle if there is no layer extent property - layer is a wms layer
-                if (!layerConfig.layerExtent && !layerConfig.isStatic) {
-                    LayerItem.addStateMatrixPart(stateMatrix, "toggles", LayerItem.toggles.QUERY, 
-                        [
-                            LayerItem.state.DEFAULT,
-                            LayerItem.state.UPDATING,
-                            LayerItem.state.OFF_SCALE
-                        ]);
+                // remove bounding box toggle if there is no layer extent property - layer is a wms layer
+                if (!layerConfig.layerExtent || layerConfig.isStatic) {
+                    LayerItem.removeStateMatrixPart(stateMatrix, "toggles", LayerItem.toggles.BOX);
+                    LayerItem.addStateMatrixPart(stateMatrix, "toggles", LayerItem.toggles.PLACEHOLDER);
                 }
 
                 return stateMatrix;
