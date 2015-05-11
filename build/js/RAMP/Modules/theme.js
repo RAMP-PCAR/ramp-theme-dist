@@ -28,7 +28,7 @@ define(["dojo/_base/lang", "utils/util"],
             navigation = $("#wb-bar"),
             title = navigation.next(),
 
-            header = $("body>header"),
+            header = $("header"),
 
             transitionDuration = 0.5,
 
