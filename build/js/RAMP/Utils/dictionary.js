@@ -17,8 +17,11 @@
 * @uses dojo/_base/array
 * @uses dojo/_base/lang
 */
-define(["dojo/_base/lang"],
-    function (dojoLang) {
+define([
+        "dojo/_base/array", "dojo/_base/lang"
+],
+    function (
+        dojoArray, dojoLang) {
         "use strict";
 
         return {
@@ -55,7 +58,7 @@ define(["dojo/_base/lang"],
                     keys.sort(sortFcn);
                 }
 
-                keys.forEach(function (key) {
+                dojoArray.forEach(keys, function (key) {
                     fcn(key, dict[key]);
                 });
             },
@@ -88,9 +91,10 @@ define(["dojo/_base/lang"],
                 }
 
                 var index = -1;
-                keys.forEach(function (key, i) {
-                    if (index === -1 && fcn(key, dict[key])) {
+                dojoArray.some(keys, function (key, i) {
+                    if (fcn(key, dict[key])) {
                         index = i;
+                        return true;
                     }
                 });
 
@@ -159,7 +163,7 @@ define(["dojo/_base/lang"],
             */
             arrayToMap: function (arr, fcn) {
                 var dict = {};
-                arr.forEach(function (element) {
+                dojoArray.forEach(arr, function (element) {
                     dict[fcn(arr)] = element;
                 });
                 return dict;
@@ -182,7 +186,7 @@ define(["dojo/_base/lang"],
                 }
 
                 var dict = {};
-                arr1.forEach(function (element, i) {
+                dojoArray.forEach(arr1, function (element, i) {
                     dict[element] = arr2[i];
                 });
                 return dict;

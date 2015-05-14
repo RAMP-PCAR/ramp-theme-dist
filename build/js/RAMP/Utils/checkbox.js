@@ -146,8 +146,6 @@ define(["dojo/Evented", "dojo/_base/declare", "dojo/_base/lang", "utils/util"],
                 this._initListeners();
 
                 this.id = this.node.data(this.nodeIdAttr) || this.node.attr(this.nodeIdAttr) || this.node.id;
-                
-                // TODO: refactor/fix; fintInputLabel doesn't work for checkbox bricks                
                 this.labelNode = this.node.findInputLabel();
 
                 this._toggleLabel();
@@ -263,8 +261,12 @@ define(["dojo/Evented", "dojo/_base/declare", "dojo/_base/lang", "utils/util"],
             },
 
             reset: function () {
-                this.node.removeClass("tooltipstered")
+                // remove previous listeners
+                this.node
+                    .off("change focus focusout")
+                    .removeClass("tooltipstered")
                 ;
+                this._initListeners();
                 this._toggleLabel();
             }
         });
