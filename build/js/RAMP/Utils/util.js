@@ -26,8 +26,8 @@
 * @uses esri/geometry/Extent
 * @uses esri/graphic
 */
-define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent", "esri/graphic"],
-    function (dojoLang, topic, Deferred, Extent, Graphic) {
+define(["dojo/_base/array", "dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent", "esri/graphic"],
+    function (dojoArray, dojoLang, topic, Deferred, Extent, Graphic) {
         "use strict";
 
         /**
@@ -145,7 +145,7 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
                 }
 
                 var completed = 0; // Keeps track of the number of deferred that has resolved
-                deferredList.forEach(function (deferred) {
+                dojoArray.forEach(deferredList, function (deferred) {
                     deferred.then(function () {
                         completed++;
                         if (completed === deferredList.length) {
@@ -241,14 +241,14 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
                 var handles = [];
 
                 function wrapper(evt) {
-                    handles.forEach(function (handle) {
+                    dojoArray.forEach(handles, function (handle) {
                         handle.remove();
                     });
 
                     callback(evt);
                 }
 
-                names.forEach(dojoLang.hitch(this,
+                dojoArray.forEach(names, dojoLang.hitch(this,
                     function (name) {
                         handles.push(this.subscribeOnce(name, wrapper));
                     }));
@@ -302,7 +302,7 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
                 // Keeps track of the status of all the events being subscribed to
                 var events = [];
 
-                nameArray.forEach(function (eventName, i) {
+                dojoArray.forEach(nameArray, function (eventName, i) {
                     events.push({
                         fired: false,
                         args: null
@@ -316,9 +316,14 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
                             events[i].args = Array.prototype.slice.call(arguments);
 
                             // Check if all events have fired
-                            if (events.filter(function (event) { return !event.fired; }).length === 0) {
+                            if (dojoArray.every(events, function (event) {
+                                return event.fired;
+                            })) {
                                 // If so construct an array with arguments from the events
-                                var eventArgs = events.map(function (event) { return event.args; });
+                                var eventArgs = [];
+                                dojoArray.forEach(events, function (event) {
+                                    eventArgs.append(event.args);
+                                });
                                 callback(eventArgs);
                             }
                         }
@@ -460,7 +465,7 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
             adjustWidthForSrollbar: function (body, targets) {
                 var offset = body.innerHeight() < body[0].scrollHeight ? this.scrollbarWidth() : 0;
 
-                targets.forEach(function (target) {
+                dojoArray.map(targets, function (target) {
                     target.css({
                         right: offset
                     });
@@ -979,7 +984,7 @@ define(["dojo/_base/lang", "dojo/topic", "dojo/Deferred", "esri/geometry/Extent"
                             var liNode = $(this).closest("li"),
                                 liId = liNode[0].id,
                                 liIdArray = ulNode.sortable("toArray"),
-                                liIndex = liIdArray.indexOf(liId);
+                                liIndex = dojoArray.indexOf(liIdArray, liId);
 
                             // Toggle grabbed state and aria attributes (13 = enter, 32 = space bar)
                             if (event.which === 13 || event.which === 32) {
