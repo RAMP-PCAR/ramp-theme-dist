@@ -16,8 +16,8 @@
 * @class GlobalStorage
 */
 
-define(["utils/util"],
-    function (util) {
+define(["dojo/_base/array", "utils/util"],
+    function (dojoArray, util) {
         "use strict";
 
         var featureLayerDefaults = {
@@ -32,13 +32,7 @@ define(["utils/util"],
             },
 
             wmsLayerDefaults = {
-                settings: { 
-                    panelEnabled: true, 
-                    opacity: { enabled: true, default: 1 }, 
-                    visible: true, 
-                    boundingBoxVisible: true, 
-                    queryEnabled: true // queryEnabled refers to the state of the wms query toggle, not whether the layer is queryable in principle or not 
-                }
+                settings: { panelEnabled: true, opacity: { enabled: true, default: 1 }, visible: true, boundingBoxVisible: true }
             },
 
             gridColumnDefaults = { orderable: true, type: "string", alignment: 1 },
@@ -119,24 +113,22 @@ define(["utils/util"],
             var result;
             console.log(configObj);
             result = applyDefaults(configDefaults, configObj);
-            result.layers.wms = result.layers.wms.map(function (wms) {
+            result.layers.wms = dojoArray.map(result.layers.wms, function (wms) {
                 return applyDefaults(wmsLayerDefaults, wms);
             });
-            result.basemaps = result.basemaps.map(function (b) {
+            result.basemaps = dojoArray.map(result.basemaps, function (b) {
                 return applyDefaults(basemapDefaults, b);
             });
-            result.layers.feature = result.layers.feature.map(applyFeatureDefaults);
+            result.layers.feature = dojoArray.map(result.layers.feature, applyFeatureDefaults);
             console.log(result);
             return result;
         }
 
         function applyFeatureDefaults(featureLayer) {
             var layer = applyDefaults(featureLayerDefaults, featureLayer);
-            if (layer.datagrid.gridColumns) {
-                layer.datagrid.gridColumns = layer.datagrid.gridColumns.map(function (gc) {
-                    return applyDefaults(gridColumnDefaults, gc);
-                });
-            }
+            layer.datagrid.gridColumns = dojoArray.map(layer.datagrid.gridColumns, function (gc) {
+                return applyDefaults(gridColumnDefaults, gc);
+            });
             return layer;
         }
 

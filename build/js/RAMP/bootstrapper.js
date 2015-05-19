@@ -51,10 +51,10 @@ require([
     "ramp/map", "ramp/basemapSelector", "ramp/maptips", "ramp/datagrid",
     "ramp/navigation", "ramp/filterManager", "ramp/imageExport", "ramp/bookmarkLink",
     "utils/url", "ramp/featureHighlighter",
-    "ramp/globalStorage", "ramp/gui", "ramp/eventManager",
+    "ramp/ramp", "ramp/globalStorage", "ramp/gui", "ramp/eventManager",
     "ramp/advancedToolbar", "ramp/geoSearch",
-    "ramp/theme", "ramp/layerLoader", "ramp/dataLoaderGui",
-
+    "ramp/theme", "ramp/layerLoader", "ramp/dataLoaderGui", "ramp/dataLoader", "ramp/stepItem",
+    
 /* Utils */
     "utils/util",
 
@@ -69,11 +69,11 @@ require([
     /* RAMP */
     RampMap, BasemapSelector, Maptips, Datagrid, NavWidget, FilterManager, ImageExport,
     BookmarkLink, Url, FeatureHighlighter,
-    GlobalStorage, gui, EventManager, AdvancedToolbar, GeoSearch,
-    theme, LayerLoader, DataLoaderGui,
+    Ramp, GlobalStorage, gui, EventManager, AdvancedToolbar, GeoSearch,
+    theme, LayerLoader, DataLoadedGui, DataLoader, StepItem,
 
     /* Utils */
-    UtilMisc
+        UtilMisc
     ) {
         "use strict";
 
@@ -163,7 +163,8 @@ require([
                         //initialize the map export after everything is done
                         ImageExport.init();
 
-                        DataLoaderGui.init();
+                        DataLoadedGui.init();
+                        //RampMap.zoomToLayerScale();
                     });
                 // Added current level so slider will know how to adjust the position
                 var currentLevel = (RampMap.getMap().__LOD.level) ? RampMap.getMap().__LOD.level : 0;
@@ -348,6 +349,8 @@ require([
                 });
 
                 gui.load(null, null, function () { });
+                
+                Ramp.loadStrings();
             });
 
             //project extents to basemap

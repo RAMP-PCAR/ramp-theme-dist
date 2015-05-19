@@ -15,19 +15,20 @@
 * Map class represents the ESRI map object. The map is generated based on the application configuration and templates.
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "GlobalStorage"}}{{/crossLink}}
-* {{#crossLink "RAMP"}}{{/crossLink}}
-* {{#crossLink "FeatureClickHandler"}}{{/crossLink}}
-* {{#crossLink "MapClickHandler"}}{{/crossLink}}
-* {{#crossLink "Navigation"}}{{/crossLink}}
-* {{#crossLink "EventManager"}}{{/crossLink}}
-* {{#crossLink "Util"}}{{/crossLink}}
-* {{#crossLink "Array"}}{{/crossLink}}
-*
+* {{#crossLink "GlobalStorage"}}{{/crossLink}}  
+* {{#crossLink "RAMP"}}{{/crossLink}}  
+* {{#crossLink "FeatureClickHandler"}}{{/crossLink}}  
+* {{#crossLink "MapClickHandler"}}{{/crossLink}}  
+* {{#crossLink "Navigation"}}{{/crossLink}}  
+* {{#crossLink "EventManager"}}{{/crossLink}}  
+* {{#crossLink "Util"}}{{/crossLink}}  
+* {{#crossLink "Array"}}{{/crossLink}}  
+* 
 * @class Map
 * @static
+* @uses dojo/_base/declare
+* @uses dojo/_base/array
 * @uses dojo/dom
-* @uses dojo/_base/lang
 * @uses dojo/dom-construct
 * @uses dojo/number
 * @uses dojo/query
@@ -42,32 +43,34 @@
 * @uses esri/dijit/Scalebar
 * @uses esri/geometry/Extent
 * @uses esri/tasks/GeometryService
+* @uses esri/tasks/ProjectParameters
 */
 
 define([
 /* Dojo */
-"dojo/dom", "dojo/_base/lang", "dojo/dom-construct", "dojo/number", "dojo/query", "dojo/topic", "dojo/on",
+"dojo/_base/declare", "dojo/_base/array", "dojo/dom",
+        "dojo/dom-construct", "dojo/number", "dojo/query", "dojo/topic", "dojo/on",
 
 /* Esri */
 "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/ArcGISDynamicMapServiceLayer",
-"esri/SpatialReference", "esri/dijit/Scalebar", "esri/geometry/Extent", "esri/layers/WMSLayer", "esri/tasks/GeometryService",
+"esri/SpatialReference", "esri/dijit/Scalebar", "esri/geometry/Extent", "esri/layers/WMSLayer", "esri/tasks/GeometryService", "esri/tasks/ProjectParameters",
 
 /* Ramp */
-"ramp/globalStorage", "ramp/featureClickHandler", "ramp/mapClickHandler", "ramp/navigation", "ramp/eventManager",
+"ramp/globalStorage", "ramp/ramp", "ramp/featureClickHandler", "ramp/mapClickHandler", "ramp/navigation", "ramp/eventManager",
 
 /* Util */
 "utils/util", "utils/array", "utils/dictionary"],
 
     function (
     /* Dojo */
-    dom, lang, domConstruct, number, query, topic, dojoOn,
+    declare, dojoArray, dom, domConstruct, number, query, topic, dojoOn,
 
     /* Esri */
     EsriMap, FeatureLayer, ArcGISTiledMapServiceLayer, ArcGISDynamicMapServiceLayer,
-    SpatialReference, EsriScalebar, EsriExtent, WMSLayer, GeometryService,
+    SpatialReference, EsriScalebar, EsriExtent, WMSLayer, GeometryService, ProjectParameters,
 
     /* Ramp */
-    GlobalStorage, FeatureClickHandler, MapClickHandler, Navigation, EventManager,
+    GlobalStorage, Ramp, FeatureClickHandler, MapClickHandler, Navigation, EventManager,
 
     /* Util */
     UtilMisc, UtilArray, UtilDict) {
@@ -112,8 +115,7 @@ define([
 
             fullExtent,
             maxExtent,
-            initExtent,
-            oldCenter;
+            initExtent;
 
         /**
         * Shows the loading image.
@@ -143,6 +145,7 @@ define([
         * @param {Object} event
         */
         function _updateScale(event) {
+            console.log("hjkl");
             if (event.levelChange) {
                 var currentScale = number.format(event.lod.scale),
                     scaleLabelText = "1 : " + currentScale;
@@ -215,47 +218,28 @@ define([
                 }
             });
 
-            // Distinguishing PAN/ZOOM from EXTENT_CHANGE now
-            topic.subscribe(EventManager.Map.PAN_END, function () {
-                oldCenter = map.extent.getCenter();
-            });
-
-            topic.subscribe(EventManager.Map.ZOOM_END, function () {
-                oldCenter = map.extent.getCenter();
-            });
-
             /* NAVIGATION EVENTS */
             topic.subscribe(EventManager.Navigation.PAN, function (event) {
                 // event.direction panUp, panDown, panLeft, panRight
                 // this same as calling map.panUp(), map.panDown(), map.panLeft(), map.panRight()
                 map[event.direction]();
-                oldCenter = map.extent.getCenter();
             });
 
             topic.subscribe(EventManager.Navigation.ZOOM_STEP, function (event) {
                 map.setLevel(map.getLevel() + event.level);
-                oldCenter = map.extent.getCenter();
             });
 
             topic.subscribe(EventManager.Navigation.ZOOM, function (event) {
                 map.setLevel(event.level);
-                oldCenter = map.extent.getCenter();
             });
 
             topic.subscribe(EventManager.Navigation.FULL_EXTENT, function () {
                 map.setExtent(fullExtent);
-                oldCenter = map.extent.getCenter();
             });
 
             /* GUI EVENTS */
-            // GUI Layout_change happens whenever size of the map portion is changed
-            // Call recentering function when any kind of layout change happens (including window resize but calls it too many times)
             topic.subscribe(EventManager.GUI.LAYOUT_CHANGE, function () {
-                _mapRecenter();
-            });
-
-            topic.subscribe(EventManager.Map.RESIZE, function () {
-                _mapRecenter();
+                map.resize(true);
             });
 
             // Unhighlight the point when the subpanel is collapsed
@@ -280,7 +264,7 @@ define([
                 layer.setVisibility(setTo);
                 //loops through any static layers that are mapped to the feature layer being toggled
                 try {
-                    GlobalStorage.LayerMap[layerId].forEach(function (staticLayer) {
+                    dojoArray.forEach(GlobalStorage.LayerMap[layerId], function (staticLayer) {
                         var layer = map.getLayer(staticLayer);
                         layer.setVisibility(setTo);
                     });
@@ -296,7 +280,7 @@ define([
                     layer.setOpacity(evt.value);
                     //loops through any static layers that are mapped to the feature layer being toggled
                     try {
-                        GlobalStorage.LayerMap[evt.layerId].forEach(function (staticLayer) {
+                        dojoArray.forEach(GlobalStorage.LayerMap[evt.layerId], function (staticLayer) {
                             var layer = map.getLayer(staticLayer);
                             layer.setOpacity(evt.value);
                         });
@@ -320,7 +304,7 @@ define([
                     featureLayers;
 
                 if (map.layerIds.contains(evt.id)) {
-                    featureLayers = map.graphicsLayerIds.map(function (x) {
+                    featureLayers = dojoArray.map(map.graphicsLayerIds, function (x) {
                         return map.getLayer(x).type === 'Feature Layer' ? 1 : 0;
                     }).sum();
                     newIndex += 1 - featureLayers; // offset by 1 basemap not accounted for
@@ -355,25 +339,6 @@ define([
                 map.addLayer(temp_layer);
             });
         }
-
-        /**
-        * Publishes an event to resize the map when called.
-        */
-        function _mapRecenter() {
-            map.resize(true);
-            if (oldCenter !== undefined) {
-                topic.publish(EventManager.Map.CENTER_AT, {
-                    point: oldCenter
-                });
-            } else {
-                topic.publish(EventManager.Map.CENTER_AT, {
-                    point: map.extent.getCenter()
-                });
-            }
-        }
-
- 
-
         /**
         * Creates event handlers for the map control: click, mouse-over, load, extent change, and update events.
         *
@@ -401,12 +366,6 @@ define([
             // Show/Hide spinner for map loading
             map.on("update-start", _showLoadingImg);
             map.on("update-end", _hideLoadingImg);
-
-            window.onresize = _mapRecenter;
-
-            /* map.on("resize", function () {
-                topic.publish(EventManager.Map.RESIZE);
-            }); */
 
             // code that would wait until all layers were loaded.  not used anymore, but could be useful to keep around to steal later
             /*
@@ -603,7 +562,7 @@ define([
                 case "feature":
                     tempLayer = new FeatureLayer(layer_url, {
                         opacity: layer_op,
-                        mode: FeatureLayer.MODE_ONDEMAND
+                        mode: FeatureLayer.MODE_SNAPSHOT
                     });
                     break;
 
@@ -679,36 +638,6 @@ define([
         }
 
         /**
-        * Sets up layer option object
-        *
-        * @private
-        * @method setLayerMode
-        * @param  {Object} config config object for the layer
-        * @return {Object} an options object with settings based on the config
-        */
-        function makeFeatureLayerOptions(config) {
-            var opts = {
-                id: config.id,
-                //outFields: [config.layerAttributes],
-                visible: config.settings.visible,
-                opacity: resolveLayerOpacity(config.settings.opacity)
-            };
-
-            switch (config.mode) {
-                case 'ondemand':
-                    opts.mode = FeatureLayer.MODE_ONDEMAND;
-                    break;
-
-                case 'snapshot':
-                    opts.mode = FeatureLayer.MODE_SNAPSHOT;
-                    opts.maxAllowableOffset = config.maxAllowableOffset;
-                    break;
-            }
-
-            return opts;
-        }
-
-        /**
         * Sets up loading event handlers and initializes the .ramp object of a layer
         * Circular reference errors prevent us from calling LayerLoader directly from this module
         *
@@ -726,9 +655,7 @@ define([
                     state: "loading",
                     inLS: false,  //layer has entry in layer selector
                     inCount: false  //layer is included in the layer counts
-                },
-                // hold layer state like wmsQuery being on or off
-                state: lang.clone(config.settings)
+                }
             };
 
             layer.on('load', function (evt) {
@@ -825,7 +752,7 @@ define([
             * @type { boolean }
             */
             layerInLODRange: function (maxScale, minScale) {
-                var lods = map._params.lods,
+                var lods = map._params.lods,                    
                     topLod = -1,
                     bottomLod = -1,
                     lod,
@@ -836,9 +763,9 @@ define([
                 //min scale means dont show the layer if zoomed out beyond the min scale
                 //max scale means dont show the layer if zoomed in beyond the max scale
                 //from a numerical perspective, min > max (as the scale number represents 1/number )
-
+                
                 if (maxScale === 0) {
-                    bottomLod = 0;
+                    bottomLod = 0; 
                 }
 
                 if (minScale === 0) {
@@ -854,22 +781,23 @@ define([
 
                     if (bottomLod === -1 && lod.scale <= maxScale) {
                         bottomLod = lods[Math.max(0, i - 1)];
-                    }
+                    } 
                 }
 
-                if (maxScale === 0 && minScale === 0) {
+                if (maxScale === 0 && minScale === 0) {                    
                     inRange = true;
                 } else if (minScale === 0) {
                     // check only maxScale (bottomLod)
-                    inRange = (bottomLod === -1) ? false : true;
+                    inRange = (bottomLod === -1) ? false : true; 
                 } else if (maxScale === 0) {
                     // check only minScale (topLod)
-                    inRange = (topLod === -1) ? false : true;
+                    inRange = (topLod === -1) ? false : true; 
                 } else {
                     inRange = (topLod !== -1 && bottomLod !== -1);
                 }
 
                 return inRange;
+                
             },
 
             /**
@@ -903,7 +831,7 @@ define([
             getVisibleFeatureLayers: function () {
                 // Return only the feature layers
                 //TODO do we need to consider static layers here?
-                return map.getLayersVisibleAtScale().filter(function (layer) {
+                return dojoArray.filter(map.getLayersVisibleAtScale(), function (layer) {
                     return layer.type && (layer.type === "Feature Layer") && layer.visible;
                 });
             },
@@ -1055,8 +983,14 @@ define([
            */
             makeFeatureLayer: function (layerConfig, userLayer) {
                 // TODO: source of possible errors; add error handling
-
-                var fl = new FeatureLayer(layerConfig.url, makeFeatureLayerOptions(layerConfig));
+                var fl = new FeatureLayer(layerConfig.url, {
+                    id: layerConfig.id,
+                    mode: FeatureLayer.MODE_SNAPSHOT,
+                    outFields: [layerConfig.layerAttributes],
+                    visible: layerConfig.settings.visible,
+                    opacity: resolveLayerOpacity(layerConfig.settings.opacity),
+                    maxAllowableOffset: layerConfig.maxAllowableOffset
+                });
 
                 prepLayer(fl, layerConfig, userLayer);
 
@@ -1111,8 +1045,13 @@ define([
                 //determine layer type and process
                 switch (layerType) {
                     case "feature":
-
-                        tempLayer = new FeatureLayer(layerConfig.url, makeFeatureLayerOptions(layerConfig));
+                        tempLayer = new FeatureLayer(layerConfig.url, {
+                            opacity: resolveLayerOpacity(layerConfig.settings.opacity),
+                            mode: FeatureLayer.MODE_SNAPSHOT,
+                            visible: layerConfig.settings.visible,
+                            id: layerConfig.id,
+                            maxAllowableOffset: layerConfig.maxAllowableOffset
+                        });
 
                         prepLayer(tempLayer, layerConfig, userLayer);
 
@@ -1170,23 +1109,6 @@ define([
             * @return {Esri/Extent} extent in the desired projection
             */
             localProjectExtent: localProjectExtent,
-
-            // a temporary function with a silly name to update global ui state
-            // TODO: move into state manager module when it's created
-            updateDatagridUpdatingState: function (layer, value) {
-                var oldState = RAMP.state.ui.datagridUpdating;
-
-                if (layer.ramp.type === GlobalStorage.layerType.feature) {
-                    value = value ? 1 : -1;
-
-                    RAMP.state.ui.datagridUpdating += value;
-
-                    // only fire event when the number of updating layers is going from  0 to 1 or back
-                    if (oldState + RAMP.state.ui.datagridUpdating === 1) {
-                        topic.publish(EventManager.Datagrid.UPDATING, RAMP.state.ui.datagridUpdating ? true : false);
-                    }
-                }
-            },
 
             /*
             * Initialize map control with configuration objects provided in the bootstrapper.js file.
@@ -1271,12 +1193,12 @@ define([
                 maxExtent = new EsriExtent(RAMP.config.extents.maximumExtent);
 
                 //generate WMS layers array
-                wmsLayers = RAMP.config.layers.wms.map(function (layer) {
+                wmsLayers = dojoArray.map(RAMP.config.layers.wms, function (layer) {
                     return that.makeWmsLayer(layer);
                 });
 
                 //generate feature layers array
-                featureLayers = RAMP.config.layers.feature.map(function (layerConfig) {
+                featureLayers = dojoArray.map(RAMP.config.layers.feature, function (layerConfig) {
                     var fl;
 
                     if (layerConfig.isStatic) {
@@ -1311,7 +1233,6 @@ define([
                     map = new EsriMap(RAMP.config.divNames.map, {
                         extent: initExtent,
                         logo: false,
-                        autoResize: true,
                         minZoom: RAMP.config.zoomLevels.min,
                         maxZoom: RAMP.config.zoomLevels.max,
                         slider: false
@@ -1334,12 +1255,9 @@ define([
                     perLayerStaticMaps = [],
                     staticLayerMap = [];
 
-                RAMP.config.layers.feature.forEach(function (layer) {
+                dojoArray.forEach(RAMP.config.layers.feature, function (layer) {
                     perLayerStaticMaps = [];
-                    if (!layer.staticLayers) {
-                        return;
-                    }
-                    layer.staticLayers.forEach(function (staticLayer, i) {
+                    dojoArray.forEach(layer.staticLayers, function (staticLayer, i) {
                         var tempLayer = that.makeStaticLayer(staticLayer);
 
                         staticLayers.push(tempLayer);
@@ -1380,8 +1298,6 @@ define([
                 _initRepublishers(map);
                 _initListeners(map);
                 _initEventHandlers(map);
-
-                oldCenter = map.extent.getCenter();
             }
         };
     });
