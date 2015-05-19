@@ -14,20 +14,20 @@
 * This includes dealing with errors, and raising appropriate events when the layer loads
 *
 * ####Imports RAMP Modules:
-* {{#crossLink "AttributeLoader"}}{{/crossLink}}
 * {{#crossLink "EventManager"}}{{/crossLink}}
 * {{#crossLink "FeatureClickHandler"}}{{/crossLink}}
 * {{#crossLink "FilterManager"}}{{/crossLink}}
 * {{#crossLink "GlobalStorage"}}{{/crossLink}}
-* {{#crossLink "GraphicExtension"}}{{/crossLink}}
 * {{#crossLink "LayerItem"}}{{/crossLink}}
 * {{#crossLink "Map"}}{{/crossLink}}
 * {{#crossLink "MapClickHandler"}}{{/crossLink}}
+* {{#crossLink "Ramp"}}{{/crossLink}}
 * {{#crossLink "Util"}}{{/crossLink}}
 *
 * @class LayerLoader
 * @static
 * @uses dojo/topic
+* @uses dojo/_base/array
 * @uses esri/geometry/Extent
 * @uses esri/layers/GraphicsLayer
 * @uses esri/tasks/GeometryService
@@ -36,28 +36,28 @@
 
 define([
 /* Dojo */
-"dojo/topic",
+"dojo/topic", "dojo/_base/array",
 
 /* ESRI */
 "esri/layers/GraphicsLayer", "esri/tasks/GeometryService", "esri/tasks/ProjectParameters", "esri/geometry/Extent",
 
 /* RAMP */
-"ramp/eventManager", "ramp/map", "ramp/globalStorage", "ramp/featureClickHandler", "ramp/mapClickHandler",
-"ramp/filterManager", "ramp/layerItem", "ramp/attributeLoader", "ramp/graphicExtension",
+"ramp/eventManager", "ramp/map", "ramp/globalStorage", "ramp/featureClickHandler", "ramp/mapClickHandler", "ramp/ramp",
+"ramp/filterManager", "ramp/layerItem",
 
 /* Util */
 "utils/util"],
 
     function (
     /* Dojo */
-    topic,
+    topic, dojoArray,
 
     /* ESRI */
     GraphicsLayer, GeometryService, ProjectParameters, EsriExtent,
 
     /* RAMP */
-    EventManager, RampMap, GlobalStorage, FeatureClickHandler, MapClickHandler,
-    FilterManager, LayerItem, AttributeLoader, GraphicExtension,
+    EventManager, RampMap, GlobalStorage, FeatureClickHandler, MapClickHandler, Ramp,
+    FilterManager, LayerItem,
 
      /* Util */
     UtilMisc) {
@@ -69,24 +69,11 @@ define([
         * Get an auto-generated layer id.  This works because javascript is single threaded: if this gets called
         * from a web-worker at some point it will need to be synchronized.
         *
-        * @method  nextId
         * @returns {String} an auto-generated layer id
         */
         function nextId() {
             idCounter += 1;
             return 'rampAutoId_' + idCounter;
-        }
-
-        /**
-        * Get a layer config for a given layer ID.
-        *
-        * @method  getLayerConfig
-        * @param   {String} layerId a RAMP layer ID
-        * @returns {Object} a RAMP config object from the layer registry
-        */
-        function getLayerConfig(layerId) {
-            var layer = RAMP.layerRegistry[layerId];
-            return layer ? layer.ramp.config : null;
         }
 
         /**
@@ -115,30 +102,9 @@ define([
         }
 
         /**
-        * Determines if the layer has an active hilight for the highlight type (defined by the state).
+        * Will remove a layer from the map, and adjust counts.
         *
-        * @method isValidHilight
-        * @private
-        * @param  {Object} layer map layer object
-        * @param  {Object} state the state of a highlight (defines if active and layer it applies to)
-        * @returns {Boolean} if layer has valid highlight
-        */
-        function isValidHilight(layer, state) {
-            var ret = false;
-            if (state.objId >= 0) {
-                //there is an active highlight
-                if (layer.id === state.layerId) {
-                    //it belongs to this layer
-                    ret = true;
-                }
-            }
-            return ret;
-        }
-
-        /**
-        * Will remove a layer from the map, along with any related items (bounding box, feature data) and adjust counts.
-        *
-        * @method removeFromMap
+        * @method onLayerError
         * @private
         * @param {String} layerId config id of the layer
         */
@@ -160,12 +126,6 @@ define([
                     map.removeLayer(bbLayer);
                     RAMP.layerCounts.bb -= 1;
                 }
-                delete RampMap.getBoundingBoxMapping()[layer.id];
-            }
-
-            //remove data, if it exists
-            if (RAMP.data[layerId]) {
-                delete RAMP.data[layerId];
             }
 
             //just incase its really weird and layer is not in the registry
@@ -269,6 +229,9 @@ define([
             // TODO - this write to layer registry should be refactored into a call to state manager
             RAMP.layerRegistry[layer.id] = layer;
 
+            // publish LAYER_ADDED event for every user-added layer
+            topic.publish(EventManager.LayerLoader.LAYER_ADDED, { layer: layer });
+
             //derive initial state
             switch (layer.ramp.load.state) {
                 case "loaded":
@@ -319,15 +282,6 @@ define([
 
                 case GlobalStorage.layerType.feature:
 
-                    //initiate the feature data download
-                    if (layer.url) {
-                        //service based. get feature data from the service
-                        AttributeLoader.loadAttributeData(layer.id, layer.url, layer.ramp.type);
-                    } else {
-                        //file based. scrape data from the layer
-                        AttributeLoader.extractAttributeData(layer);
-                    }
-
                     //TODO consider the case where a layer was loaded by the user, and we want to disable things like maptips?
 
                     //wire up click handler
@@ -346,7 +300,8 @@ define([
                     });
 
                     //generate bounding box
-
+                    //if a reload, the bounding box still exists from the first load
+                    if (isNotReload) {
                         var boundingBoxExtent,
                             boundingBox = new GraphicsLayer({
                                 id: String.format("boundingBoxLayer_{0}", layer.id),
@@ -391,12 +346,9 @@ define([
                         RAMP.layerCounts.bb += 1;
 
                         map.addLayer(boundingBox, insertIdx);
-
+                    }
                     break;
             }
-
-            // publish LAYER_ADDED event for every added layer
-            topic.publish(EventManager.LayerLoader.LAYER_ADDED, { layer: layer, layerCounts: RAMP.layerCounts });
         }
 
         return {
@@ -406,6 +358,18 @@ define([
             * @method init
             */
             init: function () {
+                //counters for layers loaded, so we know where to insert things
+                //default basemap count to 1, as we always load 1 to begin with
+
+                RAMP.layerCounts = {
+                    feature: 0,
+                    bb: 0,
+                    wms: 0,
+                    base: 1
+                };
+
+                RAMP.layerRegistry = {};
+
                 topic.subscribe(EventManager.LayerLoader.LAYER_LOADED, this.onLayerLoaded);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATED, this.onLayerUpdateEnd);
                 topic.subscribe(EventManager.LayerLoader.LAYER_UPDATING, this.onLayerUpdateStart);
@@ -463,8 +427,6 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateStart: function (evt) {
-                RampMap.updateDatagridUpdatingState(evt.layer, true);
-
                 //console.log("LAYER UPDATE START: " + evt.layer.url);
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.UPDATING, true);
             },
@@ -477,37 +439,11 @@ define([
             * @param  {Object} evt.layer the layer object that loaded
             */
             onLayerUpdateEnd: function (evt) {
-                var g;
-
-                //check if we have any active highlites for this layer
-                if (isValidHilight(evt.layer, RAMP.state.hilite.click)) {
-                    //re-request the click hilight
-                    g = GraphicExtension.findGraphic(RAMP.state.hilite.click.objId, evt.layer.id);
-                    if (g) {
-                        topic.publish(EventManager.FeatureHighlighter.HIGHLIGHT_SHOW, {
-                            graphic: g
-                        });
-                    } //else graphic is off-view and does not exist in layer. dont' change higlight
-                }
-
-                if (isValidHilight(evt.layer, RAMP.state.hilite.zoom)) {
-                    //re-request the zoom hilight
-                    g = GraphicExtension.findGraphic(RAMP.state.hilite.zoom.objId, evt.layer.id);
-                    if (g) {
-                        topic.publish(EventManager.FeatureHighlighter.ZOOMLIGHT_SHOW, {
-                            graphic: g
-                        });
-                    } //else graphic is off-view and does not exist in layer. dont' change higlight
-                }
-
                 //IE10 hack.  since IE10 doesn't fire a loaded event, we need to also set the loaded flag on layer here.
                 //            don't do it if it's in error state.  once an error, always an error
                 if (evt.layer.ramp.load.state !== "error") {
                     evt.layer.ramp.load.state = "loaded";
                 }
-
-                RampMap.updateDatagridUpdatingState(evt.layer);
-
                 updateLayerSelectorState(evt.layer.ramp.config.id, LayerItem.state.LOADED, true);
             },
 
@@ -535,19 +471,25 @@ define([
             },
 
             /**
-            * Reacts to a request for a layer to be removed.  This removes the layer from the entire app.
+            * Reacts to a request for a layer to be removed.  Usually the case when a layer errors and the user clicks remove.
             *
             * @method onLayerRemove
             * @param  {Object} evt
             * @param  {Object} evt.layerId the layer id to be removed
             */
             onLayerRemove: function (evt) {
-                var layer,
+                var map = RampMap.getMap(),
+                    layer,
                     configIdx,
                     layerSection,
                     configCollection;
 
+                layer = map._layers[evt.layerId];  //map.getLayer is not reliable, so we use this
+
+                if (!layer) {
+                    //layer was kicked out of the map.  grab it from the registry
                     layer = RAMP.layerRegistry[evt.layerId];
+                }
 
                 //derive section layer is in and the config collection it is in
                 switch (layer.ramp.type) {
@@ -572,32 +514,39 @@ define([
                 configIdx = configCollection.indexOf(layer.ramp.config);
                 configCollection.splice(configIdx, 1);
 
-                delete RAMP.layerRegistry[evt.layerId];
-
-                // publish LAYER_REMOVED event for every removed layer
-                topic.publish(EventManager.LayerLoader.LAYER_REMOVED, { layer: layer, layerCounts: RAMP.layerCounts });
+                RAMP.layerRegistry[evt.layerId] = undefined;
             },
 
             /**
             * Reacts to a request for a layer to be reloaded.  Usually the case when a layer errors and user wants to try again
             *
-            * @method onLayerReload
+            * @method onLayerRemove
             * @param  {Object} evt
             * @param  {Object} evt.layerId the layer id to be reloaded
             */
             onLayerReload: function (evt) {
-                var curlayer,
+                var map = RampMap.getMap(),
+                    curlayer,
                     layerConfig,
                     user,
                     newLayer,
                     layerIndex,
+                    inMap,
                     layerList,
                     idArray,
                     cleanIdArray;
 
                 removeFromMap(evt.layerId);
 
+                curlayer = map._layers[evt.layerId];  //map.getLayer is not reliable, so we use this
+
+                if (curlayer) {
+                    inMap = true;
+                } else {
+                    //layer was kicked out of the map.  grab it from the registry
+                    inMap = false;
                     curlayer = RAMP.layerRegistry[evt.layerId];
+                }
 
                 layerConfig = curlayer.ramp.config;
                 user = curlayer.ramp.user;
@@ -613,21 +562,22 @@ define([
                             .map(function (i, elm) { return $(elm).find("> li").toArray().reverse(); }) // for each layer list, find its items and reverse their order
                             .map(function (i, elm) { return elm.id; });
 
-                cleanIdArray = idArray.toArray().filter(function (i, elm) {
+                cleanIdArray = idArray.filter(function (i, elm) {
                     //check if layer is in error state.  error layers should not be part of the count.  exception being the layer we are reloading
                     return ((FilterManager.getLayerState(elm) !== LayerItem.state.ERROR) || (elm === evt.layerId));
                 });
 
                 //find where our index is
-                layerIndex = cleanIdArray.indexOf(evt.layerId);
+                layerIndex = dojoArray.indexOf(cleanIdArray, evt.layerId);
 
                 if (curlayer.ramp.type === GlobalStorage.layerType.wms) {
                     //adjust for wms, as it's in a different layer list on the map
                     layerIndex = layerIndex + RAMP.layerCounts.base - RAMP.layerCounts.feature;
                 }
 
-                if (evt.mode) {
-                    layerConfig.mode = evt.mode;
+                //remove layer from map
+                if (inMap) {
+                    map.removeLayer(curlayer);
                 }
 
                 //generate new layer
@@ -660,8 +610,6 @@ define([
             loadLayer: function (layer, reloadIndex) {
                 _loadLayer(layer, reloadIndex);
             },
-
-            getLayerConfig: getLayerConfig,
 
             nextId: nextId
         };
