@@ -5104,7 +5104,7 @@ footer {
   list-style: none;
   background-color: white;
 }
-#categories #layerList > li > ul > li.list-item-grabbed legend {
+#categories #layerList > li > ul > li.list-item-grabbed .filter-row-container {
   -webkit-box-shadow: 0 0 8px -1px #222222;
   box-shadow: 0 0 8px -1px #222222;
   z-index: 1;
@@ -5142,11 +5142,11 @@ footer {
                     display: none !important;
                 }*/
 }
-#categories .layerList1.ui-sortable-helper legend {
+#categories .layerList1.ui-sortable-helper .filter-row-container {
   -webkit-box-shadow: 0 0 8px -1px #222222;
   box-shadow: 0 0 8px -1px #222222;
 }
-#categories .layerList1 legend {
+#categories .layerList1 .filter-row-container {
   padding: 8px 0;
   position: relative;
   font-size: 100% !important;
@@ -5157,15 +5157,15 @@ footer {
   -webkit-transition: background-color 400ms ease;
   transition: background-color 400ms ease;
 }
-#categories .layerList1 legend > div {
+#categories .layerList1 .filter-row-container > div {
   padding-left: 15px;
   position: relative;
 }
-#categories .layerList1 legend:after {
+#categories .layerList1 .filter-row-container:after {
   border: none;
   height: 0;
 }
-#categories .layerList1 legend.selected-row .layer-controls ul button.legend-button:before {
+#categories .layerList1 .filter-row-container.selected-row .layer-controls ul button.legend-button:before {
   background-position: 0 -10px;
 }
 #categories .layerList1 .filter-row-settings {
@@ -5598,7 +5598,6 @@ footer {
   margin-top: -3px;
   margin-left: 2px;
   line-height: 1.5em;
-  width: 273px;
 }
 #categories .layer-details .layer-notices {
   position: absolute;
